@@ -1,28 +1,25 @@
-#ifndef COMMON_FUNCTION_H
-#define COMMON_FUNCTION_H
+#ifndef COMMON_H_INCLUDED
+#define COMMON_H_INCLUDED
 
 #include <bits/stdc++.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 using namespace std;
 
-const int SCREEN_WIDTH = 1200;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1500;
+const int SCREEN_HEIGHT = 800;
 
-const string WINDOW_TITLE = "MARIO";
+const string WINDOW_TITLE = "TANK GAME";
 
-static SDL_Window* gWindow = NULL;
-static SDL_Renderer* gRenderer = NULL;
-static SDL_Surface* gScreenSurface = NULL;
+static SDL_Window* gWindow;
+static SDL_Surface* gScreenSurface;
+static SDL_Renderer* gRenderer;
+static SDL_Texture* gBackground;
 
-static SDL_Texture* gBackground = NULL;
-
-static SDL_Event gEvent;
-
-namespace SDLCommonFunc{
-    SDL_Texture* loadImage(string path);
+namespace SDLCommonFunc
+{
+    SDL_Texture* loadImage( string path);
     void render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip );
     void Clear();
 }
-
-#endif
+#endif // COMMON_H_INCLUDED
