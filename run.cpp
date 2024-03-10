@@ -17,7 +17,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
         cout << "Unable to load image " << path << " SDL Error: " << SDL_GetError() << endl;
     }
     else{
-        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 43, 43, 43));
+        //SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 43, 43, 43));
 
         optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface -> format, 0);
 
@@ -67,7 +67,7 @@ int main(int argc, char* args[]){
     gBackground = SDLCommonFunc::loadImage("images/background2.jpg");
 
     TankObject mainTank;
-    bool check = mainTank.loadIMG("images/tankfix.png");
+    bool check = mainTank.loadIMG("images/bluetank.png");
     SDL_Rect rectTank = mainTank.getRect();
     if(check == false){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;

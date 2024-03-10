@@ -5,8 +5,8 @@
 #include "BaseObject.h"
 #include "BulletObject.h"
 
-#define WIDTH_TANK_OBJECT 30
-#define HEIGHT_TANK_OBJECT 55
+#define WIDTH_TANK_OBJECT 35
+#define HEIGHT_TANK_OBJECT 39
 
 class TankObject : public BaseObject
 {

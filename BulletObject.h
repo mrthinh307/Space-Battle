@@ -3,8 +3,8 @@
 
 #include "BaseObject.h"
 
-#define WIDTH_LASER 10
-#define HEIGHT_LASER 10
+#define WIDTH_LASER 5
+#define HEIGHT_LASER 5
 
 class BulletObject : public BaseObject
 {
