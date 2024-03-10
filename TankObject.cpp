@@ -97,16 +97,16 @@ void TankObject::handleInputAction(SDL_Event e) {
     if(e.type == SDL_MOUSEBUTTONDOWN){
         if(e.button.button == SDL_BUTTON_LEFT){
             BulletObject* bullet = new BulletObject();
-            bullet->setWidthHeight(WIDTH_LASER, HEIGHT_LASER);
+            bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
             bullet->loadIMG("images/sphere.png");
-            bullet->setBulletType(BulletObject::LASER);
+            bullet->setBulletType(BulletObject::SPHERE);
             bullet->setDegrees(degrees);
             bullet->setIsMove(true);
 
             // Tính toán vị trí xuất phát của đạn dựa trên góc xoay của xe tăng
-            int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - WIDTH_LASER / 2;
-            int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - HEIGHT_LASER / 2;
-            bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_LASER / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
+            int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - WIDTH_SPHERE / 2;
+            int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - HEIGHT_SPHERE / 2;
+            bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
 
             bulletOfTankList.push_back(bullet);
         }

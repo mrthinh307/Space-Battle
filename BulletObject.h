@@ -3,15 +3,19 @@
 
 #include "BaseObject.h"
 
-#define WIDTH_LASER 5
-#define HEIGHT_LASER 5
+#define WIDTH_LASER 8
+#define HEIGHT_LASER 8
+
+#define WIDTH_SPHERE 5
+#define HEIGHT_SPHERE 5
 
 class BulletObject : public BaseObject
 {
 public:
     enum BulletType {
         NONE = 0,
-        LASER = 1
+        SPHERE = 1,
+        LASER = 2
     };
 
     BulletObject();
@@ -33,12 +37,17 @@ public:
     
     void setDegrees( double deg) { degrees = deg; }
     double getDegrees() const { return degrees; }
+
 private:
     int x_val;
     int y_val;
+
     bool isMove;
+
     int bulletType;
+
     SDL_Rect pos;
+
     double degrees;
 };
 

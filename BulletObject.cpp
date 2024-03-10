@@ -26,8 +26,8 @@ BulletObject::~BulletObject() {
 void BulletObject::handleMove(const int& x_border, const int& y_border) {
     const double bullet_speed = 8.0;
     pos.x += bullet_speed * sin(degrees * M_PI / 180.0);
-    pos.y -= bullet_speed * cos(degrees * M_PI / 180.0); // Trừ vì hệ tọa độ màn hình có y tăng từ trên xuống
-
+    pos.y -= bullet_speed * cos(degrees * M_PI / 180.0); 
+    
     if (pos.x < 0 || pos.x > x_border || pos.y < 0 || pos.y > y_border) {
         isMove = false;
     }
