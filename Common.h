@@ -19,7 +19,7 @@ static SDL_Texture* gBackground;
 namespace SDLCommonFunc
 {
     SDL_Texture* loadImage( string path);
-    void render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip );
+    void render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     void Clear();
 }
 #endif // COMMON_H_INCLUDED

@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "TankObject.h"
+#include "BulletObject.h"
 
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
@@ -16,7 +17,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
         cout << "Unable to load image " << path << " SDL Error: " << SDL_GetError() << endl;
     }
     else{
-        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 76, 65, 55));
+        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 43, 43, 43));
 
         optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface -> format, 0);
 
@@ -35,7 +36,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
     return newTexture;
 }
 
-void SDLCommonFunc::render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip ) {
+void SDLCommonFunc::render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
     //Set rendering space and render to screen
     SDL_Rect renderQuad;
     renderQuad.x = x;
@@ -50,7 +51,7 @@ void SDLCommonFunc::render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* c
     }
 
     //Render to screen
-    SDL_RenderCopy(gRenderer, loadedTexture, clip, &renderQuad);
+    SDL_RenderCopyEx(gRenderer, loadedTexture, clip, &renderQuad, angle, center, flip);
 }
 
 void SDLCommonFunc::Clear()
@@ -63,10 +64,10 @@ void SDLCommonFunc::Clear()
 int main(int argc, char* args[]){
     initSDL();
 
-    gBackground = SDLCommonFunc::loadImage("images/background.jpg");
+    gBackground = SDLCommonFunc::loadImage("images/background2.jpg");
 
     TankObject mainTank;
-    bool check = mainTank.loadIMG("images/tank2.png");
+    bool check = mainTank.loadIMG("images/tankfix.png");
     SDL_Rect rectTank = mainTank.getRect();
     if(check == false){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
@@ -80,6 +81,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
+            mainTank.handleInputAction(e);
         }
         //Clear screen
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
@@ -87,8 +89,35 @@ int main(int argc, char* args[]){
 
         //Load background
         SDLCommonFunc::render(gBackground, 0, 0, NULL);
-        mainTank.renderCopy((SCREEN_WIDTH - WIDTH_TANK_OBJECT) / 2, (SCREEN_HEIGHT - HEIGHT_TANK_OBJECT)/ 2, &rectTank);
+      
+        SDL_Rect posTank = mainTank.getPos();
+        double flipTank = mainTank.getDegrees();
+        SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
+        mainTank.renderCopy(posTank.x, posTank.y , &rectTank, flipTank, NULL, typeFlipOfTank);
 
+        mainTank.handleMove(); 
+
+        for(int i = 0; i < mainTank.getBulletList().size(); i++){
+            vector<BulletObject*> bull_list = mainTank.getBulletList();
+            BulletObject* p_bullet = bull_list.at(i);
+            if(p_bullet != NULL){
+                if(p_bullet->getIsMove()){
+                    SDL_Rect rectBullet = p_bullet->getRect();
+                    SDL_Rect posBullet = p_bullet->getPos();
+                    double flipBullet = p_bullet->getDegrees();
+                    p_bullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                    p_bullet->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
+                }
+                else{
+                    if(p_bullet != NULL){
+                        bull_list.erase(bull_list.begin() + i);
+                        mainTank.setBulletList(bull_list);
+                        delete p_bullet; 
+                        p_bullet = NULL;
+                    }
+                }
+            }
+        }  
         SDL_RenderPresent(gRenderer);
     }
 

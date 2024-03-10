@@ -20,8 +20,8 @@ bool BaseObject::loadIMG(string path){
     return p_object != NULL;
 }
 
-void BaseObject::renderCopy( int x, int y, SDL_Rect* clip){
+void BaseObject::renderCopy( int x, int y, SDL_Rect* clip, double degrees, SDL_Point* center, SDL_RendererFlip flip){
     if(p_object != NULL){
-        SDLCommonFunc::render(p_object, x, y, clip);
+        SDLCommonFunc::render(p_object, x, y, clip, degrees, center, flip);
     }
 }
