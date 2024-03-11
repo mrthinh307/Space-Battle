@@ -62,6 +62,49 @@ void ThreatsObject::setDegrees(const SDL_Rect& posTank){
     degrees = angle + 45; // Giả sử hướng mặc định của ThreatsObject là hướng lên trên
 }
 
+void ThreatsObject::initBullet(BulletObject* t_bull){
+    if(t_bull != NULL){
+        bool check = t_bull->loadIMG("images/sphere.png");
+        if(check){
+            t_bull->setIsMove(true);
+            t_bull->setWidthHeight(WIDTH_SPHERE, WIDTH_SPHERE);
+            t_bull->setBulletType(BulletObject::SPHERE);
+            t_bull->setDegrees(degrees);
+
+            int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
+            int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
+            t_bull->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
+
+            bulletOfThreatsList.push_back(t_bull);
+        }
+    }
+}
+
+void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
+    for(int i = 0; i < bulletOfThreatsList.size(); ++i){
+        BulletObject* aBullet = bulletOfThreatsList.at(i);
+        if(aBullet != NULL){
+            if(aBullet->getIsMove()){
+                SDL_Rect rectBullet = aBullet->getRect();
+                SDL_Rect posBullet = aBullet->getPos();
+                double flipBullet = aBullet->getDegrees();
+                aBullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                aBullet->handleMoveThreats(x_limit, y_limit);
+            }
+            else{
+                if(aBullet != NULL){
+                    aBullet->setIsMove(true);
+                    // Set new position
+                    int bullet_start_x = pos.x + HEIGHT_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
+                    int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
+                    aBullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2);  
+                    // Set new flip degrees     
+                    aBullet->setDegrees(degrees);            
+                }
+            }
+        }
+    }
+}
 
 void ThreatsObject::handleInputAction(SDL_Event e){
     ;

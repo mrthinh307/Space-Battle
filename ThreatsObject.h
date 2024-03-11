@@ -2,6 +2,7 @@
 #define THREATSOBJECT_H_INCLUDED
 
 #include "BaseObject.h"
+#include "BulletObject.h"
 
 #define WIDTH_THREATS_OBJECT 30
 #define HEIGHT_THREATS_OBJECT 55
@@ -28,6 +29,12 @@ public:
 
     SDL_Rect getPos() const { return pos; }
     void setPos(const int& x, const int& y) { pos.x = x; pos.y = y; }
+
+    void setBulletList(vector<BulletObject*> bulletList) { bulletOfThreatsList = bulletList; }
+    vector<BulletObject*> getBulletList() const { return bulletOfThreatsList; }
+
+    void initBullet(BulletObject* t_bull);
+    void runBullet(const int& x_limit, const int& y_limit);
 private:
     double x_val;
     double y_val;
@@ -36,6 +43,8 @@ private:
 
     double degrees;
     SDL_RendererFlip flipType;
+
+    vector<BulletObject*> bulletOfThreatsList;
 };
 
 

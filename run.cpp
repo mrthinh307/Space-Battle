@@ -64,6 +64,7 @@ void SDLCommonFunc::Clear()
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
+    // Create background
     gBackground = SDLCommonFunc::loadImage("images/background2.jpg");
 
     // Make Main Tank
@@ -84,7 +85,6 @@ int main(int argc, char* args[]){
     }
     int rand_x, rand_y;
     int tmp = rand() % 4;
-
         if(tmp == 0){
             rand_x = 0;
             rand_y = rand() % SCREEN_HEIGHT;
@@ -104,8 +104,13 @@ int main(int argc, char* args[]){
 
     p_threat->setPos(rand_x, rand_y);
 
+    // Make bullet for threat
+    BulletObject* t_bull = new BulletObject();
+    p_threat->initBullet(t_bull);
+
     bool quit = false;
     SDL_Event e;
+
     while(!quit){
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -158,6 +163,9 @@ int main(int argc, char* args[]){
 
         p_threat->renderCopy(posThreat.x, posThreat.y, &rectThreat, degThreat, NULL, SDL_FLIP_NONE);
         p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        //Run bullet of threat
+        p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         SDL_RenderPresent(gRenderer);
     }
