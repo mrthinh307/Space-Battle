@@ -82,11 +82,27 @@ int main(int argc, char* args[]){
         cout <<"Unable to load Threat Images! " << endl;
         return 0;
     }
-    int rand_x = rand() % 1500;
-    int rand_y = rand() % 800;
+    int rand_x, rand_y;
+    int tmp = rand() % 4;
+
+        if(tmp == 0){
+            rand_x = 0;
+            rand_y = rand() % SCREEN_HEIGHT;
+        }
+        else if(tmp == 1){
+            rand_x = rand() % SCREEN_WIDTH;
+            rand_y = 0;
+        }
+        else if(tmp == 2){
+            rand_x = SCREEN_WIDTH;
+            rand_y = rand() % SCREEN_HEIGHT;
+        }
+        else if(tmp == 3){
+            rand_x = rand() % SCREEN_WIDTH;
+            rand_y = SCREEN_HEIGHT;
+        }
+
     p_threat->setPos(rand_x, rand_y);
-    p_threat->setx_val(0); 
-    p_threat->sety_val(0);
 
     bool quit = false;
     SDL_Event e;

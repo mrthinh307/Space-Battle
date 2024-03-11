@@ -27,8 +27,8 @@ void ThreatsObject::handleMove(const int& x_border, const int& y_border){
     y_val = sin(rad_angle) * THREATS_SPEED;
 
     // Cập nhật vị trí của ThreatsObject
-    pos.x += x_val;
-    pos.y += y_val;
+    pos.x += x_val / 2;
+    pos.y += y_val / 2;
     if(pos.x < 0 || pos.x > x_border || pos.y < 0 || pos.y > y_border){
         int tmp = rand() % 4;
 
@@ -59,7 +59,7 @@ void ThreatsObject::setDegrees(const SDL_Rect& posTank){
 
     float angle = atan2(delta_y, delta_x) * (180.0 / M_PI);
 
-    degrees = angle + 45;
+    degrees = angle + 45; // Giả sử hướng mặc định của ThreatsObject là hướng lên trên
 }
 
 
