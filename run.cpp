@@ -139,28 +139,8 @@ int main(int argc, char* args[]){
         mainTank.renderCopy(posTank.x, posTank.y , &rectTank, flipTank, NULL, typeFlipOfTank);
 
         mainTank.handleMove(); 
+        mainTank.runBullet();
 
-        for(int i = 0; i < mainTank.getBulletList().size(); i++){
-            vector<BulletObject*> bull_list = mainTank.getBulletList();
-            BulletObject* p_bullet = bull_list.at(i);
-            if(p_bullet != NULL){
-                if(p_bullet->getIsMove()){
-                    SDL_Rect rectBullet = p_bullet->getRect();
-                    SDL_Rect posBullet = p_bullet->getPos();
-                    double flipBullet = p_bullet->getDegrees();
-                    p_bullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
-                    p_bullet->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
-                }
-                else{
-                    if(p_bullet != NULL){
-                        bull_list.erase(bull_list.begin() + i);
-                        mainTank.setBulletList(bull_list);
-                        delete p_bullet; 
-                        p_bullet = NULL;
-                    }
-                }
-            }
-        }
         for(int i = 0; i < NUM_THREATS; i++){
             ThreatsObject* p_threat = (p_threats + i);
             if(p_threat != NULL){
@@ -174,14 +154,10 @@ int main(int argc, char* args[]){
                 p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
 
                 //Run bullet of threat
-            
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
             }
 
         } 
-
-        //Run threat
-
 
         SDL_RenderPresent(gRenderer);
     }
@@ -191,8 +167,6 @@ int main(int argc, char* args[]){
     quitSDL();
     return 0;
 }
-
-
 
 void initSDL(){
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0){

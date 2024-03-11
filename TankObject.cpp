@@ -100,6 +100,7 @@ void TankObject::handleInputAction(SDL_Event e) {
             bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
             bullet->loadIMG("images/sphere.png");
             bullet->setBulletType(BulletObject::SPHERE);
+            bullet->setx_val(8.0);
             bullet->setDegrees(degrees);
             bullet->setIsMove(true);
 
@@ -133,6 +134,26 @@ void TankObject::handleMove() {
     flipType = SDL_FLIP_NONE; // Xe tăng luôn hướng mặt về phía trước, không cần lật
 }
 
-
+void TankObject::runBullet(){
+    for(int i = 0; i < bulletOfTankList.size(); i++){
+        BulletObject* p_bullet = bulletOfTankList.at(i);
+        if(p_bullet != NULL){
+            if(p_bullet->getIsMove()){
+                SDL_Rect rectBullet = p_bullet->getRect();
+                SDL_Rect posBullet = p_bullet->getPos();
+                double flipBullet = p_bullet->getDegrees();
+                p_bullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                p_bullet->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
+            }
+            else{
+                if(p_bullet != NULL){
+                    bulletOfTankList.erase(bulletOfTankList.begin() + i);
+                    delete p_bullet; 
+                    p_bullet = NULL;
+                }
+            }
+        }
+    }
+}
 
 

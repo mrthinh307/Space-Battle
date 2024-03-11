@@ -39,9 +39,14 @@ public:
     void setDegrees( double deg) { degrees = deg; }
     double getDegrees() const { return degrees; }
 
+    void setx_val(const double& x) { x_val = x; }
+    double getx_val() const { return x_val; }
+    void sety_val(const double& y) { y_val = y; }
+    double gety_val() const { return y_val; }
+
 private:
-    int x_val;
-    int y_val;
+    double x_val;
+    double y_val;
 
     bool isMove;
 

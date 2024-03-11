@@ -24,7 +24,7 @@ BulletObject::~BulletObject() {
 }
 
 void BulletObject::handleMove(const int& x_border, const int& y_border) {
-    const double bullet_speed = 8.0;
+    const double bullet_speed = x_val;
     pos.x += bullet_speed * sin(degrees * M_PI / 180.0);
     pos.y -= bullet_speed * cos(degrees * M_PI / 180.0); 
     
@@ -34,7 +34,7 @@ void BulletObject::handleMove(const int& x_border, const int& y_border) {
 }
 //up
 void BulletObject::handleMoveThreats(const int& x_border, const int& y_border) {
-    const double bullet_speed = 6.0;
+    const double bullet_speed = y_val;
     pos.x += bullet_speed * sin(degrees * M_PI / 180.0);
     pos.y -= bullet_speed * cos(degrees * M_PI / 180.0); 
     

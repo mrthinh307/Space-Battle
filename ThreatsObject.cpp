@@ -85,6 +85,7 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
             t_bull->setIsMove(true);
             t_bull->setWidthHeight(WIDTH_SPHERE, WIDTH_SPHERE);
             t_bull->setBulletType(BulletObject::SPHERE);
+            t_bull->sety_val(5.8);
             t_bull->setDegrees(degrees);
 
             int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;

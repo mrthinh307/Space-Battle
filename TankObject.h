@@ -29,6 +29,8 @@ public:
 
     void setBulletList(vector<BulletObject*> bulletList) { bulletOfTankList = bulletList; }
     vector<BulletObject*> getBulletList() const { return bulletOfTankList; }
+
+    void runBullet();
 private:
     int x_val;
     int y_val;
