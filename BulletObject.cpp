@@ -32,7 +32,7 @@ void BulletObject::handleMove(const int& x_border, const int& y_border) {
         isMove = false;
     }
 }
-
+//up
 void BulletObject::handleMoveThreats(const int& x_border, const int& y_border) {
     const double bullet_speed = 6.0;
     pos.x += bullet_speed * sin(degrees * M_PI / 180.0);

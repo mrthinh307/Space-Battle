@@ -25,3 +25,4 @@ namespace SDLCommonFunc
     void Clear();
 }
 #endif // COMMON_H_INCLUDED
+//up

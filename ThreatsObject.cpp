@@ -109,3 +109,4 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
 void ThreatsObject::handleInputAction(SDL_Event e){
     ;
 }
+//up

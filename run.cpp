@@ -218,7 +218,7 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
         exit(1);
     }
 }
-
+//up
 
 
 
