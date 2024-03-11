@@ -11,6 +11,8 @@ using namespace std;
 const int SCREEN_WIDTH = 1500;
 const int SCREEN_HEIGHT = 800;
 
+const int NUM_THREATS = rand() % 8 + 4;
+
 const string WINDOW_TITLE = "TANK GAME";
 
 static SDL_Window* gWindow;

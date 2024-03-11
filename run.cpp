@@ -76,37 +76,45 @@ int main(int argc, char* args[]){
         return 0;
     }
 
-    // Make Threat Object
-    ThreatsObject* p_threat = new ThreatsObject();
-    bool check1 = p_threat->loadIMG("images/tankfix.png");
-    if(!check1){
-        cout <<"Unable to load Threat Images! " << endl;
-        return 0;
-    }
-    int rand_x, rand_y;
-    int tmp = rand() % 4;
-        if(tmp == 0){
-            rand_x = 0;
-            rand_y = rand() % SCREEN_HEIGHT;
-        }
-        else if(tmp == 1){
-            rand_x = rand() % SCREEN_WIDTH;
-            rand_y = 0;
-        }
-        else if(tmp == 2){
-            rand_x = SCREEN_WIDTH;
-            rand_y = rand() % SCREEN_HEIGHT;
-        }
-        else if(tmp == 3){
-            rand_x = rand() % SCREEN_WIDTH;
-            rand_y = SCREEN_HEIGHT;
-        }
 
-    p_threat->setPos(rand_x, rand_y);
 
     // Make bullet for threat
-    BulletObject* t_bull = new BulletObject();
-    p_threat->initBullet(t_bull);
+    ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
+    for(int i = 0; i < NUM_THREATS; ++i){
+        // Make Threat Object
+        ThreatsObject* p_threat = p_threats + i;
+        if(p_threat != NULL){
+            bool check1 = p_threat->loadIMG("images/tankfix.png");
+            if(!check1){
+                cout <<"Unable to load Threat Images! " << endl;
+                return 0;
+            }
+            int rand_x, rand_y;
+            int tmp = rand() % 4;
+            if(tmp == 0){
+                rand_x = 0;
+                rand_y = rand() % SCREEN_HEIGHT;
+            }
+            else if(tmp == 1){
+                rand_x = rand() % SCREEN_WIDTH ;
+                rand_y = 0;
+            }
+            else if(tmp == 2){
+                rand_x = SCREEN_WIDTH;
+                rand_y = rand() % SCREEN_HEIGHT;
+            }
+            else if(tmp == 3){
+                rand_x = rand() % SCREEN_WIDTH;
+                rand_y = SCREEN_HEIGHT;
+            }
+
+            p_threat->setPos(rand_x, rand_y);
+        
+            BulletObject* t_bull = new BulletObject();
+            p_threat->initBullet(t_bull);
+        }
+
+    }
 
     bool quit = false;
     SDL_Event e;
@@ -152,24 +160,33 @@ int main(int argc, char* args[]){
                     }
                 }
             }
-        }  
+        }
+        for(int i = 0; i < NUM_THREATS; i++){
+            ThreatsObject* p_threat = (p_threats + i);
+            if(p_threat != NULL){
+                SDL_Rect posThreat = p_threat->getPos() ;
+                SDL_Rect rectThreat = p_threat->getRect();
+
+                p_threat->setDegrees(mainTank.getPos(), i);
+                double degThreat = p_threat->getDegrees();
+                
+                p_threat->renderCopy(posThreat.x, posThreat.y, &rectThreat, degThreat, NULL, SDL_FLIP_NONE);
+                p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                //Run bullet of threat
+            
+                p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+            }
+
+        } 
 
         //Run threat
-        SDL_Rect posThreat = p_threat->getPos();
-        SDL_Rect rectThreat = p_threat->getRect();
 
-        p_threat->setDegrees(mainTank.getPos());
-        double degThreat = p_threat->getDegrees();
-
-        p_threat->renderCopy(posThreat.x, posThreat.y, &rectThreat, degThreat, NULL, SDL_FLIP_NONE);
-        p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        //Run bullet of threat
-        p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         SDL_RenderPresent(gRenderer);
     }
-
+     
+    delete[] p_threats;
     SDLCommonFunc::Clear();
     quitSDL();
     return 0;

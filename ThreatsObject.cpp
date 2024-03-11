@@ -17,7 +17,17 @@ ThreatsObject::ThreatsObject(){
 }
 
 ThreatsObject::~ThreatsObject(){
-    ;
+    if(bulletOfThreatsList.size() > 0){
+        for(int i = 0; i < bulletOfThreatsList.size(); i++){
+            BulletObject* t_bull = bulletOfThreatsList.at(i);
+            if(t_bull != NULL){
+                delete t_bull;
+            }
+            t_bull = NULL;
+        }
+        bulletOfThreatsList.clear();
+    }
+
 }
 
 void ThreatsObject::handleMove(const int& x_border, const int& y_border){
@@ -51,7 +61,13 @@ void ThreatsObject::handleMove(const int& x_border, const int& y_border){
     }
 }
 
-void ThreatsObject::setDegrees(const SDL_Rect& posTank){
+float calculateAdjustedAngle(float target_angle, int index) {
+    const float MAX_DEVIATION = 45.8; // Độ lệch tối đa từ góc mục tiêu
+    float deviation = (index * MAX_DEVIATION) - (NUM_THREATS - 1) * MAX_DEVIATION / 2;
+    return target_angle + deviation;
+}
+
+void ThreatsObject::setDegrees(const SDL_Rect& posTank, int index){
     SDL_Rect current_pos = getPos();
 
     float delta_x = posTank.x - current_pos.x;
@@ -59,7 +75,7 @@ void ThreatsObject::setDegrees(const SDL_Rect& posTank){
 
     float angle = atan2(delta_y, delta_x) * (180.0 / M_PI);
 
-    degrees = angle + 45; // Giả sử hướng mặc định của ThreatsObject là hướng lên trên
+    degrees = calculateAdjustedAngle(angle, index); // Giả sử hướng mặc định của ThreatsObject là hướng lên trên
 }
 
 void ThreatsObject::initBullet(BulletObject* t_bull){

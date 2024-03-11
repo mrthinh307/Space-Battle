@@ -23,7 +23,7 @@ public:
     double gety_val() const { return y_val; }
 
     double getDegrees() const {return degrees; }
-    void setDegrees(const SDL_Rect& posTank);
+    void setDegrees(const SDL_Rect& posTank, int index);
     SDL_RendererFlip getFlipType() const { return flipType; }
     void setFlipType (SDL_RendererFlip type) { flipType = type; }
 
