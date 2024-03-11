@@ -4,6 +4,8 @@
 #include <bits/stdc++.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <windows.h>
+
 using namespace std;
 
 const int SCREEN_WIDTH = 1500;

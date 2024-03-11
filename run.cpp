@@ -1,7 +1,7 @@
 #include "Common.h"
 #include "TankObject.h"
 #include "BulletObject.h"
-
+#include "ThreatsObject.h"
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
@@ -63,9 +63,10 @@ void SDLCommonFunc::Clear()
 
 int main(int argc, char* args[]){
     initSDL();
-
+    srand(time(NULL));
     gBackground = SDLCommonFunc::loadImage("images/background2.jpg");
 
+    // Make Main Tank
     TankObject mainTank;
     bool check = mainTank.loadIMG("images/bluetank.png");
     SDL_Rect rectTank = mainTank.getRect();
@@ -73,6 +74,19 @@ int main(int argc, char* args[]){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
         return 0;
     }
+
+    // Make Threat Object
+    ThreatsObject* p_threat = new ThreatsObject();
+    bool check1 = p_threat->loadIMG("images/tankfix.png");
+    if(!check1){
+        cout <<"Unable to load Threat Images! " << endl;
+        return 0;
+    }
+    int rand_x = rand() % 1500;
+    int rand_y = rand() % 800;
+    p_threat->setPos(rand_x, rand_y);
+    p_threat->setx_val(0); 
+    p_threat->sety_val(0);
 
     bool quit = false;
     SDL_Event e;
@@ -118,6 +132,17 @@ int main(int argc, char* args[]){
                 }
             }
         }  
+
+        //Run threat
+        SDL_Rect posThreat = p_threat->getPos();
+        SDL_Rect rectThreat = p_threat->getRect();
+
+        p_threat->setDegrees(mainTank.getPos());
+        double degThreat = p_threat->getDegrees();
+
+        p_threat->renderCopy(posThreat.x, posThreat.y, &rectThreat, degThreat, NULL, SDL_FLIP_NONE);
+        p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+
         SDL_RenderPresent(gRenderer);
     }
 
