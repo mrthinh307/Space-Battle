@@ -1,0 +1,2 @@
+assign 12/3:
+- xử lý trúng đạn

@@ -4,8 +4,8 @@
 #include "BaseObject.h"
 #include "BulletObject.h"
 
-#define WIDTH_THREATS_OBJECT 30
-#define HEIGHT_THREATS_OBJECT 55
+#define WIDTH_THREATS_OBJECT 60
+#define HEIGHT_THREATS_OBJECT 60
 
 #define THREATS_SPEED 3
 class ThreatsObject : public BaseObject

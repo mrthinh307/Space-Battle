@@ -17,7 +17,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
         cout << "Unable to load image " << path << " SDL Error: " << SDL_GetError() << endl;
     }
     else{
-        //SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 43, 43, 43));
+        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 191, 243));
 
         optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface -> format, 0);
 
@@ -84,7 +84,7 @@ int main(int argc, char* args[]){
         // Make Threat Object
         ThreatsObject* p_threat = p_threats + i;
         if(p_threat != NULL){
-            bool check1 = p_threat->loadIMG("images/tankfix.png");
+            bool check1 = p_threat->loadIMG("images/60x60.png");
             if(!check1){
                 cout <<"Unable to load Threat Images! " << endl;
                 return 0;
@@ -156,7 +156,6 @@ int main(int argc, char* args[]){
                 //Run bullet of threat
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
             }
-
         } 
 
         SDL_RenderPresent(gRenderer);

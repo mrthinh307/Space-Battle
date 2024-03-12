@@ -28,41 +28,41 @@ void TankObject::handleInputAction(SDL_Event e) {
             case SDLK_w:
                 y_val = -1;
                 if (x_val == 1) {
-                    degrees = 45; // Hướng Đông Bắc
+                    degrees = 45;
                 } else if (x_val == -1) {
-                    degrees = -45; // Hướng Tây Bắc
+                    degrees = -45; 
                 } else {
-                    degrees = 0; // Hướng lên trên
+                    degrees = 0; 
                 }
                 break;
             case SDLK_d:
                 x_val = 1;
                 if (y_val == -1) {
-                    degrees = 45; // Hướng Đông Bắc
+                    degrees = 45; 
                 } else if (y_val == 1) {
-                    degrees = 135; // Hướng Đông Nam
+                    degrees = 135; 
                 } else {
-                    degrees = 90; // Hướng sang phải
+                    degrees = 90; 
                 }
                 break;
             case SDLK_a:
                 x_val = -1;
                 if (y_val == -1) {
-                    degrees = -45; // Hướng Tây Bắc
+                    degrees = -45; 
                 } else if (y_val == 1) {
-                    degrees = -135; // Hướng Tây Nam
+                    degrees = -135; 
                 } else {
-                    degrees = -90; // Hướng sang trái
+                    degrees = -90; 
                 }
                 break;
             case SDLK_s:
                 y_val = 1;
                 if (x_val == 1) {
-                    degrees = 135; // Hướng Đông Nam
+                    degrees = 135; 
                 } else if (x_val == -1) {
-                    degrees = -135; // Hướng Tây Nam
+                    degrees = -135;
                 } else {
-                    degrees = 180; // Hướng xuống dưới
+                    degrees = 180;
                 }
                 break;
             default:
@@ -73,11 +73,10 @@ void TankObject::handleInputAction(SDL_Event e) {
             case SDLK_w:
             case SDLK_s:
                 y_val = 0;
-                // Cập nhật lại góc xoay khi thả phím di chuyển theo trục y
                 if (x_val == 1) {
-                    degrees = 90; // Hướng sang phải
+                    degrees = 90; 
                 } else if (x_val == -1) {
-                    degrees = -90; // Hướng sang trái
+                    degrees = -90; 
                 }
                 break;
             case SDLK_d:
@@ -104,7 +103,6 @@ void TankObject::handleInputAction(SDL_Event e) {
             bullet->setDegrees(degrees);
             bullet->setIsMove(true);
 
-            // Tính toán vị trí xuất phát của đạn dựa trên góc xoay của xe tăng
             int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - WIDTH_SPHERE / 2;
             int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - HEIGHT_SPHERE / 2;
             bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
