@@ -31,10 +31,7 @@ public:
     bool getIsMove() const { return isMove; }
     void setIsMove(bool input) { isMove = input; }
 
-    void setWidthHeight(const int& x, const int& y) { rect.w = x; rect.h = y; }
-
-    SDL_Rect getPos() const { return pos; }
-    void setPos(int x, int y) { pos.x = x; pos.y = y; }
+    void setWidthHeight(const int& x, const int& y) { pos.w = x; pos.h = y; }
     
     void setDegrees( double deg) { degrees = deg; }
     double getDegrees() const { return degrees; }
@@ -51,8 +48,6 @@ private:
     bool isMove;
 
     int bulletType;
-
-    SDL_Rect pos;
 
     double degrees;
 };

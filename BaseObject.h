@@ -8,16 +8,16 @@ class BaseObject
 public:
     BaseObject();
     ~BaseObject();
-    void renderCopy( int x, int y, SDL_Rect* clip = NULL, double degrees = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+    void renderCopy(SDL_Rect clip, double degrees = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     bool loadIMG(string path);
 
-    void setRect(int x_, int y_) { rect.x = x_; rect.y = y_; }
-    SDL_Rect getRect() const { return rect; }
+    void setPos(int x_, int y_) { pos.x = x_; pos.y = y_; }
+    SDL_Rect getPos() const { return pos; }
     SDL_Texture* getTexture() const { return p_object; }
 
 protected:
     SDL_Texture* p_object;
-    SDL_Rect rect;
+    SDL_Rect pos;
 };
 
 #endif // BASEOBJECT_H_INCLUDED

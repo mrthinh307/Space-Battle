@@ -1,8 +1,8 @@
 #include "BaseObject.h"
 
 BaseObject::BaseObject(){
-    rect.x = 0;
-    rect.y = 0;
+    pos.x = 0;
+    pos.y = 0;
     p_object = NULL;
 }
 
@@ -20,9 +20,9 @@ bool BaseObject::loadIMG(string path){
     return p_object != NULL;
 }
 
-void BaseObject::renderCopy( int x, int y, SDL_Rect* clip, double degrees, SDL_Point* center, SDL_RendererFlip flip){
+void BaseObject::renderCopy(SDL_Rect clip, double degrees, SDL_Point* center, SDL_RendererFlip flip){
     if(p_object != NULL){
-        SDLCommonFunc::render(p_object, x, y, clip, degrees, center, flip);
+        SDLCommonFunc::render(p_object, clip, degrees, center, flip);
     }
 }
 //up

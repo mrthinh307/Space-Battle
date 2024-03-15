@@ -1,2 +1,4 @@
-assign 12/3:
-- xử lý trúng đạn
+problem:
+- change bullet
+- change direction of bullet
+- animation map change foward to object

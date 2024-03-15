@@ -1,1 +1,1 @@
-tankfix
+flipType = SDL_FLIP_NONE;

@@ -17,7 +17,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
         cout << "Unable to load image " << path << " SDL Error: " << SDL_GetError() << endl;
     }
     else{
-        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 191, 243));
+        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB( loadedSurface->format, 0, 0, 0));
 
         optimizedSurface = SDL_ConvertSurface(loadedSurface, gScreenSurface -> format, 0);
 
@@ -36,22 +36,11 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
     return newTexture;
 }
 
-void SDLCommonFunc::render(SDL_Texture* loadedTexture, int x, int y, SDL_Rect* clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
-    //Set rendering space and render to screen
-    SDL_Rect renderQuad;
-    renderQuad.x = x;
-    renderQuad.y = y;
-    renderQuad.w = SCREEN_WIDTH;
-    renderQuad.h = SCREEN_HEIGHT;
-
-    //Set clip rendering dimmensions
-    if(clip != NULL){
-        renderQuad.w = clip -> w;
-        renderQuad.h = clip -> h;
-    }
+void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
 
     //Render to screen
-    SDL_RenderCopyEx(gRenderer, loadedTexture, clip, &renderQuad, angle, center, flip);
+    SDL_RenderCopyEx(gRenderer, loadedTexture, NULL, &clip, angle, center, flip);
+    
 }
 
 void SDLCommonFunc::Clear()
@@ -61,21 +50,32 @@ void SDLCommonFunc::Clear()
     gBackground = NULL;
 }
 
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
+
     // Create background
-    gBackground = SDLCommonFunc::loadImage("images/background2.jpg");
+    gBackground = SDLCommonFunc::loadImage("images/background.jpg");
+    // SDL_Rect bkg;
+    // bkg.x = 0;
+    // bkg.y = 0;
+    // bkg.w = SCREEN_WIDTH;
+    // bkg.h = SCREEN_HEIGHT;
+
+    // SDL_Rect bkg1;
+    // bkg1.x = 0;
+    // bkg1.y = 0;
+    // bkg1.w = SCREEN_WIDTH;
+    // bkg1.h = SCREEN_HEIGHT;
 
     // Make Main Tank
     TankObject mainTank;
-    bool check = mainTank.loadIMG("images/bluetank.png");
-    SDL_Rect rectTank = mainTank.getRect();
+    bool check = mainTank.loadIMG("images/tank2.png");
     if(check == false){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
         return 0;
     }
-
 
 
     // Make bullet for threat
@@ -84,7 +84,7 @@ int main(int argc, char* args[]){
         // Make Threat Object
         ThreatsObject* p_threat = p_threats + i;
         if(p_threat != NULL){
-            bool check1 = p_threat->loadIMG("images/60x60.png");
+            bool check1 = p_threat->loadIMG("images/60x49.png");
             if(!check1){
                 cout <<"Unable to load Threat Images! " << endl;
                 return 0;
@@ -130,31 +130,63 @@ int main(int argc, char* args[]){
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
         SDL_RenderClear( gRenderer );
 
+
         //Load background
-        SDLCommonFunc::render(gBackground, 0, 0, NULL);
-      
+        // bkg.x -= 1;
+        // bkg1.x = bkg.x + SCREEN_WIDTH;
+        SDL_RenderCopy(gRenderer, gBackground, NULL, NULL);
+        // SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
+        // if(bkg.x < -SCREEN_WIDTH){
+        //     bkg.x = 0;
+        // }
+
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();
         SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
-        mainTank.renderCopy(posTank.x, posTank.y , &rectTank, flipTank, NULL, typeFlipOfTank);
-
-        mainTank.handleMove(); 
+        mainTank.handleMove();
+        mainTank.renderCopy(posTank, flipTank, NULL, typeFlipOfTank);
+ 
         mainTank.runBullet();
 
+        // Implement Threats Object
         for(int i = 0; i < NUM_THREATS; i++){
             ThreatsObject* p_threat = (p_threats + i);
             if(p_threat != NULL){
                 SDL_Rect posThreat = p_threat->getPos() ;
-                SDL_Rect rectThreat = p_threat->getRect();
 
                 p_threat->setDegrees(mainTank.getPos(), i);
                 double degThreat = p_threat->getDegrees();
                 
-                p_threat->renderCopy(posThreat.x, posThreat.y, &rectThreat, degThreat, NULL, SDL_FLIP_NONE);
                 p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                p_threat->renderCopy(posThreat, degThreat, NULL, SDL_FLIP_NONE);
 
                 //Run bullet of threat
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+                
+
+                //Check collision main vs threat
+                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 10);
+                if(isCol){
+                    if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+                        delete[] p_threats;
+                        SDLCommonFunc::Clear();
+                        quitSDL();
+                        return 0;
+                    }
+                }
+                
+                vector<BulletObject*> bull_list = mainTank.getBulletList();
+                for(int j = 0; j < bull_list.size(); j++){
+                    BulletObject* aBullet = bull_list.at(j);
+                    if(aBullet != NULL){
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 8);
+                        if(checkColl){
+                            p_threat->resetThreat();
+                            mainTank.removeBullet(j);
+                        }
+                    }
+                }
             }
         } 
 

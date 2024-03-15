@@ -4,12 +4,6 @@ ThreatsObject::ThreatsObject(){
     x_val = 0;
     y_val = 0;
 
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = WIDTH_THREATS_OBJECT;
-    rect.h = HEIGHT_THREATS_OBJECT;
-
-    // VI TRI THREAT XUAT HIEN
     pos.x = SCREEN_WIDTH;
     pos.y = SCREEN_HEIGHT * 0.5;
     pos.w = WIDTH_THREATS_OBJECT;
@@ -88,7 +82,7 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
 
             int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
             int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
-            t_bull->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
+            t_bull->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
 
             bulletOfThreatsList.push_back(t_bull);
         }
@@ -100,10 +94,9 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
         BulletObject* aBullet = bulletOfThreatsList.at(i);
         if(aBullet != NULL){
             if(aBullet->getIsMove()){
-                SDL_Rect rectBullet = aBullet->getRect();
                 SDL_Rect posBullet = aBullet->getPos();
                 double flipBullet = aBullet->getDegrees();
-                aBullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                aBullet->renderCopy(posBullet, flipBullet, NULL, SDL_FLIP_NONE);
                 aBullet->handleMoveThreats(x_limit, y_limit);
             }
             else{
@@ -124,4 +117,38 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
 void ThreatsObject::handleInputAction(SDL_Event e){
     ;
 }
-//up
+
+void ThreatsObject::resetThreat(){
+    int tmp = rand() % 4;
+
+    if(tmp == 0){
+        pos.x = 0;
+        pos.y = rand() % SCREEN_HEIGHT;
+    }
+    else if(tmp == 1){
+        pos.x = rand() % SCREEN_WIDTH;
+        pos.y = 0;
+    }
+    else if(tmp == 2){
+        pos.x = SCREEN_WIDTH;
+        pos.y = rand() % SCREEN_HEIGHT;
+    }
+    else if(tmp == 3){
+        pos.x = rand() % SCREEN_WIDTH;
+        pos.y = SCREEN_HEIGHT;
+    }
+
+    for(int i = 0; i < bulletOfThreatsList.size(); i++){
+        BulletObject* aBullet = bulletOfThreatsList.at(i);
+        if(aBullet != NULL){
+            resetBullet(aBullet);
+        }
+    }
+
+}
+
+void ThreatsObject::resetBullet(BulletObject* aBullet){
+    int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
+    int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
+    aBullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+}

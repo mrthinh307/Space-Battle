@@ -1,16 +1,11 @@
 #include "TankObject.h"
 
 TankObject::TankObject(){
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = WIDTH_TANK_OBJECT;
-    rect.h = HEIGHT_TANK_OBJECT;
-
     x_val = 0;
     y_val = 0;
 
     pos.x = (SCREEN_WIDTH - WIDTH_TANK_OBJECT) / 2;
-    pos.y = (SCREEN_HEIGHT - HEIGHT_TANK_OBJECT)/ 2;
+    pos.y = (SCREEN_HEIGHT - HEIGHT_TANK_OBJECT) / 2;
     pos.w = WIDTH_TANK_OBJECT;
     pos.h = HEIGHT_TANK_OBJECT;
 
@@ -68,7 +63,7 @@ void TankObject::handleInputAction(SDL_Event e) {
             default:
                 break;
         }
-    } else if (e.type == SDL_KEYUP) {
+    }else if (e.type == SDL_KEYUP) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
             case SDLK_s:
@@ -97,7 +92,7 @@ void TankObject::handleInputAction(SDL_Event e) {
         if(e.button.button == SDL_BUTTON_LEFT){
             BulletObject* bullet = new BulletObject();
             bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-            bullet->loadIMG("images/sphere.png");
+            bullet->loadIMG("images/defbullet.png");
             bullet->setBulletType(BulletObject::SPHERE);
             bullet->setx_val(8.0);
             bullet->setDegrees(degrees);
@@ -113,34 +108,34 @@ void TankObject::handleInputAction(SDL_Event e) {
 }
 
 void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 10);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 10);
+    pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
+    pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
 
-    // Check screen boundaries
+    // Check screen boundaries and wrap around if necessary
     if (pos.x < 0) {
-        pos.x = 0;
+        pos.x = SCREEN_WIDTH - pos.w; // Xuất hiện ở phía đối diện của màn hình
     } else if (pos.x + pos.w > SCREEN_WIDTH) {
-        pos.x = SCREEN_WIDTH - pos.w;
+        pos.x = 0; // Xuất hiện ở phía đối diện của màn hình
     }
 
     if (pos.y < 0) {
-        pos.y = 0;
+        pos.y = SCREEN_HEIGHT - pos.h; // Xuất hiện ở phía đối diện của màn hình
     } else if (pos.y + pos.h > SCREEN_HEIGHT) {
-        pos.y = SCREEN_HEIGHT - pos.h;
+        pos.y = 0; // Xuất hiện ở phía đối diện của màn hình
     }
 
-    flipType = SDL_FLIP_NONE; // Xe tăng luôn hướng mặt về phía trước, không cần lật
+    flipType = SDL_FLIP_NONE;
 }
+
 
 void TankObject::runBullet(){
     for(int i = 0; i < bulletOfTankList.size(); i++){
         BulletObject* p_bullet = bulletOfTankList.at(i);
         if(p_bullet != NULL){
             if(p_bullet->getIsMove()){
-                SDL_Rect rectBullet = p_bullet->getRect();
                 SDL_Rect posBullet = p_bullet->getPos();
                 double flipBullet = p_bullet->getDegrees();
-                p_bullet->renderCopy(posBullet.x, posBullet.y, &rectBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                p_bullet->renderCopy(posBullet, flipBullet, NULL, SDL_FLIP_NONE);
                 p_bullet->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
             }
             else{
@@ -154,4 +149,17 @@ void TankObject::runBullet(){
     }
 }
 
+void TankObject::removeBullet(const int& idx){
+    for(int i = 0; i < bulletOfTankList.size(); i++){
+        if(idx < bulletOfTankList.size()){
 
+            BulletObject* aBullet = bulletOfTankList.at(i);
+            bulletOfTankList.erase(bulletOfTankList.begin() + idx);
+
+            if(aBullet != NULL){
+                delete aBullet;
+                aBullet = NULL;
+            } 
+        }
+    }
+}

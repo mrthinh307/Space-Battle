@@ -5,8 +5,8 @@
 #include "BaseObject.h"
 #include "BulletObject.h"
 
-#define WIDTH_TANK_OBJECT 35
-#define HEIGHT_TANK_OBJECT 39
+#define WIDTH_TANK_OBJECT 60
+#define HEIGHT_TANK_OBJECT 52
 
 class TankObject : public BaseObject
 {
@@ -16,10 +16,6 @@ public:
 
     void handleInputAction(SDL_Event e);
     void handleMove();
-    void updateDirectionAndSpeed(bool key_w, bool key_s, bool key_a, bool key_d);
-
-    SDL_Rect getPos() const { return pos; }
-    void setPos(int x, int y) { pos.x  = x; pos.y = y;}
 
     double getDegrees() const {return degrees; }
     void setDegrees(double d) { degrees = d; }
@@ -31,10 +27,10 @@ public:
     vector<BulletObject*> getBulletList() const { return bulletOfTankList; }
 
     void runBullet();
+    void removeBullet(const int& idx);
 private:
     int x_val;
     int y_val;
-    SDL_Rect pos;
     double degrees;
     SDL_RendererFlip flipType;
 
