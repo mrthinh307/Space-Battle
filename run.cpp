@@ -57,17 +57,17 @@ int main(int argc, char* args[]){
 
     // Create background
     gBackground = SDLCommonFunc::loadImage("images/background.jpg");
-    // SDL_Rect bkg;
-    // bkg.x = 0;
-    // bkg.y = 0;
-    // bkg.w = SCREEN_WIDTH;
-    // bkg.h = SCREEN_HEIGHT;
+    SDL_Rect bkg;
+    bkg.x = 0;
+    bkg.y = 0;
+    bkg.w = SCREEN_WIDTH;
+    bkg.h = SCREEN_HEIGHT;
 
-    // SDL_Rect bkg1;
-    // bkg1.x = 0;
-    // bkg1.y = 0;
-    // bkg1.w = SCREEN_WIDTH;
-    // bkg1.h = SCREEN_HEIGHT;
+    SDL_Rect bkg1;
+    bkg1.x = 0;
+    bkg1.y = 0;
+    bkg1.w = SCREEN_WIDTH;
+    bkg1.h = SCREEN_HEIGHT;
 
     // Make Main Tank
     TankObject mainTank;
@@ -132,13 +132,13 @@ int main(int argc, char* args[]){
 
 
         //Load background
-        // bkg.x -= 1;
-        // bkg1.x = bkg.x + SCREEN_WIDTH;
-        SDL_RenderCopy(gRenderer, gBackground, NULL, NULL);
-        // SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
-        // if(bkg.x < -SCREEN_WIDTH){
-        //     bkg.x = 0;
-        // }
+        bkg.x -= 1;
+        bkg1.x = bkg.x + SCREEN_WIDTH;
+        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
+        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
+        if(bkg.x < -SCREEN_WIDTH){
+            bkg.x = 0;
+        }
 
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();

@@ -1,8 +1,8 @@
 #ifndef COMMON_H_INCLUDED
 #define COMMON_H_INCLUDED
 
-#include <bits/stdc++.h>
 #include <SDL2/SDL.h>
+#include <bits/stdc++.h>
 #include <SDL2/SDL_image.h>
 #include <windows.h>
 
