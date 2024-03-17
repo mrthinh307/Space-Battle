@@ -3,7 +3,6 @@
 #include "BulletObject.h"
 #include "ThreatsObject.h"
 #include "ExplosionObject.h"
-
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
@@ -45,16 +44,6 @@ void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double ang
     
 }
 
-void SDLCommonFunc::render2(SDL_Texture* loadedTexture, const int& x, const int& y, SDL_Rect* clip){
-    SDL_Rect renderQuad;
-    renderQuad.x = x;
-    renderQuad.y = y;
-    renderQuad.w = clip->w;
-    renderQuad.h = clip->h;
-
-    SDL_RenderCopy(gRenderer, loadedTexture, clip, &renderQuad);
-}
-
 void SDLCommonFunc::Clear()
 {
     //Free loaded image
@@ -89,11 +78,11 @@ int main(int argc, char* args[]){
         return 0;
     }
 
-    //Make exlosion object
-    ExplosionObject expTank;
-    bool loadExplodeFrame = expTank.loadIMG("images/frame10fix.png");
-    if(!loadExplodeFrame) return 0;
-    expTank.setClips();
+    ExplosionObject explode;
+    ExplosionObject explode1;
+    explode.setTexture();
+    explode1.setTexture();
+    
 
     // Make bullet for threat
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
@@ -185,61 +174,83 @@ int main(int argc, char* args[]){
                 //Check collision main vs threat
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
-
-                    for(int ex1 = 0; ex1 < EXPLODE_ANIMATION_FRAMES; ex1++){
+                    
+                    //Handle explosion between main object and threat object
+                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                    
                         int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
                         int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_HEIGHT / 2;
+                        explode.setPos(x_pos, y_pos);
 
-                        expTank.setFrame(ex1);
-                        expTank.setPos(x_pos, y_pos);
-                        
-                        expTank.renderCopy2();
+                        int x1_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
+                        int y1_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
+                        explode1.setPos(x1_pos, y1_pos);
+
+                        explode.setFrame(ex);
+                        explode1.setFrame(ex);
+
+                        explode.renderCopy2();
+                        explode1.renderCopy2();
 
                         SDL_RenderPresent(gRenderer);
                     }
 
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-
                         delete[] p_threats;
                         SDLCommonFunc::Clear();
                         quitSDL();
                         return 0;
                     }
                 }
-
-                //Check collision bullet of main vs threat
+                
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
                 for(int j = 0; j < bull_list.size(); j++){
-
                     BulletObject* aBullet = bull_list.at(j);
-
                     if(aBullet != NULL){
-
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
+
+                            //Handle explosion between bullets of main object and threat object
+                            for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
+                                int y_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
+                                explode.setPos(x_pos, y_pos);
+
+                                explode.setFrame(ex);
+                                explode.renderCopy2();
+                            }
+
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
                         }
                     }
                 }
 
-                //Check collison main vs bullet of threat
-                vector<BulletObject*> bull_listThreat = p_threat->getBulletList();
-                for(int k = 0; k < bull_listThreat.size(); k++){
-
-                    BulletObject* aBulletOfThreat = bull_listThreat.at(k);
-
+                vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
+                for(int k = 0; k < bull_listThreats.size(); k++){
+                    BulletObject* aBulletOfThreat = bull_listThreats.at(k);
                     if(aBulletOfThreat != NULL){
-
                         bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
-
                         if(checkColl){
-                            if(MessageBox(NULL, "Game Over!", "Info", MB_OK) == IDOK){
+
+                            //Handle explosion between main object and bullets of threat
+                            for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
+                                int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_WIDTH / 2;
+                                explode.setPos(x_pos, y_pos);
+
+                                explode.setFrame(ex);
+                                
+                                explode.renderCopy2();
+                                
+                                SDL_RenderPresent(gRenderer);
+                            }
+                            if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                                 p_threat->removeBullet(k);
                                 SDLCommonFunc::Clear();
                                 quitSDL();
                                 return 0;
-                            }         
+                            }
                         }
                     }
                 }

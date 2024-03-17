@@ -4,10 +4,10 @@
 #include "BaseObject.h"
 #include "Common.h"
 
-const int EXP_WIDTH = 120;
-const int EXP_HEIGHT = 108;
+const int EXP_WIDTH = 180;
+const int EXP_HEIGHT = 180;
 
-const int EXPLODE_ANIMATION_FRAMES = 10;
+const int EXPLODE_ANIMATION_FRAMES = 12;
 
 class ExplosionObject : public BaseObject
 {
@@ -15,16 +15,13 @@ public:
     ExplosionObject();
     ~ExplosionObject();
 
-    void setClips();
     void setFrame(const int& fr) { frame = fr; }
-
+    void setTexture();
     void renderCopy2();
+
 private:
     int frame;
-    SDL_Rect clip[EXPLODE_ANIMATION_FRAMES];
-
+    vector<SDL_Texture*> expTexture;
 };
-
-
 
 #endif
