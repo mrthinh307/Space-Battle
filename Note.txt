@@ -1,4 +1,6 @@
-problem:
-- change bullet
-- change direction of bullet
-- animation map change foward to object
+void problemsToHandle{
+    1. change direction bullets of MainTank;
+    2. fix animation of background foward to animation of MainTank
+    3. point of contact
+    
+}

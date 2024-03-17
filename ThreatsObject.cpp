@@ -96,7 +96,7 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
             if(aBullet->getIsMove()){
                 SDL_Rect posBullet = aBullet->getPos();
                 double flipBullet = aBullet->getDegrees();
-                aBullet->renderCopy(posBullet, flipBullet, NULL, SDL_FLIP_NONE);
+                aBullet->renderCopy(posBullet, 0.0, NULL, SDL_FLIP_NONE);
                 aBullet->handleMoveThreats(x_limit, y_limit);
             }
             else{
@@ -151,4 +151,19 @@ void ThreatsObject::resetBullet(BulletObject* aBullet){
     int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
     int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
     aBullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+}
+
+void ThreatsObject::removeBullet(const int& idx){
+    for(int i = 0; i < bulletOfThreatsList.size(); i++){
+        
+        if(idx < bulletOfThreatsList.size()){
+            BulletObject* aBullet = bulletOfThreatsList.at(idx);
+            bulletOfThreatsList.erase(bulletOfThreatsList.begin() + idx);
+
+            if(aBullet != NULL){
+                delete aBullet;
+                aBullet = NULL;
+            }
+        }
+    }
 }

@@ -26,6 +26,7 @@ namespace SDLCommonFunc
     void render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     void Clear();
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2, int offset);
+    void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
 }
 #endif // COMMON_H_INCLUDED
 //up

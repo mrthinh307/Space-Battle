@@ -2,6 +2,8 @@
 #include "TankObject.h"
 #include "BulletObject.h"
 #include "ThreatsObject.h"
+#include "ExplosionObject.h"
+
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
@@ -43,6 +45,16 @@ void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double ang
     
 }
 
+void SDLCommonFunc::render2(SDL_Texture* loadedTexture, const int& x, const int& y, SDL_Rect* clip){
+    SDL_Rect renderQuad;
+    renderQuad.x = x;
+    renderQuad.y = y;
+    renderQuad.w = clip->w;
+    renderQuad.h = clip->h;
+
+    SDL_RenderCopy(gRenderer, loadedTexture, clip, &renderQuad);
+}
+
 void SDLCommonFunc::Clear()
 {
     //Free loaded image
@@ -77,6 +89,11 @@ int main(int argc, char* args[]){
         return 0;
     }
 
+    //Make exlosion object
+    ExplosionObject expTank;
+    bool loadExplodeFrame = expTank.loadIMG("images/frame10fix.png");
+    if(!loadExplodeFrame) return 0;
+    expTank.setClips();
 
     // Make bullet for threat
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
@@ -166,24 +183,63 @@ int main(int argc, char* args[]){
                 
 
                 //Check collision main vs threat
-                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 10);
+                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
+
+                    for(int ex1 = 0; ex1 < EXPLODE_ANIMATION_FRAMES; ex1++){
+                        int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
+                        int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_HEIGHT / 2;
+
+                        expTank.setFrame(ex1);
+                        expTank.setPos(x_pos, y_pos);
+                        
+                        expTank.renderCopy2();
+
+                        SDL_RenderPresent(gRenderer);
+                    }
+
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+
                         delete[] p_threats;
                         SDLCommonFunc::Clear();
                         quitSDL();
                         return 0;
                     }
                 }
-                
+
+                //Check collision bullet of main vs threat
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
                 for(int j = 0; j < bull_list.size(); j++){
+
                     BulletObject* aBullet = bull_list.at(j);
+
                     if(aBullet != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 8);
+
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
+                        }
+                    }
+                }
+
+                //Check collison main vs bullet of threat
+                vector<BulletObject*> bull_listThreat = p_threat->getBulletList();
+                for(int k = 0; k < bull_listThreat.size(); k++){
+
+                    BulletObject* aBulletOfThreat = bull_listThreat.at(k);
+
+                    if(aBulletOfThreat != NULL){
+
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
+
+                        if(checkColl){
+                            if(MessageBox(NULL, "Game Over!", "Info", MB_OK) == IDOK){
+                                p_threat->removeBullet(k);
+                                SDLCommonFunc::Clear();
+                                quitSDL();
+                                return 0;
+                            }         
                         }
                     }
                 }
@@ -240,7 +296,7 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
         exit(1);
     }
 }
-//up
+
 
 
 
