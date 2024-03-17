@@ -2,6 +2,7 @@
 #include "TankObject.h"
 #include "BulletObject.h"
 #include "ThreatsObject.h"
+#include "ExplosionObject.h"
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
@@ -57,17 +58,17 @@ int main(int argc, char* args[]){
 
     // Create background
     gBackground = SDLCommonFunc::loadImage("images/background.jpg");
-    // SDL_Rect bkg;
-    // bkg.x = 0;
-    // bkg.y = 0;
-    // bkg.w = SCREEN_WIDTH;
-    // bkg.h = SCREEN_HEIGHT;
+    SDL_Rect bkg;
+    bkg.x = 0;
+    bkg.y = 0;
+    bkg.w = SCREEN_WIDTH;
+    bkg.h = SCREEN_HEIGHT;
 
-    // SDL_Rect bkg1;
-    // bkg1.x = 0;
-    // bkg1.y = 0;
-    // bkg1.w = SCREEN_WIDTH;
-    // bkg1.h = SCREEN_HEIGHT;
+    SDL_Rect bkg1;
+    bkg1.x = 0;
+    bkg1.y = 0;
+    bkg1.w = SCREEN_WIDTH;
+    bkg1.h = SCREEN_HEIGHT;
 
     // Make Main Tank
     TankObject mainTank;
@@ -77,6 +78,9 @@ int main(int argc, char* args[]){
         return 0;
     }
 
+    ExplosionObject explode;
+    explode.setTexture();
+    
 
     // Make bullet for threat
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
@@ -132,13 +136,13 @@ int main(int argc, char* args[]){
 
 
         //Load background
-        // bkg.x -= 1;
-        // bkg1.x = bkg.x + SCREEN_WIDTH;
-        SDL_RenderCopy(gRenderer, gBackground, NULL, NULL);
-        // SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
-        // if(bkg.x < -SCREEN_WIDTH){
-        //     bkg.x = 0;
-        // }
+        bkg.x -= 1;
+        bkg1.x = bkg.x + SCREEN_WIDTH;
+        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
+        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
+        if(bkg.x < -SCREEN_WIDTH){
+            bkg.x = 0;
+        }
 
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();
@@ -168,6 +172,20 @@ int main(int argc, char* args[]){
                 //Check collision main vs threat
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 10);
                 if(isCol){
+
+                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                        int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
+                        int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_HEIGHT / 2;
+                        explode.setPos(x_pos, y_pos);
+                        SDL_Rect posExplode = explode.getPos();
+
+                        explode.setFrame(ex);
+
+                        explode.renderCopy2();
+
+                        SDL_RenderPresent(gRenderer);
+                    }
+
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                         delete[] p_threats;
                         SDLCommonFunc::Clear();
@@ -180,10 +198,26 @@ int main(int argc, char* args[]){
                 for(int j = 0; j < bull_list.size(); j++){
                     BulletObject* aBullet = bull_list.at(j);
                     if(aBullet != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 8);
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 10);
                         if(checkColl){
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
+                        }
+                    }
+                }
+
+                vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
+                for(int k = 0; k < bull_listThreats.size(); k++){
+                    BulletObject* aBulletOfThreat = bull_listThreats.at(k);
+                    if(aBulletOfThreat != NULL){
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 18);
+                        if(checkColl){
+                            if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+                                p_threat->removeBullet(k);
+                                SDLCommonFunc::Clear();
+                                quitSDL();
+                                return 0;
+                            }
                         }
                     }
                 }

@@ -8,8 +8,8 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 1500;
-const int SCREEN_HEIGHT = 844;
+const int SCREEN_WIDTH = 1300;
+const int SCREEN_HEIGHT = 800;
 
 const int NUM_THREATS = 4;
 

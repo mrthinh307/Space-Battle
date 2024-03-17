@@ -35,6 +35,8 @@ public:
 
     void resetThreat();
     void resetBullet(BulletObject* aBullet);
+
+    void removeBullet(const int& idx);
 private:
     double x_val;
     double y_val;

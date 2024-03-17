@@ -151,9 +151,10 @@ void TankObject::runBullet(){
 
 void TankObject::removeBullet(const int& idx){
     for(int i = 0; i < bulletOfTankList.size(); i++){
+
         if(idx < bulletOfTankList.size()){
 
-            BulletObject* aBullet = bulletOfTankList.at(i);
+            BulletObject* aBullet = bulletOfTankList.at(idx);
             bulletOfTankList.erase(bulletOfTankList.begin() + idx);
 
             if(aBullet != NULL){
