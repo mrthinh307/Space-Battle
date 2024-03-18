@@ -17,7 +17,7 @@ TankObject::~TankObject(){
     ;
 }
 
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[3]) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -97,7 +97,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[3]) {
 
             Mix_PlayChannel(-1, bulletSound[1], 0);
 
-            bullet->setx_val(8.0);
+            bullet->setx_val(SPEED_BULLET_MAIN_TANK);
             bullet->setDegrees(degrees);
             bullet->setIsMove(true);
 
@@ -129,7 +129,6 @@ void TankObject::handleMove() {
 
     flipType = SDL_FLIP_NONE;
 }
-
 
 void TankObject::runBullet(){
     for(int i = 0; i < bulletOfTankList.size(); i++){

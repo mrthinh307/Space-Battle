@@ -51,6 +51,24 @@ void SDLCommonFunc::Clear()
     //Free loaded image
     SDL_DestroyTexture( gBackground );
     gBackground = NULL;
+
+    //Free the sound effects
+    for(int i = 0; i < NUMBER_OF_BULLET_SOUND; i++){
+        Mix_FreeChunk(gBulletSound[i]);
+        gBulletSound[i] = NULL;
+    }
+
+    for(int i = 0; i < NUMBER_OF_EXPLODE_SOUND; i++){
+        Mix_FreeChunk(gExpSound[i]);
+        gExpSound[i] = NULL;
+    }
+
+    Mix_FreeChunk(gameOver);
+    gameOver = NULL;
+
+    //Free music
+    Mix_FreeMusic(battleMusic);
+    battleMusic = NULL;
 }
 
 
@@ -58,8 +76,8 @@ int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
 
-    // Create background
-    gBackground = SDLCommonFunc::loadImage("images/background.jpg");
+    /* CREATE BACKGROUND */
+    gBackground = SDLCommonFunc::loadImage(gNameBackground);
     SDL_Rect bkg;
     bkg.x = 0;
     bkg.y = 0;
@@ -72,33 +90,33 @@ int main(int argc, char* args[]){
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
 
-    // Make Main Tank
+    /* CREATE MAIN TANK - TANK OBJECT */
     TankObject mainTank;
-    bool check = mainTank.loadIMG("images/tank2.png");
+    bool check = mainTank.loadIMG(gNameMainTank);
     if(check == false){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
         return 0;
     }
     
-    // Init explosion Object
+    /* INIT EXPLODE OBJECT */
     ExplosionObject explode;
     ExplosionObject explode1;
     explode.setTexture();
     explode1.setTexture();
 
-    // Init sound effects
+    /* INIT SOUND EFFECTS */
     bool checkLoadSoundEffect = loadSoundEffects();
     if(!checkLoadSoundEffect) return 0; 
     
 
-    // Make bullet for threat
+    /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
     for(int i = 0; i < NUM_THREATS; ++i){
 
-        // Make Threat Object
+        // THREATS OBJECT
         ThreatsObject* p_threat = p_threats + i;
         if(p_threat != NULL){
-            bool check1 = p_threat->loadIMG("images/60x49.png");
+            bool check1 = p_threat->loadIMG(gNameThreatsObject);
             if(!check1){
                 cout <<"Unable to load Threat Images! " << endl;
                 return 0;
@@ -123,7 +141,8 @@ int main(int argc, char* args[]){
             }
 
             p_threat->setPos(rand_x, rand_y);
-        
+
+            // BULLET OF THREATS OBJECT
             BulletObject* t_bull = new BulletObject();
             p_threat->initBullet(t_bull);
         }
@@ -134,8 +153,9 @@ int main(int argc, char* args[]){
     SDL_Event e;
 
     while(!quit){
+        
+        /* PLAY BATTLE MUSIC */
         if(Mix_PlayingMusic() == 0){
-            //Play the music
             Mix_PlayMusic(battleMusic, -1);
         }
 
@@ -145,12 +165,12 @@ int main(int argc, char* args[]){
             }
             mainTank.handleInputAction(e, gBulletSound);
         }
-        //Clear screen
+        /* CLEAR SCREEN */
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
         SDL_RenderClear( gRenderer );
 
 
-        //Load background
+        /* LOAD BACKGROUND */
         bkg.x -= 1;
         bkg1.x = bkg.x + SCREEN_WIDTH;
         SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
@@ -159,15 +179,16 @@ int main(int argc, char* args[]){
             bkg.x = 0;
         }
 
+        /* LOAD TANK OBJECT */
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();
         SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
         mainTank.handleMove();
         mainTank.renderCopy(posTank, flipTank, NULL, typeFlipOfTank);
- 
+        // Run bullets of tank object
         mainTank.runBullet();
 
-        // Implement Threats Object
+        /* IMPLEMENT THREATS OBJECT */
         for(int i = 0; i < NUM_THREATS; i++){
             ThreatsObject* p_threat = (p_threats + i);
             if(p_threat != NULL){
@@ -179,14 +200,14 @@ int main(int argc, char* args[]){
                 p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
                 p_threat->renderCopy(posThreat, degThreat, NULL, SDL_FLIP_NONE);
 
-                //Run bullet of threat
+                //Run bullet of a threat
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-                //Check collision main -> threat
+                //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
                     
-                    //Handle explosion between main object -> threat object
+                    //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                     
                         int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
@@ -206,6 +227,7 @@ int main(int argc, char* args[]){
                         SDL_RenderPresent(gRenderer);
                     }
 
+                    // Play sound effect of event
                     Mix_PauseMusic();
                     Mix_PlayChannel(-1, gExpSound[1], 0);
                     Mix_PlayChannel(-1, gExpSound[0], 0);
@@ -220,6 +242,7 @@ int main(int argc, char* args[]){
                     }
                 }
                 
+                /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
                 for(int j = 0; j < bull_list.size(); j++){
                     BulletObject* aBullet = bull_list.at(j);
@@ -227,7 +250,7 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
 
-                            //Handle explosion between bullets of main object and threat object
+                            //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
                                 int y_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
@@ -246,7 +269,7 @@ int main(int argc, char* args[]){
                     }
                 }
 
-                bool checkColl = false;
+                /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
                 vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
                 for(int k = 0; k < bull_listThreats.size(); k++){
                     BulletObject* aBulletOfThreat = bull_listThreats.at(k);
@@ -254,7 +277,7 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
                         if(checkColl){
 
-                            //Handle explosion between main object -> bullets of threat
+                            //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
                                 int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_WIDTH / 2;
@@ -266,7 +289,8 @@ int main(int argc, char* args[]){
                                 
                                 SDL_RenderPresent(gRenderer);
                             }
-                            
+
+                            //Handle sound effects
                             Mix_PauseMusic();
                             Mix_PlayChannel(-1, gExpSound[1], 0);
                             SDL_Delay(888);
@@ -347,6 +371,7 @@ void quitSDL(){
 
     IMG_Quit();
     SDL_Quit();
+    Mix_Quit();
 }
 
 void logSDLError(ostream& os,const string& msg, bool fatal ){

@@ -26,8 +26,8 @@ ThreatsObject::~ThreatsObject(){
 
 void ThreatsObject::handleMove(const int& x_border, const int& y_border){
     float rad_angle = degrees * M_PI / 180.0;
-    x_val = cos(rad_angle) * THREATS_SPEED; 
-    y_val = sin(rad_angle) * THREATS_SPEED;
+    x_val = cos(rad_angle) * SPEED_THREATS; 
+    y_val = sin(rad_angle) * SPEED_THREATS;
 
     pos.x += x_val / 2;
     pos.y += y_val / 2;
@@ -80,7 +80,7 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
 
             Mix_PlayChannel(-1, gBulletSound[0], 0);
 
-            t_bull->sety_val(5.8);
+            t_bull->sety_val(SPEED_BULLET_THREATS_OBJECT);
             t_bull->setDegrees(degrees);
 
             int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;

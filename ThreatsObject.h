@@ -6,8 +6,9 @@
 
 #define WIDTH_THREATS_OBJECT 60
 #define HEIGHT_THREATS_OBJECT 49
+#define SPEED_BULLET_THREATS_OBJECT 5.8
+#define SPEED_THREATS 3
 
-#define THREATS_SPEED 3
 class ThreatsObject : public BaseObject
 {
 public:

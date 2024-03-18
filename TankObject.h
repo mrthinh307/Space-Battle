@@ -7,6 +7,7 @@
 
 #define WIDTH_TANK_OBJECT 60
 #define HEIGHT_TANK_OBJECT 52
+#define SPEED_BULLET_MAIN_TANK 8.0
 
 class TankObject : public BaseObject
 {
@@ -14,7 +15,7 @@ public:
     TankObject();
     ~TankObject();
 
-    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[3]);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]);
     void handleMove();
 
     double getDegrees() const {return degrees; }
