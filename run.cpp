@@ -134,6 +134,10 @@ int main(int argc, char* args[]){
     SDL_Event e;
 
     while(!quit){
+        if(Mix_PlayingMusic() == 0){
+            //Play the music
+            Mix_PlayMusic(battleMusic, -1);
+        }
 
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -202,11 +206,12 @@ int main(int argc, char* args[]){
                         SDL_RenderPresent(gRenderer);
                     }
 
+                    Mix_PauseMusic();
                     Mix_PlayChannel(-1, gExpSound[1], 0);
                     Mix_PlayChannel(-1, gExpSound[0], 0);
                     SDL_Delay(888);
                     Mix_PlayChannel(-1, gameOver, 0);
-                    
+
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                         delete[] p_threats;
                         SDLCommonFunc::Clear();
@@ -261,7 +266,8 @@ int main(int argc, char* args[]){
                                 
                                 SDL_RenderPresent(gRenderer);
                             }
-
+                            
+                            Mix_PauseMusic();
                             Mix_PlayChannel(-1, gExpSound[1], 0);
                             SDL_Delay(888);
                             Mix_PlayChannel(-1, gameOver, 0);
@@ -390,6 +396,13 @@ bool loadSoundEffects(){
 
     if(gameOver == NULL){
         cout << "Unable to load game over music. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    battleMusic = Mix_LoadMUS("images/SoundEffects/battlemusic.wav");
+
+    if(battleMusic == NULL){
+        cout << "Unable to load battle music. SDL_mixer error: " << Mix_GetError() << endl;
         return false;
     }
 
