@@ -92,7 +92,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
         if(e.button.button == SDL_BUTTON_LEFT){
             BulletObject* bullet = new BulletObject();
             bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-            bullet->loadIMG("images/defbullet.png");
+            bullet->loadIMG(gNameBulletOfMainTank);
             bullet->setBulletType(BulletObject::SPHERE1);
 
             Mix_PlayChannel(-1, bulletSound[1], 0);

@@ -72,7 +72,7 @@ void ThreatsObject::setDegrees(const SDL_Rect& posTank, int index){
 
 void ThreatsObject::initBullet(BulletObject* t_bull){
     if(t_bull != NULL){
-        bool check = t_bull->loadIMG("images/sphere.png");
+        bool check = t_bull->loadIMG(gNameBulletOfThreatsObject);
         if(check){
             t_bull->setIsMove(true);
             t_bull->setWidthHeight(WIDTH_SPHERE, WIDTH_SPHERE);

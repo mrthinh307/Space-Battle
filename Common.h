@@ -31,20 +31,20 @@ static Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
 static Mix_Chunk* gameOver;
 static Mix_Music* battleMusic;
 
-static char gNameBackground[] = {"background.jpg"};
-static char gNameMainTank[] = {"tank2.png"};
-static char gNameThreatsObject = {"60x49.png"};
-static char gNameBulletOfMainTank = {"defbullet.png"};
-static char gNameBulletOfThreatsObject = {"sphere.png"};
+static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
+static char gNameMainTank[] = {"images/TankObject/tank2.png"};
+static char gNameThreatsObject[] = {"images/ThreatsObject/60x49.png"};
+static char gNameBulletOfMainTank[] = {"images/Bullets/defbullet.png"};
+static char gNameBulletOfThreatsObject[] = {"images/Bullets/sphere.png"};
 
-static char gNameBulletSoundOfThreat[] = {"images/SoundEffects/laser.wav"};
+static char gNameBulletSoundOfThreat[] = {"images/SoundEffects/enemyBullet.wav"};
 static char gNameBulletSoundOfTank[] = {"images/SoundEffects/playerBullet.wav"};
 
 static char gNameExplodeSoundOfThreat[] = {"images/SoundEffects/explosionDefault.wav"};
-static char gnameExplodeSoundOfTank[] = {"images/SoundEffects/player_die.wav"};
+static char gNameExplodeSoundOfTank[] = {"images/SoundEffects/player_die.wav"};
 
-static char gGameOveMusic[] = {"images/SoundEffects/gameover"};
-static char gBattleMusic[] = {"images/SoundEffects/battlemusic"};
+static char gGameOveMusic[] = {"images/SoundEffects/gameover.wav"};
+static char gBattleMusic[] = {"images/SoundEffects/battlemusic.wav"};
 
 namespace SDLCommonFunc
 {

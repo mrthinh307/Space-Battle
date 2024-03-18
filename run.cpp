@@ -383,55 +383,56 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
 }
 
 bool loadSoundEffects(){
-    gBulletSound[0] = Mix_LoadWAV("images/SoundEffects/enemyBullet.wav");
+    bool check = true;
+    gBulletSound[0] = Mix_LoadWAV(gNameBulletSoundOfThreat);
 
     if(gBulletSound[0] == NULL){
         cout << "Unable to load sphere sound effects. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    gBulletSound[1] = Mix_LoadWAV("images/SoundEffects/playerBullet.wav");
+    gBulletSound[1] = Mix_LoadWAV(gNameBulletSoundOfTank);
 
     if(gBulletSound[1] == NULL){
         cout << "Unable to load sphere1 sound effects. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
     gBulletSound[2] = Mix_LoadWAV("images/SoundEffects/laser.wav");
 
     if(gBulletSound[2] == NULL){
         cout << "Unable to load laser sound effects. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    gExpSound[0] = Mix_LoadWAV("images/SoundEffects/explosionDefault.wav");
+    gExpSound[0] = Mix_LoadWAV(gNameExplodeSoundOfThreat);
 
     if(gExpSound[0] == NULL){
         cout << "Unable to load explosion default sound effects. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    gExpSound[1] = Mix_LoadWAV("images/SoundEffects/player_die.wav");
+    gExpSound[1] = Mix_LoadWAV(gNameExplodeSoundOfTank);
     if(gExpSound[1] == NULL){
         cout << "Unable to load player die sound effect. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    gameOver = Mix_LoadWAV("images/SoundEffects/gameover.wav");
+    gameOver = Mix_LoadWAV(gGameOveMusic);
 
     if(gameOver == NULL){
         cout << "Unable to load game over music. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    battleMusic = Mix_LoadMUS("images/SoundEffects/battlemusic.wav");
+    battleMusic = Mix_LoadMUS(gBattleMusic);
 
     if(battleMusic == NULL){
         cout << "Unable to load battle music. SDL_mixer error: " << Mix_GetError() << endl;
-        return false;
+        check = false;
     }
 
-    return true;
+    return check;
 }
 
 
