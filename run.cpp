@@ -3,9 +3,11 @@
 #include "BulletObject.h"
 #include "ThreatsObject.h"
 #include "ExplosionObject.h"
+
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
+bool loadSoundEffects();
 
 SDL_Texture* SDLCommonFunc::loadImage( string path){
     SDL_Texture* newTexture = NULL;
@@ -77,16 +79,22 @@ int main(int argc, char* args[]){
         cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
         return 0;
     }
-
+    
+    // Init explosion Object
     ExplosionObject explode;
     ExplosionObject explode1;
     explode.setTexture();
     explode1.setTexture();
+
+    // Init sound effects
+    bool checkLoadSoundEffect = loadSoundEffects();
+    if(!checkLoadSoundEffect) return 0; 
     
 
     // Make bullet for threat
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
     for(int i = 0; i < NUM_THREATS; ++i){
+
         // Make Threat Object
         ThreatsObject* p_threat = p_threats + i;
         if(p_threat != NULL){
@@ -130,7 +138,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e);
+            mainTank.handleInputAction(e, gBulletSound);
         }
         //Clear screen
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
@@ -171,11 +179,11 @@ int main(int argc, char* args[]){
 
                 
 
-                //Check collision main vs threat
+                //Check collision main -> threat
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
                     
-                    //Handle explosion between main object and threat object
+                    //Handle explosion between main object -> threat object
                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                     
                         int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
@@ -194,6 +202,8 @@ int main(int argc, char* args[]){
 
                         SDL_RenderPresent(gRenderer);
                     }
+                    Mix_PlayChannel(-1, gExpSound[1], 0);
+                    Mix_PlayChannel(-1, gExpSound[0], 0);
 
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                         delete[] p_threats;
@@ -220,12 +230,16 @@ int main(int argc, char* args[]){
                                 explode.renderCopy2();
                             }
 
+                            //Handle sound effects
+                            Mix_PlayChannel(-1, gExpSound[0], 0);
+
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
                         }
                     }
                 }
 
+                bool checkColl = false;
                 vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
                 for(int k = 0; k < bull_listThreats.size(); k++){
                     BulletObject* aBulletOfThreat = bull_listThreats.at(k);
@@ -233,7 +247,7 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
                         if(checkColl){
 
-                            //Handle explosion between main object and bullets of threat
+                            //Handle explosion between main object -> bullets of threat
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
                                 int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_WIDTH / 2;
@@ -245,6 +259,9 @@ int main(int argc, char* args[]){
                                 
                                 SDL_RenderPresent(gRenderer);
                             }
+
+                            Mix_PlayChannel(-1, gExpSound[1], 0);
+
                             if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                                 p_threat->removeBullet(k);
                                 SDLCommonFunc::Clear();
@@ -271,6 +288,10 @@ void initSDL(){
         logSDLError(cout, "SDL_Init", true);
     }
 
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 ){
+		logSDLError(cout, "SDL_Init", true);
+	}
+
     gWindow = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 
@@ -286,6 +307,24 @@ void initSDL(){
     if(gRenderer == nullptr){
         logSDLError(cout, "Create Renderer", true);
     }
+    else
+	{
+		//Initialize renderer color
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+
+		//Initialize PNG loading
+		int imgFlags = IMG_INIT_PNG;
+		if( !( IMG_Init( imgFlags ) & imgFlags ) )
+		{
+			cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError();
+		}
+
+		//Initialize SDL_mixer
+		if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+		{
+			cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError();
+		}
+	}
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
     SDL_RenderSetLogicalSize(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -308,6 +347,43 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
     }
 }
 
+bool loadSoundEffects(){
+    gBulletSound[0] = Mix_LoadWAV("images/SoundEffects/enemyBullet.wav");
+
+    if(gBulletSound[0] == NULL){
+        cout << "Unable to load sphere sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    gBulletSound[1] = Mix_LoadWAV("images/SoundEffects/playerBullet.wav");
+
+    if(gBulletSound[1] == NULL){
+        cout << "Unable to load sphere1 sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    gBulletSound[2] = Mix_LoadWAV("images/SoundEffects/laser.wav");
+
+    if(gBulletSound[2] == NULL){
+        cout << "Unable to load laser sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    gExpSound[0] = Mix_LoadWAV("images/SoundEffects/explosionDefault.wav");
+
+    if(gExpSound[0] == NULL){
+        cout << "Unable to load explosion default sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    gExpSound[1] = Mix_LoadWAV("images/SoundEffects/player_die.wav");
+    if(gExpSound[1] == NULL){
+        cout << "Unable to load player die sound effect. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    return true;
+}
 
 
 

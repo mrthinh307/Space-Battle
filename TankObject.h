@@ -14,7 +14,7 @@ public:
     TankObject();
     ~TankObject();
 
-    void handleInputAction(SDL_Event e);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[3]);
     void handleMove();
 
     double getDegrees() const {return degrees; }

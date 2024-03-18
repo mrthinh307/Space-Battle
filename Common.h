@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <bits/stdc++.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <windows.h>
 
 using namespace std;
@@ -20,6 +21,9 @@ static SDL_Surface* gScreenSurface;
 static SDL_Renderer* gRenderer;
 static SDL_Texture* gBackground;
 
+static Mix_Chunk* gBulletSound[3];
+static Mix_Chunk* gExpSound[2];
+
 namespace SDLCommonFunc
 {
     SDL_Texture* loadImage( string path);
@@ -29,4 +33,3 @@ namespace SDLCommonFunc
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
 }
 #endif // COMMON_H_INCLUDED
-//up

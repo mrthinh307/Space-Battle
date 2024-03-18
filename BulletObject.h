@@ -15,7 +15,8 @@ public:
     enum BulletType {
         NONE = 0,
         SPHERE = 1,
-        LASER = 2
+        SPHERE1 = 2,
+        LASER = 3
     };
 
     BulletObject();

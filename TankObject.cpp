@@ -17,7 +17,7 @@ TankObject::~TankObject(){
     ;
 }
 
-void TankObject::handleInputAction(SDL_Event e) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[3]) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -93,7 +93,10 @@ void TankObject::handleInputAction(SDL_Event e) {
             BulletObject* bullet = new BulletObject();
             bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
             bullet->loadIMG("images/defbullet.png");
-            bullet->setBulletType(BulletObject::SPHERE);
+            bullet->setBulletType(BulletObject::SPHERE1);
+
+            Mix_PlayChannel(-1, bulletSound[1], 0);
+
             bullet->setx_val(8.0);
             bullet->setDegrees(degrees);
             bullet->setIsMove(true);
