@@ -23,6 +23,7 @@ static SDL_Texture* gBackground;
 
 static Mix_Chunk* gBulletSound[3];
 static Mix_Chunk* gExpSound[2];
+static Mix_Chunk* gameOver;
 
 namespace SDLCommonFunc
 {

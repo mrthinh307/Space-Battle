@@ -134,6 +134,7 @@ int main(int argc, char* args[]){
     SDL_Event e;
 
     while(!quit){
+
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
                 quit = true;
@@ -177,8 +178,6 @@ int main(int argc, char* args[]){
                 //Run bullet of threat
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-                
-
                 //Check collision main -> threat
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
@@ -202,9 +201,12 @@ int main(int argc, char* args[]){
 
                         SDL_RenderPresent(gRenderer);
                     }
+
                     Mix_PlayChannel(-1, gExpSound[1], 0);
                     Mix_PlayChannel(-1, gExpSound[0], 0);
-
+                    SDL_Delay(888);
+                    Mix_PlayChannel(-1, gameOver, 0);
+                    
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                         delete[] p_threats;
                         SDLCommonFunc::Clear();
@@ -261,6 +263,8 @@ int main(int argc, char* args[]){
                             }
 
                             Mix_PlayChannel(-1, gExpSound[1], 0);
+                            SDL_Delay(888);
+                            Mix_PlayChannel(-1, gameOver, 0);
 
                             if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                                 p_threat->removeBullet(k);
@@ -379,6 +383,13 @@ bool loadSoundEffects(){
     gExpSound[1] = Mix_LoadWAV("images/SoundEffects/player_die.wav");
     if(gExpSound[1] == NULL){
         cout << "Unable to load player die sound effect. SDL_mixer error: " << Mix_GetError() << endl;
+        return false;
+    }
+
+    gameOver = Mix_LoadWAV("images/SoundEffects/gameover.wav");
+
+    if(gameOver == NULL){
+        cout << "Unable to load game over music. SDL_mixer error: " << Mix_GetError() << endl;
         return false;
     }
 

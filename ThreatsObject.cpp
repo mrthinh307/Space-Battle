@@ -77,6 +77,9 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
             t_bull->setIsMove(true);
             t_bull->setWidthHeight(WIDTH_SPHERE, WIDTH_SPHERE);
             t_bull->setBulletType(BulletObject::SPHERE);
+
+            Mix_PlayChannel(-1, gBulletSound[0], 0);
+
             t_bull->sety_val(5.8);
             t_bull->setDegrees(degrees);
 
