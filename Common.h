@@ -5,6 +5,7 @@
 #include <bits/stdc++.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 #include <windows.h>
 
 using namespace std;
@@ -16,6 +17,18 @@ const string WINDOW_TITLE = "SPACE BATTLE";
 const int SCREEN_WIDTH = 1500;
 const int SCREEN_HEIGHT = 844;
 
+const int LAYOUT_BOX_WIDTH = 238;
+const int LAYOUT_BOX_HEIGHT = 126;
+
+const int HEART_WIDTH = 28;
+const int HEART_HEIGHT = 39;
+
+const int KILL_ENEMY_WIDTH = 50;
+const int KILL_ENEMY_HEIGHT = 50;
+
+const int ROCKET_WIDTH = 33;
+const int ROCKET_HEIGHT = 55;
+
 const int NUM_THREATS = 4;
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
@@ -26,6 +39,8 @@ static SDL_Surface* gScreenSurface;
 static SDL_Renderer* gRenderer;
 static SDL_Texture* gBackground;
 
+static TTF_Font* gFont = NULL;
+
 static Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
 static Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
 static Mix_Chunk* gameOver;
@@ -34,7 +49,9 @@ static Mix_Music* battleMusic;
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank2.png"};
 static char gNameThreatsObject[] = {"images/ThreatsObject/60x49.png"};
+
 static char gNameBulletOfMainTank[] = {"images/Bullets/defbullet.png"};
+static char gNameRocket[] = {"images/Bullets/rocket.png"};
 static char gNameBulletOfThreatsObject[] = {"images/Bullets/sphere.png"};
 
 static char gNameBulletSoundOfThreat[] = {"images/SoundEffects/enemyBullet.wav"};
@@ -49,9 +66,11 @@ static char gBattleMusic[] = {"images/SoundEffects/battlemusic.wav"};
 namespace SDLCommonFunc
 {
     SDL_Texture* loadImage( string path);
+    SDL_Texture* loadText(string textureText, SDL_Color textColor, TTF_Font* gFont);
     void render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
     void Clear();
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2, int offset);
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
+    
 }
 #endif // COMMON_H_INCLUDED

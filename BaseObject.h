@@ -12,6 +12,7 @@ public:
     bool loadIMG(string path);
 
     void setPos(int x_, int y_) { pos.x = x_; pos.y = y_; }
+    void setPos2(int w_, int h_) { pos.w = w_; pos.h = h_; }
     SDL_Rect getPos() const { return pos; }
     SDL_Texture* getTexture() const { return p_object; }
 

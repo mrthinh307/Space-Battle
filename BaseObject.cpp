@@ -25,4 +25,3 @@ void BaseObject::renderCopy(SDL_Rect clip, double degrees, SDL_Point* center, SD
         SDLCommonFunc::render(p_object, clip, degrees, center, flip);
     }
 }
-//up

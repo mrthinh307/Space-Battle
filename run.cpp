@@ -3,6 +3,7 @@
 #include "BulletObject.h"
 #include "ThreatsObject.h"
 #include "ExplosionObject.h"
+#include "FontText.h"
 
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
@@ -39,11 +40,22 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
     return newTexture;
 }
 
+SDL_Texture* SDLCommonFunc::loadText(string textureText, SDL_Color textColor, TTF_Font* gFont){
+    SDL_Texture* newTexture = NULL;
+
+    SDL_Surface* loadedSurface =TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+
+    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+
+    SDL_FreeSurface(loadedSurface);
+    
+    return newTexture;
+}
+
 void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
 
     //Render to screen
     SDL_RenderCopyEx(gRenderer, loadedTexture, NULL, &clip, angle, center, flip);
-    
 }
 
 void SDLCommonFunc::Clear()
@@ -89,6 +101,32 @@ int main(int argc, char* args[]){
     bkg1.y = 0;
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
+
+    BaseObject layoutBox;
+    layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
+    layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
+    bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
+    
+    BaseObject heart;
+    heart.setPos(10, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
+    heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
+    bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");    
+    FontText heartNumber;
+    heartNumber.setColor(WHITE_COLOR);
+
+    BaseObject killEnemy;
+    killEnemy.setPos(1350, 20);
+    killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
+    bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");  
+    FontText Killed;
+    Killed.setColor(WHITE_COLOR);
+
+    BaseObject rocket;
+    rocket.setPos(90, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
+    rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
+    bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
+    FontText rocketText;
+    rocketText.setColor(WHITE_COLOR); 
 
     /* CREATE MAIN TANK - TANK OBJECT */
     TankObject mainTank;
@@ -152,6 +190,10 @@ int main(int argc, char* args[]){
     bool quit = false;
     SDL_Event e;
 
+    unsigned int currentHeart = 1;
+    unsigned int currentKilled = 0;
+    unsigned int currentRocket = 0;
+    bool rocketAdded = false;
     while(!quit){
         
         /* PLAY BATTLE MUSIC */
@@ -163,7 +205,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e, gBulletSound);
+            mainTank.handleInputAction(e, gBulletSound, currentRocket);
         }
         /* CLEAR SCREEN */
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
@@ -179,6 +221,11 @@ int main(int argc, char* args[]){
             bkg.x = 0;
         }
 
+        layoutBox.renderCopy(layoutBox.getPos());
+        heart.renderCopy(heart.getPos());
+        killEnemy.renderCopy(killEnemy.getPos());
+        rocket.renderCopy(rocket.getPos());
+
         /* LOAD TANK OBJECT */
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();
@@ -187,6 +234,7 @@ int main(int argc, char* args[]){
         mainTank.renderCopy(posTank, flipTank, NULL, typeFlipOfTank);
         // Run bullets of tank object
         mainTank.runBullet();
+        mainTank.runRocket(currentRocket);
 
         /* IMPLEMENT THREATS OBJECT */
         for(int i = 0; i < NUM_THREATS; i++){
@@ -206,7 +254,9 @@ int main(int argc, char* args[]){
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
-                    
+
+                    currentHeart--;
+
                     //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                     
@@ -223,7 +273,7 @@ int main(int argc, char* args[]){
 
                         explode.renderCopy2();
                         explode1.renderCopy2();
-
+                        SDL_Delay(88);
                         SDL_RenderPresent(gRenderer);
                     }
 
@@ -250,6 +300,9 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
 
+                            currentKilled++;
+                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) currentRocket++;
+
                             //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
@@ -257,6 +310,7 @@ int main(int argc, char* args[]){
                                 explode.setPos(x_pos, y_pos);
 
                                 explode.setFrame(ex);
+                                
                                 explode.renderCopy2();
                             }
 
@@ -269,6 +323,40 @@ int main(int argc, char* args[]){
                     }
                 }
 
+                if(currentKilled % 2 != 0) rocketAdded = false; 
+
+                /* CHECK COLLISON: ROCKET OF TANK OBJECT -> THREAT OBJECT */
+                vector<BulletObject*> rocket_list = mainTank.getRocketList();
+                for(int r = 0; r < rocket_list.size(); r++){
+                    BulletObject* aRocket = rocket_list.at(r);
+                    if(aRocket != NULL){
+                        bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
+                        if(checkColl){
+                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) currentRocket++;
+                            currentKilled++;
+
+                            //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
+                            for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
+                                int y_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
+                                explode.setPos(x_pos, y_pos);
+
+                                explode.setFrame(ex);
+                                
+                                explode.renderCopy2();
+                            }
+
+                            //Handle sound effects
+                            Mix_PlayChannel(-1, gExpSound[0], 0);
+
+                            p_threat->resetThreat();
+                            mainTank.removeRocket(r);
+                        }
+                    }
+                }                
+
+                if(currentKilled % 2 != 0) rocketAdded = false; 
+
                 /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
                 vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
                 for(int k = 0; k < bull_listThreats.size(); k++){
@@ -276,7 +364,7 @@ int main(int argc, char* args[]){
                     if(aBulletOfThreat != NULL){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
                         if(checkColl){
-
+                            currentHeart--;
                             //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
@@ -306,9 +394,30 @@ int main(int argc, char* args[]){
                     }
                 }
             }
-        } 
+        }
+
+        /* SHOW NUMBER OF HEARTS SCREEN */
+        string heartToString = to_string(currentHeart);
+        heartNumber.setText(heartToString);
+        heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT - 2);
+        heartNumber.setPos2(25, 25);
+        heartNumber.createGameText(gFont);
+
+        string killedToString = to_string(currentKilled);
+        Killed.setText(killedToString);
+        Killed.setPos(1418, 20);
+        Killed.setPos2(45, 45);
+        Killed.createGameText(gFont);
+
+        string rocketToString = to_string(currentRocket);
+        Killed.setText(rocketToString);
+        Killed.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
+        Killed.setPos2(25, 25);
+        Killed.createGameText(gFont);
+
 
         SDL_RenderPresent(gRenderer);
+
     }
      
     delete[] p_threats;
@@ -358,7 +467,15 @@ void initSDL(){
 		{
 			cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError();
 		}
+
+        //Initialize SDL_ttf
+        if( TTF_Init() == -1 )
+        {
+            printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
+        }
 	}
+    
+    gFont = TTF_OpenFont("images/Fonts/OpenSans-Bold.ttf", 28);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
     SDL_RenderSetLogicalSize(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);

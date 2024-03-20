@@ -9,6 +9,9 @@
 #define WIDTH_SPHERE 5
 #define HEIGHT_SPHERE 5
 
+#define ROCKET_WIDTH 30
+#define ROCKET_HEIGHT 48
+
 class BulletObject : public BaseObject
 {
 public:
@@ -16,7 +19,8 @@ public:
         NONE = 0,
         SPHERE = 1,
         SPHERE1 = 2,
-        LASER = 3
+        LASER = 3,
+        ROCKET = 4
     };
 
     BulletObject();
