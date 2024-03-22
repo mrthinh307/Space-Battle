@@ -111,7 +111,14 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
         }
 
         else if(e.button.button == SDL_BUTTON_RIGHT){
-            if(currentRocket > 0) currentRocket--;
+            if (!rocketOfTankList.empty()) {  // Kiểm tra xem có bullet đang di chuyển không
+                return;  // Nếu có, không cho phép bắn thêm
+            }
+            if (currentRocket <= 0) {  // Kiểm tra xem còn rocket để bắn không
+                return;  // Nếu không, không cho phép bắn
+            }
+            currentRocket--;  // Giảm số lượng rocket khi bắn
+
             BulletObject* rocket = new BulletObject();
             rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
             rocket->loadIMG(gNameRocket);
@@ -190,8 +197,6 @@ void TankObject::removeBullet(const int& idx){
 }
 
 void TankObject::runRocket(){
-    if(currentRocket >= 0)
-  {  
     for(int i = 0; i < rocketOfTankList.size(); i++){
         BulletObject* aRocket = rocketOfTankList.at(i);
         if(aRocket != NULL){
@@ -210,7 +215,6 @@ void TankObject::runRocket(){
             }
         }
     }
-  }
 }
 
 void TankObject::removeRocket(const int& idx){

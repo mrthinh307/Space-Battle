@@ -112,21 +112,28 @@ int main(int argc, char* args[]){
     heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
     bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");    
     FontText heartNumber;
-    heartNumber.setColor(WHITE_COLOR);
+    heartNumber.setColor(RED_COLOR);
 
     BaseObject killEnemy;
     killEnemy.setPos(1350, 20);
     killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
     bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");  
     FontText Killed;
-    Killed.setColor(WHITE_COLOR);
+    Killed.setColor(CYAN_COLOR);
 
     BaseObject rocket;
     rocket.setPos(90, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
     rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
     bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
     FontText rocketText;
-    rocketText.setColor(WHITE_COLOR); 
+    rocketText.setColor(GREEN_COLOR); 
+
+    BaseObject gold;
+    gold.setPos(1350, 100);
+    gold.setPos2(50, 50);
+    bool ret4 = gold.loadIMG("images/Backgrounds/gold.png");
+    FontText goldText;
+    goldText.setColor(YELLOW_COLOR);
 
     /* CREATE MAIN TANK - TANK OBJECT */
     TankObject mainTank;
@@ -196,6 +203,8 @@ int main(int argc, char* args[]){
     unsigned int currentHeart = 1;
     unsigned int currentKilled = 0;
     bool rocketAdded = false;
+    unsigned int currentGold = 0;
+
     while(!quit){
         
         /* PLAY BATTLE MUSIC */
@@ -227,6 +236,7 @@ int main(int argc, char* args[]){
         heart.renderCopy(heart.getPos());
         killEnemy.renderCopy(killEnemy.getPos());
         rocket.renderCopy(rocket.getPos());
+        gold.renderCopy(gold.getPos());
 
         /* LOAD TANK OBJECT */
         SDL_Rect posTank = mainTank.getPos();
@@ -301,7 +311,7 @@ int main(int argc, char* args[]){
                     if(aBullet != NULL){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
-
+                            currentGold++;
                             currentKilled++;
                             unsigned int currentRocket = mainTank.getRocket();
                             if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
@@ -412,11 +422,16 @@ int main(int argc, char* args[]){
         Killed.createGameText(gFont);
 
         string rocketToString = to_string(mainTank.getRocket());
-        Killed.setText(rocketToString);
-        Killed.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
-        Killed.setPos2(25, 25);
-        Killed.createGameText(gFont);
+        rocketText.setText(rocketToString);
+        rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
+        rocketText.setPos2(25, 25);
+        rocketText.createGameText(gFont);
 
+        string goldToString = to_string(currentGold);
+        goldText.setText(goldToString);
+        goldText.setPos(1418, 100);
+        goldText.setPos2(45, 45);
+        goldText.createGameText(gFont);
 
         SDL_RenderPresent(gRenderer);
 
