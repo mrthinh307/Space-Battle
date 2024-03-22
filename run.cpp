@@ -187,12 +187,14 @@ int main(int argc, char* args[]){
 
     }
 
+    /*-----------------------RUN GAME---------------------------*/
+
+
     bool quit = false;
     SDL_Event e;
 
     unsigned int currentHeart = 1;
     unsigned int currentKilled = 0;
-    unsigned int currentRocket = 0;
     bool rocketAdded = false;
     while(!quit){
         
@@ -205,7 +207,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e, gBulletSound, currentRocket);
+            mainTank.handleInputAction(e, gBulletSound);
         }
         /* CLEAR SCREEN */
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
@@ -234,7 +236,7 @@ int main(int argc, char* args[]){
         mainTank.renderCopy(posTank, flipTank, NULL, typeFlipOfTank);
         // Run bullets of tank object
         mainTank.runBullet();
-        mainTank.runRocket(currentRocket);
+        mainTank.runRocket();
 
         /* IMPLEMENT THREATS OBJECT */
         for(int i = 0; i < NUM_THREATS; i++){
@@ -273,7 +275,7 @@ int main(int argc, char* args[]){
 
                         explode.renderCopy2();
                         explode1.renderCopy2();
-                        SDL_Delay(88);
+                        SDL_Delay(60);
                         SDL_RenderPresent(gRenderer);
                     }
 
@@ -301,7 +303,8 @@ int main(int argc, char* args[]){
                         if(checkColl){
 
                             currentKilled++;
-                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) currentRocket++;
+                            unsigned int currentRocket = mainTank.getRocket();
+                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
 
                             //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
@@ -332,9 +335,8 @@ int main(int argc, char* args[]){
                     if(aRocket != NULL){
                         bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
-                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) currentRocket++;
-                            currentKilled++;
 
+                            currentKilled++;
                             //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                 int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
@@ -409,7 +411,7 @@ int main(int argc, char* args[]){
         Killed.setPos2(45, 45);
         Killed.createGameText(gFont);
 
-        string rocketToString = to_string(currentRocket);
+        string rocketToString = to_string(mainTank.getRocket());
         Killed.setText(rocketToString);
         Killed.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
         Killed.setPos2(25, 25);

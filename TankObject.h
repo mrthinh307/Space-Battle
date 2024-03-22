@@ -17,7 +17,7 @@ public:
     TankObject();
     ~TankObject();
 
-    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], unsigned int& currentRocket);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]);
     void handleMove();
 
     double getDegrees() const {return degrees; }
@@ -35,8 +35,11 @@ public:
     void runBullet();
     void removeBullet(const int& idx);
 
-    void runRocket(const int& amount);
+    void runRocket();
     void removeRocket(const int& idx);
+
+    void setRocket(unsigned int& c) { currentRocket = c; }
+    unsigned int getRocket() { return currentRocket; }
 private:
     int x_val;
     int y_val;
@@ -45,6 +48,7 @@ private:
 
     vector<BulletObject*> bulletOfTankList;
     vector<BulletObject*> rocketOfTankList;
+    unsigned int currentRocket;
 };
 
 #endif // TANKOBJECT_H_INCLUDED

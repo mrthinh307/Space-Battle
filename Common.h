@@ -26,8 +26,8 @@ const int HEART_HEIGHT = 39;
 const int KILL_ENEMY_WIDTH = 50;
 const int KILL_ENEMY_HEIGHT = 50;
 
-const int ROCKET_WIDTH = 33;
-const int ROCKET_HEIGHT = 55;
+const int ROCKET_WIDTH = 38;
+const int ROCKET_HEIGHT = 63;
 
 const int NUM_THREATS = 4;
 

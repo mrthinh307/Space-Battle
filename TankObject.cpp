@@ -11,13 +11,15 @@ TankObject::TankObject(){
 
     degrees = 0;
     flipType = SDL_FLIP_NONE;
+
+    currentRocket = 0;
 }
 
 TankObject::~TankObject(){
     ;
 }
 
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], unsigned int& currentRocket) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -109,6 +111,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
         }
 
         else if(e.button.button == SDL_BUTTON_RIGHT){
+            if(currentRocket > 0) currentRocket--;
             BulletObject* rocket = new BulletObject();
             rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
             rocket->loadIMG(gNameRocket);
@@ -186,8 +189,8 @@ void TankObject::removeBullet(const int& idx){
     }
 }
 
-void TankObject::runRocket(const int& amount){
-    if(amount >= 1)
+void TankObject::runRocket(){
+    if(currentRocket >= 0)
   {  
     for(int i = 0; i < rocketOfTankList.size(); i++){
         BulletObject* aRocket = rocketOfTankList.at(i);
