@@ -3,6 +3,7 @@
 
 #include "BaseObject.h"
 #include "BulletObject.h"
+#include "AdditionalTools.h"
 
 #define WIDTH_THREATS_OBJECT 60
 #define HEIGHT_THREATS_OBJECT 49
@@ -38,6 +39,9 @@ public:
     void resetBullet(BulletObject* aBullet);
 
     void removeBullet(const int& idx);
+    
+    void initGoldItem(Tools* gold);
+
 private:
     double x_val;
     double y_val;

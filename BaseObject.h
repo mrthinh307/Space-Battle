@@ -15,7 +15,7 @@ public:
     void setPos2(int w_, int h_) { pos.w = w_; pos.h = h_; }
     SDL_Rect getPos() const { return pos; }
     SDL_Texture* getTexture() const { return p_object; }
-
+    void setTexture(SDL_Texture* t) {p_object = t; }
 protected:
     SDL_Texture* p_object;
     SDL_Rect pos;

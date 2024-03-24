@@ -92,6 +92,9 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
     }
 }
 
+
+
+
 void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
     for(int i = 0; i < bulletOfThreatsList.size(); ++i){
         BulletObject* aBullet = bulletOfThreatsList.at(i);
