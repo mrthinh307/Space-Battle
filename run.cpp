@@ -84,6 +84,23 @@ void SDLCommonFunc::Clear()
     battleMusic = NULL;
 }
 
+BaseObject layoutBox;
+BaseObject heart;
+
+FontText heartNumber;
+
+BaseObject killEnemy;
+FontText Killed;
+BaseObject killIcon;
+
+BaseObject rocket;
+FontText rocketText;
+
+BaseObject gold;
+FontText goldText;
+BaseObject goldIcon;
+vector<Tools*> goldItems;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -102,43 +119,43 @@ int main(int argc, char* args[]){
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
 
-    BaseObject layoutBox;
+    //BaseObject layoutBox;
     layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
     layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
     bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
     
-    BaseObject heart;
+    //BaseObject heart;
     heart.setPos(10, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
     heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
     bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");    
-    FontText heartNumber;
+    //FontText heartNumber;
     heartNumber.setColor(RED_COLOR);
 
-    BaseObject killEnemy;
+    //BaseObject killEnemy;
     killEnemy.setPos(1320, 20);
     killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
     bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");  
-    FontText Killed;
+    //FontText Killed;
     Killed.setColor(CYAN_COLOR);
-    BaseObject killIcon;
+    //BaseObject killIcon;
     killIcon.setPos(1440, 28);
     killIcon.setPos2(33, 28);
     bool ret21 = killIcon.loadIMG("images/Backgrounds/killicon.png");
 
-    BaseObject rocket;
+    //BaseObject rocket;
     rocket.setPos(90, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
     rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
     bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
-    FontText rocketText;
+    //FontText rocketText;
     rocketText.setColor(GREEN_COLOR); 
 
-    BaseObject gold;
+    //BaseObject gold;
     gold.setPos(1320, 100);
     gold.setPos2(50, 50);
     bool ret4 = gold.loadIMG("images/Backgrounds/gold.png");
-    FontText goldText;
+    //FontText goldText;
     goldText.setColor(YELLOW_COLOR);
-    BaseObject goldIcon;
+    //BaseObject goldIcon;
     goldIcon.setPos(1440, 108);
     goldIcon.setPos2(30, 34);
     bool ret41 = goldIcon.loadIMG("images/Backgrounds/goldicon.png");
@@ -160,8 +177,6 @@ int main(int argc, char* args[]){
     /* INIT SOUND EFFECTS */
     bool checkLoadSoundEffect = loadSoundEffects();
     if(!checkLoadSoundEffect) return 0; 
-    
-    vector<Tools*> goldItems;
 
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
@@ -227,6 +242,12 @@ int main(int argc, char* args[]){
             }
             mainTank.handleInputAction(e, gBulletSound);
         }
+
+        /* HANDLE MOVE:  ĐỒNG TIỀN */
+        for (auto& goldItem : goldItems) {
+            goldItem->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+        }
+
         /* CLEAR SCREEN */
         SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
         SDL_RenderClear( gRenderer );
@@ -317,19 +338,23 @@ int main(int argc, char* args[]){
                 
                 /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
-                int x, y;
                 for(int j = 0; j < bull_list.size(); j++){
                     BulletObject* aBullet = bull_list.at(j);
                     if(aBullet != NULL){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
-                        
+                        int x, y;
                         if(checkColl){
-                            x = p_threat->getPos().x; 
-                            y = p_threat->getPos().y;
                             Tools* aGoldItem = new Tools();
                             aGoldItem->setTexture(aGoldItem->getGoldItem());
-                            aGoldItem->setPos(x, y);
-                            goldItems.push_back(aGoldItem); 
+                            if(aGoldItem != NULL){
+                                x = p_threat->getPos().x; 
+                                y = p_threat->getPos().y;        
+                                aGoldItem->setPos(x, y);
+                                goldItems.push_back(aGoldItem);                    
+                            }
+                            else{
+                                delete aGoldItem;
+                            }
                             
                             currentKilled++;
                             unsigned int currentRocket = mainTank.getRocket();
@@ -351,17 +376,9 @@ int main(int argc, char* args[]){
 
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
-
-                            
                         }
                     }                 
                 }
-
-                for (int a = 0; a < goldItems.size(); a++) {
-                    goldItems[a]->renderCopy(goldItems[a]->getPos());
-
-                }
-
 
                 if(currentKilled % 2 != 0) rocketAdded = false; 
 
@@ -370,8 +387,20 @@ int main(int argc, char* args[]){
                 for(int r = 0; r < rocket_list.size(); r++){
                     BulletObject* aRocket = rocket_list.at(r);
                     if(aRocket != NULL){
+                        int x, y;
                         bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
+                            Tools* aGoldItem = new Tools();
+                            aGoldItem->setTexture(aGoldItem->getGoldItem());
+                            if(aGoldItem != NULL){
+                                x = p_threat->getPos().x; 
+                                y = p_threat->getPos().y;        
+                                aGoldItem->setPos(x, y);
+                                goldItems.push_back(aGoldItem);                    
+                            }
+                            else{
+                                delete aGoldItem;
+                            }
 
                             currentKilled++;
                             //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
@@ -392,9 +421,18 @@ int main(int argc, char* args[]){
                             mainTank.removeRocket(r);
                         }
                     }
-                }                
+                }       
 
-                if(currentKilled % 2 != 0) rocketAdded = false; 
+                for (int a = 0; a < goldItems.size();) {
+                    goldItems[a]->renderCopy(goldItems[a]->getPos());
+                    bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 0);
+                    if(checkGetGold){
+                        currentGold += goldItems[a]->getGoldValue();
+                        delete goldItems[a];
+                        goldItems.erase(goldItems.begin() + a);
+                    }
+                    else ++a;
+                }
 
                 /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
                 vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
@@ -525,7 +563,47 @@ void initSDL(){
 }
 
 void quitSDL(){
+    // Giải phóng biến Killed
+    Killed.free();
 
+    // Giải phóng biến rocketText
+    rocketText.free();
+
+    // Giải phóng biến goldText
+    goldText.free();
+
+    // Giải phóng biến heartNumber
+    heartNumber.free();
+
+    // Giải phóng biến layoutBox
+    layoutBox.free();
+
+    // Giải phóng biến heart
+    heart.free();
+
+    // Giải phóng biến killEnemy
+    killEnemy.free();
+
+    // Giải phóng biến killIcon
+    killIcon.free();
+
+    // Giải phóng biến rocket
+    rocket.free();
+
+    // Giải phóng biến gold
+    gold.free();
+
+    // Giải phóng biến goldIcon
+    goldIcon.free();
+
+    // Giải phóng các đối tượng trong vector goldItems
+    for (auto& item : goldItems) {
+        item->free();
+        delete item;
+    }
+    goldItems.clear();
+
+    // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
 
@@ -533,6 +611,7 @@ void quitSDL(){
     SDL_Quit();
     Mix_Quit();
 }
+
 
 void logSDLError(ostream& os,const string& msg, bool fatal ){
     cout << msg << "Error: " << SDL_GetError() << endl;

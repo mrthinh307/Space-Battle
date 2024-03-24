@@ -7,6 +7,10 @@ BaseObject::BaseObject(){
 }
 
 BaseObject::~BaseObject(){
+    //TODO
+}
+
+void BaseObject::free(){
     //Free texture if it exists
     if( p_object != NULL )
     {
@@ -25,3 +29,4 @@ void BaseObject::renderCopy(SDL_Rect clip, double degrees, SDL_Point* center, SD
         SDLCommonFunc::render(p_object, clip, degrees, center, flip);
     }
 }
+

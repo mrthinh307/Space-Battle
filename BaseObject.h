@@ -16,6 +16,8 @@ public:
     SDL_Rect getPos() const { return pos; }
     SDL_Texture* getTexture() const { return p_object; }
     void setTexture(SDL_Texture* t) {p_object = t; }
+
+    void free();
 protected:
     SDL_Texture* p_object;
     SDL_Rect pos;

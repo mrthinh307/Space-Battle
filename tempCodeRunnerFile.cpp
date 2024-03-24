@@ -1,5 +1,16 @@
-        // string killedToString = to_string(currentKilled);
-        // Killed.setText(killedToString);
-        // Killed.setPos(1388, 20);
-        // Killed.setPos2(45, 45);
-        // Killed.createGameText(gFont);
+
+Tools* aGoldItem = new Tools();
+aGoldItem->setTexture(aGoldItem->getGoldItem());
+if(aGoldItem != NULL){
+                            x = p_threat->getPos().x; 
+                            y = p_threat->getPos().y;        
+                            aGoldItem->setPos(x, y);
+                            goldItems.push_back(aGoldItem);                    
+}
+else{
+        delete aGoldItem;
+}
+                        
+
+
+                            

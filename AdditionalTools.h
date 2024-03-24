@@ -12,12 +12,14 @@ public:
     SDL_Texture* getGoldItem();
     
     void setGoldValue(const unsigned int& v);
-    int getGoldValue() { return value; }
+    unsigned  getGoldValue() { return value; }
+
+    void handleMove(const int& x_border, const int& y_border);
 private:
     SDL_Texture* goldItem[4];
     int goldWidth[2];
     int goldHeight[2];
-    int value;
+    unsigned  value;
 };
 
 #endif
