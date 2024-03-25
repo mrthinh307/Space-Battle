@@ -232,9 +232,9 @@ int main(int argc, char* args[]){
     while(!quit){
         
         /* PLAY BATTLE MUSIC */
-        if(Mix_PlayingMusic() == 0){
-            Mix_PlayMusic(battleMusic, -1);
-        }
+        // if(Mix_PlayingMusic() == 0){
+        //     Mix_PlayMusic(battleMusic, -1);
+        // }
 
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -668,6 +668,13 @@ bool loadSoundEffects(){
 
     if(battleMusic == NULL){
         cout << "Unable to load battle music. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+
+    gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
+
+    if(gRocketSound == NULL){
+        cout << "Unable to load rocket sound effects. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
 

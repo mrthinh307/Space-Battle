@@ -43,6 +43,7 @@ static TTF_Font* gFont = NULL;
 
 static Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
 static Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
+static Mix_Chunk* gRocketSound;
 static Mix_Chunk* gameOver;
 static Mix_Music* battleMusic;
 
@@ -56,6 +57,7 @@ static char gNameBulletOfThreatsObject[] = {"images/Bullets/sphere.png"};
 
 static char gNameBulletSoundOfThreat[] = {"images/SoundEffects/enemyBullet.wav"};
 static char gNameBulletSoundOfTank[] = {"images/SoundEffects/playerBullet.wav"};
+static char gNameRocketSoundOfTank[] = {"images/SoundEffects/runRocket.wav"};
 
 static char gNameExplodeSoundOfThreat[] = {"images/SoundEffects/explosionDefault.wav"};
 static char gNameExplodeSoundOfTank[] = {"images/SoundEffects/player_die.wav"};
