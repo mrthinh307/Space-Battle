@@ -52,7 +52,7 @@ void Tools::handleMove(const int& x_border, const int& y_border){
     new_x = max(0, min(x_border - pos.w, new_x));
     new_y = max(0, min(y_border - pos.h, new_y));
 
-    if (new_x >= x_border || new_y >= y_border) {
+    if (new_x >= x_border || new_x < 0 || new_y >= y_border || new_y < 0) {
         setPos(-100, -100); 
     } else {
         setPos(new_x, new_y);
