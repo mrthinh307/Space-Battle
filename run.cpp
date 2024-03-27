@@ -79,9 +79,13 @@ void SDLCommonFunc::Clear()
     Mix_FreeChunk(gameOver);
     gameOver = NULL;
 
+    Mix_FreeChunk(gRocketSound);
+    gRocketSound = NULL;
+
     //Free music
     Mix_FreeMusic(battleMusic);
     battleMusic = NULL;
+
 }
 
 BaseObject layoutBox;
@@ -104,6 +108,10 @@ vector<Tools*> goldItems;
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
+    
+    /* INIT SOUND EFFECTS */
+    bool checkLoadSoundEffect = loadSoundEffects();
+    if(!checkLoadSoundEffect) return 0; 
 
     /* CREATE BACKGROUND */
     gBackground = SDLCommonFunc::loadImage(gNameBackground);
@@ -174,10 +182,6 @@ int main(int argc, char* args[]){
     explode.setTexture();
     explode1.setTexture();
 
-    /* INIT SOUND EFFECTS */
-    bool checkLoadSoundEffect = loadSoundEffects();
-    if(!checkLoadSoundEffect) return 0; 
-
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
     ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
     for(int i = 0; i < NUM_THREATS; ++i){
@@ -229,12 +233,13 @@ int main(int argc, char* args[]){
     bool rocketAdded = false;
     unsigned int currentGold = 0;
 
+
     while(!quit){
         
         /* PLAY BATTLE MUSIC */
-        // if(Mix_PlayingMusic() == 0){
-        //     Mix_PlayMusic(battleMusic, -1);
-        // }
+        if(Mix_PlayingMusic() == 0){
+            Mix_PlayMusic(battleMusic, -1);
+        }
 
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -668,13 +673,6 @@ bool loadSoundEffects(){
 
     if(battleMusic == NULL){
         cout << "Unable to load battle music. SDL_mixer error: " << Mix_GetError() << endl;
-        check = false;
-    }
-
-    gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
-
-    if(gRocketSound == NULL){
-        cout << "Unable to load rocket sound effects. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
 

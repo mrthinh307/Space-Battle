@@ -97,7 +97,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
             bullet->loadIMG(gNameBulletOfMainTank);
             bullet->setBulletType(BulletObject::SPHERE1);
 
-            //Mix_PlayChannel(-1, bulletSound[1], 0);
+            Mix_PlayChannel(-1, bulletSound[1], 0);
 
             bullet->setx_val(SPEED_BULLET_MAIN_TANK);
             bullet->setDegrees(degrees);
@@ -118,13 +118,14 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
                 return;  // Nếu không, không cho phép bắn
             }
             currentRocket--;  // Giảm số lượng rocket khi bắn
+            gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
+            Mix_VolumeChunk(gRocketSound, 48);
+            Mix_PlayChannel(-1, gRocketSound, 0);
 
             BulletObject* rocket = new BulletObject();
             rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
             rocket->loadIMG(gNameRocket);
             rocket->setBulletType(BulletObject::ROCKET);
-
-            Mix_PlayChannel(-1, gRocketSound, 0);
 
             rocket->setx_val(SPEED_ROCKET_MAIN_TANK);
             rocket->setDegrees(degrees);
