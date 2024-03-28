@@ -233,7 +233,6 @@ int main(int argc, char* args[]){
     bool rocketAdded = false;
     unsigned int currentGold = 0;
 
-
     while(!quit){
         
         /* PLAY BATTLE MUSIC */
@@ -428,6 +427,10 @@ int main(int argc, char* args[]){
 
                 for (int a = 0; a < goldItems.size();) {
                     goldItems[a]->renderCopy(goldItems[a]->getPos());
+                    if(goldItems[a]->timer() > TIME_TO_EXPLODE_GOLD){
+                        delete goldItems[a];
+                        goldItems.erase(goldItems.begin() + a);
+                    }
                     bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 8);
                     if(checkGetGold){
                         Mix_PlayChannel(-1, getGold, 0);

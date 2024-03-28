@@ -16,6 +16,8 @@ Tools::Tools(){
 
 
     value = 0;
+
+    startTime = SDL_GetTicks();
 }
 
 Tools::~Tools(){
@@ -55,4 +57,8 @@ void Tools::handleMove(const int& x_border, const int& y_border){
     } else {
         setPos(new_x, new_y);
     }
+}
+
+Uint32 Tools::timer(){
+    return SDL_GetTicks() - startTime;
 }
