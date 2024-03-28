@@ -47,6 +47,7 @@ static Mix_Chunk* gRocketSound = NULL;
 static Mix_Chunk* gameOver;
 static Mix_Music* battleMusic;
 static Mix_Chunk* getGold;
+static Mix_Chunk* breakGold;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank2.png"};
@@ -65,6 +66,7 @@ static char gNameExplodeSoundOfTank[] = {"images/SoundEffects/player_die.wav"};
 static char gGameOveMusic[] = {"images/SoundEffects/gameover.wav"};
 static char gBattleMusic[] = {"images/SoundEffects/battlemusic.wav"};
 static char gGetGoldSound[] = {"images/SoundEffects/getGold.wav"};
+static char gBreakGoldSound[] = {"images/SoundEffects/breakglass.wav"};
 
 namespace SDLCommonFunc
 {

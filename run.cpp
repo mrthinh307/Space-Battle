@@ -431,6 +431,7 @@ int main(int argc, char* args[]){
                     }
                 }       
 
+                /* HANDLE GOLD*/
                 for (int a = 0; a < goldItems.size();) {
                     goldItems[a]->renderCopy(goldItems[a]->getPos());
                     if(goldItems[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), p_threat->getPos(), 5)){
@@ -443,8 +444,8 @@ int main(int argc, char* args[]){
                             goldItems[a]->setPos2(w_pos, h_pos);
                             goldItems[a]->setFrame(ex);
                             goldItems[a]->renderCopy2();    
-  
                         }
+                        Mix_PlayChannel(-1, breakGold, 0);
                         delete goldItems[a];
                         goldItems.erase(goldItems.begin() + a);
                     }
@@ -707,6 +708,14 @@ bool loadSoundEffects(){
         check = false;
     }
     Mix_VolumeChunk(getGold, 50);
+
+    breakGold = Mix_LoadWAV(gBreakGoldSound);
+
+    if(breakGold == NULL){
+        cout << "Unable to load break gold sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(breakGold, 128);
     
     return check;
 }
