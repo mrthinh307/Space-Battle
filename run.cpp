@@ -97,6 +97,9 @@ BaseObject killEnemy;
 FontText Killed;
 BaseObject killIcon;
 
+ExplosionObject explode;
+ExplosionObject explode1;
+
 BaseObject rocket;
 FontText rocketText;
 
@@ -177,8 +180,8 @@ int main(int argc, char* args[]){
     }
     
     /* INIT EXPLODE OBJECT */
-    ExplosionObject explode;
-    ExplosionObject explode1;
+    // ExplosionObject explode;
+    // ExplosionObject explode1;
     explode.setTexture();
     explode1.setTexture();
 
@@ -300,7 +303,7 @@ int main(int argc, char* args[]){
                 p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
-                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 8);
+                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
 
                     currentHeart--;
@@ -351,6 +354,7 @@ int main(int argc, char* args[]){
                             int ran = rand() % 3 + 1;
                             if(ran == 1){
                                 Tools* aGoldItem = new Tools();
+                                aGoldItem->setGoldTexture();
                                 aGoldItem->setTexture(aGoldItem->getGoldItem());
                                 if(aGoldItem != NULL){
                                     x = p_threat->getPos().x; 
@@ -380,6 +384,7 @@ int main(int argc, char* args[]){
 
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
+                            
                         }
                     }                 
                 }
@@ -392,11 +397,12 @@ int main(int argc, char* args[]){
                     BulletObject* aRocket = rocket_list.at(r);
                     if(aRocket != NULL){
                         int x, y;
-                        bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 5);
+                        bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
                         if(checkColl){
                             int ran = rand() % 3 + 1;
                             if(ran == 1){
                                 Tools* aGoldItem = new Tools();
+                                aGoldItem->setGoldTexture();
                                 aGoldItem->setTexture(aGoldItem->getGoldItem());
                                 if(aGoldItem != NULL){
                                     x = p_threat->getPos().x; 
@@ -427,18 +433,31 @@ int main(int argc, char* args[]){
 
                 for (int a = 0; a < goldItems.size();) {
                     goldItems[a]->renderCopy(goldItems[a]->getPos());
-                    if(goldItems[a]->timer() > TIME_TO_EXPLODE_GOLD){
+                    if(goldItems[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), p_threat->getPos(), 5)){
+                        int x_pos = goldItems[a]->getPos().x + goldItems[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
+                        int y_pos = goldItems[a]->getPos().y + goldItems[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
+                        int w_pos = EXP_GOLD_WIDTH;
+                        int h_pos = EXP_GOLD_HEIGHT;
+                        for(int ex = 0; ex < EXPLODE_GOLD_ANIMATION_FRAMES; ex++){
+                            goldItems[a]->setPos(x_pos, y_pos);
+                            goldItems[a]->setPos2(w_pos, h_pos);
+                            goldItems[a]->setFrame(ex);
+                            goldItems[a]->renderCopy2();    
+  
+                        }
                         delete goldItems[a];
                         goldItems.erase(goldItems.begin() + a);
                     }
-                    bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 8);
-                    if(checkGetGold){
-                        Mix_PlayChannel(-1, getGold, 0);
-                        currentGold += goldItems[a]->getGoldValue();
-                        delete goldItems[a];
-                        goldItems.erase(goldItems.begin() + a);
+                    else {
+                        bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 0);
+                        if(checkGetGold){
+                            Mix_PlayChannel(-1, getGold, 0);
+                            currentGold += goldItems[a]->getGoldValue();
+                            delete goldItems[a];
+                            goldItems.erase(goldItems.begin() + a);
+                        }
+                        else ++a;                    
                     }
-                    else ++a;
                 }
 
                 /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
@@ -602,6 +621,9 @@ void quitSDL(){
 
     // Giải phóng biến goldIcon
     goldIcon.free();
+
+    explode.free();
+    explode1.free();
 
     // Giải phóng các đối tượng trong vector goldItems
     for (auto& item : goldItems) {

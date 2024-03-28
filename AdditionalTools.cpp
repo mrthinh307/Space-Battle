@@ -18,10 +18,19 @@ Tools::Tools(){
     value = 0;
 
     startTime = SDL_GetTicks();
+
+    expGold.resize(EXPLODE_GOLD_ANIMATION_FRAMES, NULL);
 }
 
 Tools::~Tools(){
-    // TODO: Implement if needed
+    for(int i = 0; i < expGold.size(); i++){
+        SDL_Texture* aTexture = expGold.at(i);
+        if(aTexture != NULL){
+            SDL_DestroyTexture(aTexture);
+            aTexture = NULL;
+        }
+    }
+    expGold.clear();  
 }
 
 SDL_Texture* Tools::getGoldItem() {
@@ -61,4 +70,20 @@ void Tools::handleMove(const int& x_border, const int& y_border){
 
 Uint32 Tools::timer(){
     return SDL_GetTicks() - startTime;
+}
+
+void Tools::setGoldTexture(){
+    expGold[0] = SDLCommonFunc::loadImage("images/Utils/P103947/exp1.png");
+    expGold[1] = SDLCommonFunc::loadImage("images/Utils/P103947/exp2.png");
+    expGold[2] = SDLCommonFunc::loadImage("images/Utils/P103947/exp3.png");
+    expGold[3] = SDLCommonFunc::loadImage("images/Utils/P103947/exp4.png");
+    expGold[4] = SDLCommonFunc::loadImage("images/Utils/P103947/exp5.png");
+    expGold[5] = SDLCommonFunc::loadImage("images/Utils/P103947/exp6.png");
+    expGold[6] = SDLCommonFunc::loadImage("images/Utils/P103947/exp7.png");
+    expGold[7] = SDLCommonFunc::loadImage("images/Utils/P103947/exp8.png");
+    expGold[7] = SDLCommonFunc::loadImage("images/Utils/P103947/exp9.png");
+}
+
+void Tools::renderCopy2(){
+    SDLCommonFunc::render(expGold[frame], pos);
 }

@@ -4,6 +4,10 @@
 #include "BaseObject.h"
 
 const int TIME_TO_EXPLODE_GOLD = 5000;
+const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
+
+const int EXP_GOLD_WIDTH = 60;
+const int EXP_GOLD_HEIGHT = 90;
 
 class Tools : public BaseObject
 {
@@ -19,12 +23,20 @@ public:
     void handleMove(const int& x_border, const int& y_border);
 
     Uint32 timer();
+
+    void setFrame(const int& fr) { frame = fr; }
+    void setGoldTexture();
+    void renderCopy2();
+
 private:
     SDL_Texture* goldItem[4];
     int goldWidth[2];
     int goldHeight[2];
     unsigned  value;
     Uint32 startTime;
+
+    int frame;
+    vector<SDL_Texture*> expGold;
 };
 
 #endif

@@ -12,14 +12,7 @@ ExplosionObject::ExplosionObject(){
 }
 
 ExplosionObject::~ExplosionObject(){ 
-    for(int i = 0; i < expTexture.size(); i++){
-        SDL_Texture* aTexture = expTexture.at(i);
-        if(aTexture != NULL){
-            SDL_DestroyTexture(aTexture);
-            aTexture = NULL;
-        }
-    }
-    expTexture.clear();  
+    free();
 }
 
 
@@ -40,4 +33,15 @@ void ExplosionObject::setTexture(){
 
 void ExplosionObject::renderCopy2(){
     SDLCommonFunc::render(expTexture[frame], pos);
+}
+
+void ExplosionObject::free(){
+    for(int i = 0; i < expTexture.size(); i++){
+        SDL_Texture* aTexture = expTexture.at(i);
+        if(aTexture != NULL){
+            SDL_DestroyTexture(aTexture);
+            aTexture = NULL;
+        }
+    }
+    expTexture.clear();  
 }

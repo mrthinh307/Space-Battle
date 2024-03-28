@@ -19,6 +19,8 @@ public:
     void setTexture();
     void renderCopy2();
 
+    void free();
+
 private:
     int frame;
     vector<SDL_Texture*> expTexture;
