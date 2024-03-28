@@ -45,10 +45,10 @@ void BulletObject::handleInputAction(SDL_Event e) {
 }
 
 void BulletObject::setRocketTexture(){
-    rocketTexture[0] = SDLCommonFunc::loadImage("images/P103720/rocket1.png");
-    rocketTexture[1] = SDLCommonFunc::loadImage("images/P103720/rocket2.png");
-    rocketTexture[2] = SDLCommonFunc::loadImage("images/P103720/rocket3.png");
-    rocketTexture[3] = SDLCommonFunc::loadImage("images/P103720/rocket4.png");
+    rocketTexture[0] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket1.png");
+    rocketTexture[1] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket2.png");
+    rocketTexture[2] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket3.png");
+    rocketTexture[3] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket4.png");
 }
 
 void BulletObject::clearRocketTexture(){

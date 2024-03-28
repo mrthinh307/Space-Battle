@@ -25,18 +25,16 @@ Tools::~Tools(){
 SDL_Texture* Tools::getGoldItem() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 30 ) { // 40% chance (5% + 40%)
+    if (randomNumber <= 80 ) { // 40% chance (5% + 40%)
         value = 1;
         pos.w = goldWidth[0];
         pos.h = goldHeight[0];
         return goldItem[0];
-    } else if(randomNumber <= 20) { // 30% chance (5% + 40% + 30%)
+    } else { // 30% chance (5% + 40% + 30%)
         value = 3;
         pos.w = goldWidth[1];
         pos.h = goldHeight[1];
         return goldItem[1];
-    } else {
-        return NULL;
     }
 }
 

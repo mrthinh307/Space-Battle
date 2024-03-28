@@ -346,19 +346,19 @@ int main(int argc, char* args[]){
                 for(int j = 0; j < bull_list.size(); j++){
                     BulletObject* aBullet = bull_list.at(j);
                     if(aBullet != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 5);
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         int x, y;
                         if(checkColl){
-                            Tools* aGoldItem = new Tools();
-                            aGoldItem->setTexture(aGoldItem->getGoldItem());
-                            if(aGoldItem != NULL){
-                                x = p_threat->getPos().x; 
-                                y = p_threat->getPos().y;        
-                                aGoldItem->setPos(x, y);
-                                goldItems.push_back(aGoldItem);                    
-                            }
-                            else{
-                                delete aGoldItem;
+                            int ran = rand() % 3 + 1;
+                            if(ran == 1){
+                                Tools* aGoldItem = new Tools();
+                                aGoldItem->setTexture(aGoldItem->getGoldItem());
+                                if(aGoldItem != NULL){
+                                    x = p_threat->getPos().x; 
+                                    y = p_threat->getPos().y;        
+                                    aGoldItem->setPos(x, y);
+                                    goldItems.push_back(aGoldItem);                    
+                                }                                
                             }
                             
                             currentKilled++;
@@ -395,16 +395,16 @@ int main(int argc, char* args[]){
                         int x, y;
                         bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 5);
                         if(checkColl){
-                            Tools* aGoldItem = new Tools();
-                            aGoldItem->setTexture(aGoldItem->getGoldItem());
-                            if(aGoldItem != NULL){
-                                x = p_threat->getPos().x; 
-                                y = p_threat->getPos().y;        
-                                aGoldItem->setPos(x, y);
-                                goldItems.push_back(aGoldItem);                    
-                            }
-                            else{
-                                delete aGoldItem;
+                            int ran = rand() % 3 + 1;
+                            if(ran == 1){
+                                Tools* aGoldItem = new Tools();
+                                aGoldItem->setTexture(aGoldItem->getGoldItem());
+                                if(aGoldItem != NULL){
+                                    x = p_threat->getPos().x; 
+                                    y = p_threat->getPos().y;        
+                                    aGoldItem->setPos(x, y);
+                                    goldItems.push_back(aGoldItem);                    
+                                }                                
                             }
 
                             currentKilled++;
@@ -430,6 +430,7 @@ int main(int argc, char* args[]){
                     goldItems[a]->renderCopy(goldItems[a]->getPos());
                     bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 8);
                     if(checkGetGold){
+                        Mix_PlayChannel(-1, getGold, 0);
                         currentGold += goldItems[a]->getGoldValue();
                         delete goldItems[a];
                         goldItems.erase(goldItems.begin() + a);
@@ -674,6 +675,14 @@ bool loadSoundEffects(){
         check = false;
     }
 
+    getGold = Mix_LoadWAV(gGetGoldSound);
+
+    if(getGold == NULL){
+        cout << "Unable to load get gold sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(getGold, 50);
+    
     return check;
 }
 
