@@ -13,6 +13,8 @@ TankObject::TankObject(){
     flipType = SDL_FLIP_NONE;
 
     currentRocket = 0;
+
+    // rocketTexture.resize(ROCKET_ANIMATION_FRAMES, NULL); 
 }
 
 TankObject::~TankObject(){
@@ -118,13 +120,14 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
                 return;  // Nếu không, không cho phép bắn
             }
             currentRocket--;  // Giảm số lượng rocket khi bắn
+
             gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
             Mix_VolumeChunk(gRocketSound, 48);
             Mix_PlayChannel(-1, gRocketSound, 0);
 
             BulletObject* rocket = new BulletObject();
             rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
-            rocket->loadIMG(gNameRocket);
+            rocket->setRocketTexture();
             rocket->setBulletType(BulletObject::ROCKET);
 
             rocket->setx_val(SPEED_ROCKET_MAIN_TANK);
@@ -197,26 +200,23 @@ void TankObject::removeBullet(const int& idx){
     }
 }
 
-void TankObject::runRocket(){
-    for(int i = 0; i < rocketOfTankList.size(); i++){
+void TankObject::runRocket() {
+    for (int i = 0; i < rocketOfTankList.size(); i++) {
         BulletObject* aRocket = rocketOfTankList.at(i);
-        if(aRocket != NULL){
-            if(aRocket->getIsMove()){
-                SDL_Rect posRocket = aRocket->getPos();
-                double flipRocket = aRocket->getDegrees();
-                aRocket->renderCopy(posRocket, flipRocket, NULL, SDL_FLIP_NONE);
-                aRocket->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
-            }
-            else{
-                if(aRocket != NULL){
-                    rocketOfTankList.erase(rocketOfTankList.begin() + i);
-                    delete aRocket; 
-                    aRocket = NULL;
-                }
+        if (aRocket != nullptr && aRocket->getIsMove()) {
+            aRocket->renderCopy2(); 
+            aRocket->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
+            int frame = (aRocket->getFrame() + 1) % ROCKET_ANIMATION_FRAMES; 
+            aRocket->setFrame(frame); 
+            
+            if (!aRocket->getIsMove()) {
+                removeRocket(i);
             }
         }
     }
 }
+
+
 
 void TankObject::removeRocket(const int& idx){
     for(int i = 0; i < rocketOfTankList.size(); i++){
@@ -226,9 +226,10 @@ void TankObject::removeRocket(const int& idx){
             rocketOfTankList.erase(rocketOfTankList.begin() + idx);
 
             if(aRocket != NULL){
-                delete aRocket;
+                aRocket->clearRocketTexture();
                 aRocket = NULL;
             } 
         }
     }
 }
+

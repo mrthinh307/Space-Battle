@@ -9,8 +9,10 @@
 #define WIDTH_SPHERE 5
 #define HEIGHT_SPHERE 5
 
-#define ROCKET_WIDTH 30
-#define ROCKET_HEIGHT 48
+#define ROCKET_WIDTH 40
+#define ROCKET_HEIGHT 99
+
+static int ROCKET_ANIMATION_FRAMES = 4;
 
 class BulletObject : public BaseObject
 {
@@ -46,6 +48,13 @@ public:
     void sety_val(const double& y) { y_val = y; }
     double gety_val() const { return y_val; }
 
+    void setRocketTexture();
+    SDL_Texture* getRocketTexture(const int& idx) { return rocketTexture[idx]; }
+    void clearRocketTexture();
+    void renderCopy2();
+    void setFrame(const int& fr) {frame = fr;}
+    int getFrame() { return frame; }
+
 private:
     double x_val;
     double y_val;
@@ -55,6 +64,10 @@ private:
     int bulletType;
 
     double degrees;
+
+    vector<SDL_Texture*> rocketTexture;
+    int frame;
+
 };
 
 

@@ -9,7 +9,9 @@
 #define HEIGHT_TANK_OBJECT 52
 
 #define SPEED_BULLET_MAIN_TANK 8.0
-#define SPEED_ROCKET_MAIN_TANK 5.0
+#define SPEED_ROCKET_MAIN_TANK 8.0
+
+// const int ROCKET_ANIMATION_FRAMES = 4;
 
 class TankObject : public BaseObject
 {
@@ -40,6 +42,7 @@ public:
 
     void setRocket(unsigned int& c) { currentRocket = c; }
     unsigned int getRocket() { return currentRocket; }
+    void setRocketTexture();
 private:
     int x_val;
     int y_val;
@@ -49,6 +52,7 @@ private:
     vector<BulletObject*> bulletOfTankList;
     vector<BulletObject*> rocketOfTankList;
     unsigned int currentRocket;
+    //vector<SDL_Texture*> rocketTexture;
 };
 
 #endif // TANKOBJECT_H_INCLUDED

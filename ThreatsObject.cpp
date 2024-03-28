@@ -35,26 +35,26 @@ void ThreatsObject::handleMove(const int& x_border, const int& y_border){
         int tmp = rand() % 4;
 
         if(tmp == 0){
-            pos.x = 0;
+            pos.x = -0;
             pos.y = rand() % SCREEN_HEIGHT;
         }
         else if(tmp == 1){
             pos.x = rand() % SCREEN_WIDTH;
-            pos.y = 0;
+            pos.y = -0;
         }
         else if(tmp == 2){
-            pos.x = SCREEN_WIDTH;
+            pos.x = SCREEN_WIDTH + 0;
             pos.y = rand() % SCREEN_HEIGHT;
         }
         else if(tmp == 3){
             pos.x = rand() % SCREEN_WIDTH;
-            pos.y = SCREEN_HEIGHT;
+            pos.y = SCREEN_HEIGHT + 0;
         }
     }
 }
 
 float calculateAdjustedAngle(float target_angle, int index) {
-    const float MAX_DEVIATION = 45; 
+    const float MAX_DEVIATION = 10; 
     float deviation = (index * MAX_DEVIATION) - (NUM_THREATS - 1) * MAX_DEVIATION / 2;
     return target_angle + deviation;
 }
