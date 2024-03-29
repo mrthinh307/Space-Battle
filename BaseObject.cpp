@@ -7,7 +7,7 @@ BaseObject::BaseObject(){
 }
 
 BaseObject::~BaseObject(){
-    //TODO
+    free();
 }
 
 void BaseObject::free(){

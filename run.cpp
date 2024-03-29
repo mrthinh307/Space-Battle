@@ -90,8 +90,10 @@ void SDLCommonFunc::Clear()
 
 BaseObject layoutBox;
 BaseObject heart;
-
 FontText heartNumber;
+
+BaseObject timer;
+FontText timeGame;
 
 BaseObject killEnemy;
 FontText Killed;
@@ -111,6 +113,9 @@ vector<Tools*> goldItems;
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
+
+    /* INIT TIME START GAME*/
+    string str_minute = "00 : ";
     
     /* INIT SOUND EFFECTS */
     bool checkLoadSoundEffect = loadSoundEffects();
@@ -170,6 +175,13 @@ int main(int argc, char* args[]){
     goldIcon.setPos(1440, 108);
     goldIcon.setPos2(30, 34);
     bool ret41 = goldIcon.loadIMG("images/Backgrounds/goldicon.png");
+
+    //BaseObject timer;
+    timer.setPos(10, 20);
+    timer.setPos2(50, 50);
+    bool ret51 = timer.loadIMG("images/Backgrounds/timer.png");
+    timeGame.setColor(WHITE_COLOR);
+
 
     /* CREATE MAIN TANK - TANK OBJECT */
     TankObject mainTank;
@@ -276,6 +288,7 @@ int main(int argc, char* args[]){
         rocket.renderCopy(rocket.getPos());
         gold.renderCopy(gold.getPos());
         goldIcon.renderCopy(goldIcon.getPos());
+        timer.renderCopy(timer.getPos());
 
         /* LOAD TANK OBJECT */
         SDL_Rect posTank = mainTank.getPos();
@@ -500,7 +513,32 @@ int main(int argc, char* args[]){
             }
         }
 
-        /* SHOW NUMBER OF HEARTS SCREEN */
+        static int minute = 0;
+        Uint32 timeValue = SDL_GetTicks() / 1000; 
+        static Uint32 lastTimeValue = 0;
+
+        if(timeValue % 60 == 0 && lastTimeValue % 60 == 59){
+            minute++; 
+        }
+
+        lastTimeValue = timeValue;
+
+        if(minute < 10) str_minute = "0" + to_string(minute) + " : ";
+        else str_minute = to_string(minute) + " : ";
+
+        string timeString = to_string(timeValue % 60);
+        if (timeString.length() < 2) {
+            timeString = "0" + timeString;
+        }
+
+        timeGame.setText(str_minute + timeString);
+        timeGame.setPos(75, 20);
+        timeGame.setPos2(60, 50);
+        timeGame.createGameText(gFont);
+
+
+
+
         string heartToString = to_string(currentHeart);
         heartNumber.setText(heartToString);
         heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT - 2);
@@ -625,6 +663,8 @@ void quitSDL(){
 
     explode.free();
     explode1.free();
+
+    timer.free();
 
     // Giải phóng các đối tượng trong vector goldItems
     for (auto& item : goldItems) {
