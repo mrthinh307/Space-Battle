@@ -383,8 +383,13 @@ int main(int argc, char* args[]){
     int MENU = SDLCommonFunc::showMenu();
     if(MENU == 1) quit = true;
 
+    Uint32 timeStart = SDL_GetTicks();
+
     while(!quit){
         frameStart = SDL_GetTicks();
+
+        string current_time;
+
         /* PLAY BATTLE MUSIC */
         if(Mix_PlayingMusic() == 0){
             Mix_PlayMusic(battleMusic, -1);
@@ -435,7 +440,8 @@ int main(int argc, char* args[]){
         mainTank.runBullet();
         mainTank.runRocket();
 
-        /* IMPLEMENT THREATS OBJECT */
+
+        /* IMPLEMENT THREATS OBJECT & EXPLOSION */
         for(int i = 0; i < NUM_THREATS; i++){
             ThreatsObject* p_threat = (p_threats + i);
             if(p_threat != NULL){
@@ -649,7 +655,7 @@ int main(int argc, char* args[]){
         }
 
         static int minute = 0;
-        Uint32 timeValue = SDL_GetTicks() / 1000; 
+        Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000; 
         static Uint32 lastTimeValue = 0;
 
         if(timeValue % 60 == 0 && lastTimeValue % 60 == 59){
@@ -665,8 +671,15 @@ int main(int argc, char* args[]){
         if (timeString.length() < 2) {
             timeString = "0" + timeString;
         }
+        
+        current_time = str_minute + timeString;
 
-        timeGame.setText(str_minute + timeString);
+        if(current_time == "00 : 10" || current_time == "00 : 11"){
+            cout << "CHECK! ";
+            Mix_PlayChannel(-1, warningBoss, 0);
+        }
+
+        timeGame.setText(current_time);
         timeGame.setPos(75, 20);
         timeGame.setPos2(60, 50);
         timeGame.createGameText(gFont);
@@ -913,7 +926,14 @@ bool SDLCommonFunc::loadSoundEffects(){
         cout << "Unable to load menu music. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
-    Mix_VolumeMusic(70);
+    Mix_VolumeMusic(100);
+
+    warningBoss = Mix_LoadWAV("images/SoundEffects/warning_boss.wav");
+    if(warningBoss == NULL){
+        cout << "Unable to load waring boss sound." << " " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(warningBoss, 128);
     
     return check;
 }

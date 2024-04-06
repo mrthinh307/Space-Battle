@@ -51,6 +51,7 @@ static Mix_Chunk* breakGold;
 static Mix_Chunk* menuButton;
 static Mix_Chunk* buttonAction;
 static Mix_Music* menuMusic;
+static Mix_Chunk* warningBoss;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank2.png"};
