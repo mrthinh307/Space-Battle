@@ -246,7 +246,7 @@ int main(int argc, char* args[]){
     string str_minute = "00 : ";
     
     /* INIT SOUND EFFECTS */
-    bool checkLoadSoundEffect = loadSoundEffects();
+    bool checkLoadSoundEffect = SDLCommonFunc::loadSoundEffects();
     if(!checkLoadSoundEffect) return 0; 
 
     /* CREATE BACKGROUND */
@@ -672,8 +672,6 @@ int main(int argc, char* args[]){
         timeGame.createGameText(gFont);
 
 
-
-
         string heartToString = to_string(currentHeart);
         heartNumber.setText(heartToString);
         heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT - 2);
@@ -810,7 +808,7 @@ void quitSDL(){
         item->free();
         delete item;
     }
-    goldItems.clear();
+    goldItems.clear();    
 
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
@@ -830,7 +828,7 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
     }
 }
 
-bool loadSoundEffects(){
+bool SDLCommonFunc::loadSoundEffects(){
     bool check = true;
     gBulletSound[0] = Mix_LoadWAV(gNameBulletSoundOfThreat);
 
@@ -915,7 +913,7 @@ bool loadSoundEffects(){
         cout << "Unable to load menu music. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
-    Mix_VolumeMusic(100);
+    Mix_VolumeMusic(70);
     
     return check;
 }

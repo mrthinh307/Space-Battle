@@ -81,5 +81,6 @@ namespace SDLCommonFunc
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
     bool checkFocusWidthRect(const int& x,const int& y,const SDL_Rect& rect);
     int showMenu();
+    bool loadSoundEffects();
 }
 #endif // COMMON_H_INCLUDED

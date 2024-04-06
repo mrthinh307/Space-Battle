@@ -93,3 +93,4 @@ bool SDLCommonFunc::checkFocusWidthRect(const int& x,const int& y,const SDL_Rect
   }
   return false;
 }
+
