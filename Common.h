@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-const int NUM_THREATS = 6;
+static int NUM_THREATS = 1;
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;

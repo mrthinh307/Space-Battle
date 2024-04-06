@@ -91,6 +91,14 @@ void SDLCommonFunc::Clear()
 
     Mix_FreeChunk(buttonAction);
     buttonAction = NULL;
+
+    Mix_FreeChunk(warningBoss);
+    warningBoss = NULL;
+
+    if(menuMusic != NULL){
+        Mix_FreeMusic(menuMusic);
+        menuMusic = NULL;
+    }
 }
 
 int SDLCommonFunc::showMenu(){
@@ -216,6 +224,8 @@ int SDLCommonFunc::showMenu(){
     return 1;
 }
 
+void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
+
 BaseObject layoutBox;
 BaseObject heart;
 FontText heartNumber;
@@ -237,6 +247,8 @@ BaseObject gold;
 FontText goldText;
 BaseObject goldIcon;
 vector<Tools*> goldItems;
+
+BaseObject warningNoti;
 
 int main(int argc, char* args[]){
     initSDL();
@@ -310,6 +322,10 @@ int main(int argc, char* args[]){
     bool ret51 = timer.loadIMG("images/Backgrounds/timer.png");
     timeGame.setColor(WHITE_COLOR);
 
+    warningNoti.setPos((SCREEN_WIDTH - 1000) / 2, (SCREEN_HEIGHT - 177) / 2);
+    warningNoti.setPos2(1000, 177);
+    bool ret6 = warningNoti.loadIMG("images/Backgrounds/warningboss.png");
+
 
     /* CREATE MAIN TANK - TANK OBJECT */
     TankObject mainTank;
@@ -366,8 +382,10 @@ int main(int argc, char* args[]){
     }
 
     /*-----------------------RUN GAME---------------------------*/
+
+    /* SET FPS */
     const int FPS = 60;
-    const int frameDelay = 888 / FPS;
+    const int frameDelay = 850 / FPS;
 
     Uint32 frameStart;
     int frameTime;
@@ -388,7 +406,7 @@ int main(int argc, char* args[]){
     while(!quit){
         frameStart = SDL_GetTicks();
 
-        string current_time;
+        static string current_time;
 
         /* PLAY BATTLE MUSIC */
         if(Mix_PlayingMusic() == 0){
@@ -674,10 +692,9 @@ int main(int argc, char* args[]){
         
         current_time = str_minute + timeString;
 
-        if(current_time == "00 : 10" || current_time == "00 : 11"){
-            cout << "CHECK! ";
-            Mix_PlayChannel(-1, warningBoss, 0);
-        }
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 05", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 06", current_time, warningBoss);
+
 
         timeGame.setText(current_time);
         timeGame.setPos(75, 20);
@@ -710,6 +727,7 @@ int main(int argc, char* args[]){
         goldText.createGameText(gFont);
 
         SDL_RenderPresent(gRenderer);
+        // SET FPS
         frameTime = SDL_GetTicks() - frameStart;
         if(frameDelay > frameTime){
             SDL_Delay(frameDelay - frameTime);
@@ -821,7 +839,9 @@ void quitSDL(){
         item->free();
         delete item;
     }
-    goldItems.clear();    
+    goldItems.clear();  
+
+    warningNoti.free();  
 
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
@@ -938,5 +958,26 @@ bool SDLCommonFunc::loadSoundEffects(){
     return check;
 }
 
+void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound) {
+    static Uint32 lastBlinkTime = 0;
+    static bool transparent = false;
 
+    Uint32 currentTime = SDL_GetTicks();
+
+    if (currentTime - lastBlinkTime > 200) {
+        transparent = !transparent;
+        lastBlinkTime = currentTime;
+    }
+
+    if (current_time == target_time && !transparent) {
+        if (transparent) {
+            SDL_SetTextureAlphaMod(texture, 150); // Giả sử alpha là 100 (trong suốt)
+        } else {
+            SDL_SetTextureAlphaMod(texture, 255); // Giả sử alpha là 255 (không trong suốt)
+        }
+
+        SDL_RenderCopy(gRenderer, texture, NULL, &position);
+        Mix_PlayChannel(-1, sound, 0);
+    }
+}
 

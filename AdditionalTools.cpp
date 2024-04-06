@@ -31,12 +31,13 @@ Tools::~Tools(){
         }
     }
     expGold.clear();  
+    freeGoldTexture();
 }
 
 SDL_Texture* Tools::getGoldItem() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 80 ) { // 40% chance (5% + 40%)
+    if (randomNumber <= 70 ) { // 40% chance (5% + 40%)
         value = 1;
         pos.w = goldWidth[0];
         pos.h = goldHeight[0];
@@ -81,9 +82,18 @@ void Tools::setGoldTexture(){
     expGold[5] = SDLCommonFunc::loadImage("images/Utils/P103947/exp6.png");
     expGold[6] = SDLCommonFunc::loadImage("images/Utils/P103947/exp7.png");
     expGold[7] = SDLCommonFunc::loadImage("images/Utils/P103947/exp8.png");
-    expGold[7] = SDLCommonFunc::loadImage("images/Utils/P103947/exp9.png");
+    expGold[8] = SDLCommonFunc::loadImage("images/Utils/P103947/exp9.png");
 }
 
 void Tools::renderCopy2(){
     SDLCommonFunc::render(expGold[frame], pos);
+}
+
+void Tools::freeGoldTexture(){
+    for(int i = 0; i < 2; i++){
+        if(goldItem[i] != NULL){
+            SDL_DestroyTexture(goldItem[i]);
+            goldItem[i] = NULL;
+        }
+    }
 }

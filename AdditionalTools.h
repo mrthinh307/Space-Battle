@@ -28,8 +28,10 @@ public:
     void setGoldTexture();
     void renderCopy2();
 
+    void freeGoldTexture();
+
 private:
-    SDL_Texture* goldItem[4];
+    SDL_Texture* goldItem[2];
     int goldWidth[2];
     int goldHeight[2];
     unsigned  value;
