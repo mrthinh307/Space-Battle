@@ -86,6 +86,134 @@ void SDLCommonFunc::Clear()
     Mix_FreeMusic(battleMusic);
     battleMusic = NULL;
 
+    Mix_FreeChunk(menuButton);
+    menuButton = NULL;
+
+    Mix_FreeChunk(buttonAction);
+    buttonAction = NULL;
+}
+
+int SDLCommonFunc::showMenu(){
+    SDL_Texture* gMenu[4];
+    gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
+    gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu0.jpg");
+    gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
+    gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
+
+    const int MenuItems = 3;
+    SDL_Rect posItem[MenuItems];
+    
+    posItem[0] = {590, 390, 290, 40};
+    posItem[1] = {590, 460, 290, 40};
+    posItem[2] = {590, 530, 290, 40};
+
+    bool selected[MenuItems] = {0, 0, 0};
+
+    SDL_Event m_event; 
+    int x_m = 0;
+    int y_m =  0;
+    int lastMenuIndex = -1;
+    SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
+    while(true){
+        if( Mix_PlayingMusic() == 0 )
+        {
+            //Play the music
+            Mix_PlayMusic( menuMusic, -1 );
+        }
+        int menuIndex = -1;
+        while(SDL_PollEvent(&m_event)){
+            switch(m_event.type){
+                case SDL_QUIT:
+                {
+                   if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
+                        Mix_PauseMusic();
+                        Mix_FreeMusic(menuMusic);
+                        menuMusic = NULL;
+                        for(int i = 0; i < 4; i++){
+                            SDL_DestroyTexture(gMenu[i]);
+                            gMenu[i] = NULL;
+                        }
+                   }
+                    return 1;
+                }
+                case SDL_MOUSEMOTION:
+                    {
+                        x_m = m_event.button.x;
+                        y_m = m_event.button.y;
+                        
+                        for(int i = 0; i < MenuItems; i++){
+                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
+                                menuIndex = i;
+                                break;
+                            }
+                        }
+
+                        if (menuIndex != -1) {
+                            SDL_RenderCopy(gRenderer, gMenu[menuIndex], NULL, NULL);
+                            if(lastMenuIndex != menuIndex)
+                                Mix_PlayChannel(-1, menuButton, 0);
+                        } else {
+                            SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
+                        }
+                        SDL_RenderPresent(gRenderer);
+                        lastMenuIndex = menuIndex;
+                    }
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    {
+                        x_m = m_event.button.x;
+                        y_m = m_event.button.y;
+
+                        for(int i = 0; i < MenuItems; i++){
+                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
+                                Mix_PlayChannel(-1, buttonAction, 0);
+                                if(i != 2){
+                                    if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
+                                        Mix_PauseMusic();
+                                        Mix_FreeMusic(menuMusic);
+                                        menuMusic = NULL;
+                                        for(int i = 0; i < 4; i++){
+                                            SDL_DestroyTexture(gMenu[i]);
+                                            gMenu[i] = NULL;
+                                        }
+                                    }
+                                }
+                                SDL_Delay(1000);
+                                return i;
+                            }
+                        }
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    if(m_event.key.keysym.sym == SDLK_ESCAPE){
+                        SDL_RenderCopy(gRenderer, gMenu[1], NULL, NULL);
+                        if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
+                            Mix_PauseMusic();
+                            Mix_FreeMusic(menuMusic);
+                            menuMusic = NULL;
+                            for(int i = 0; i < 4; i++){
+                                SDL_DestroyTexture(gMenu[i]);
+                                gMenu[i] = NULL;
+                            }
+                        }
+                        SDL_RenderPresent(gRenderer);
+                        return 1;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (menuIndex != -1) {
+            SDL_RenderCopy(gRenderer, gMenu[menuIndex], NULL, NULL);
+        } else {
+            SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
+        }
+        SDL_RenderPresent(gRenderer);
+        
+    }
+    return 1;
 }
 
 BaseObject layoutBox;
@@ -238,7 +366,11 @@ int main(int argc, char* args[]){
     }
 
     /*-----------------------RUN GAME---------------------------*/
+    const int FPS = 60;
+    const int frameDelay = 888 / FPS;
 
+    Uint32 frameStart;
+    int frameTime;
 
     bool quit = false;
     SDL_Event e;
@@ -248,8 +380,11 @@ int main(int argc, char* args[]){
     bool rocketAdded = false;
     unsigned int currentGold = 0;
 
+    int MENU = SDLCommonFunc::showMenu();
+    if(MENU == 1) quit = true;
+
     while(!quit){
-        
+        frameStart = SDL_GetTicks();
         /* PLAY BATTLE MUSIC */
         if(Mix_PlayingMusic() == 0){
             Mix_PlayMusic(battleMusic, -1);
@@ -564,6 +699,10 @@ int main(int argc, char* args[]){
         goldText.createGameText(gFont);
 
         SDL_RenderPresent(gRenderer);
+        frameTime = SDL_GetTicks() - frameStart;
+        if(frameDelay > frameTime){
+            SDL_Delay(frameDelay - frameTime);
+        }
     }
      
     delete[] p_threats;
@@ -756,6 +895,27 @@ bool loadSoundEffects(){
         check = false;
     }
     Mix_VolumeChunk(breakGold, 128);
+
+    menuButton = Mix_LoadWAV("images/SoundEffects/menu.wav");
+    if(menuButton == NULL){
+        cout << "Unable to load menu button sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(menuButton, 128);
+
+    buttonAction = Mix_LoadWAV("images/SoundEffects/button.wav");
+    if(buttonAction == NULL){
+        cout << "Unable to load menu button action sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(buttonAction, 128);
+
+    menuMusic = Mix_LoadMUS("images/SoundEffects/menuMusic.wav");
+    if(menuMusic == NULL){
+        cout << "Unable to load menu music. SDL_mixer error: " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeMusic(100);
     
     return check;
 }

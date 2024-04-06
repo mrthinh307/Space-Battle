@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-const int NUM_THREATS = 1;
+const int NUM_THREATS = 6;
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;
@@ -48,6 +48,9 @@ static Mix_Chunk* gameOver;
 static Mix_Music* battleMusic;
 static Mix_Chunk* getGold;
 static Mix_Chunk* breakGold;
+static Mix_Chunk* menuButton;
+static Mix_Chunk* buttonAction;
+static Mix_Music* menuMusic;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank2.png"};
@@ -76,6 +79,7 @@ namespace SDLCommonFunc
     void Clear();
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2, int offset);
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
-    
+    bool checkFocusWidthRect(const int& x,const int& y,const SDL_Rect& rect);
+    int showMenu();
 }
 #endif // COMMON_H_INCLUDED
