@@ -29,14 +29,15 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
         if(optimizedSurface == NULL){
             cout << "Unable to optimized surface! SDL Error: " << SDL_GetError() << endl;
         }
+        else{
+            SDL_FreeSurface(loadedSurface);
+            newTexture = SDL_CreateTextureFromSurface(gRenderer, optimizedSurface);
 
-        SDL_FreeSurface(loadedSurface);
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, optimizedSurface);
-
-        if(newTexture == nullptr){
-            cout << "Unable to create texture from " << path << " SDL Error: " << SDL_GetError() << endl;
+            if(newTexture == nullptr){
+                cout << "Unable to create texture from " << path << " SDL Error: " << SDL_GetError() << endl;
+            }
+            SDL_FreeSurface(optimizedSurface);        
         }
-        SDL_FreeSurface(optimizedSurface);
     }
     return newTexture;
 }
@@ -54,8 +55,6 @@ SDL_Texture* SDLCommonFunc::loadText(string textureText, SDL_Color textColor, TT
 }
 
 void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
-
-    //Render to screen
     SDL_RenderCopyEx(gRenderer, loadedTexture, NULL, &clip, angle, center, flip);
 }
 
@@ -76,24 +75,36 @@ void SDLCommonFunc::Clear()
         gExpSound[i] = NULL;
     }
 
-    Mix_FreeChunk(gameOver);
-    gameOver = NULL;
+    if(gameOver != NULL){
+        Mix_FreeChunk(gameOver);
+        gameOver = NULL;        
+    }
 
-    Mix_FreeChunk(gRocketSound);
-    gRocketSound = NULL;
+    if(gRocketSound != NULL){
+        Mix_FreeChunk(gRocketSound);
+        gRocketSound = NULL;    
+    }
 
-    //Free music
-    Mix_FreeMusic(battleMusic);
-    battleMusic = NULL;
+    if(battleMusic != NULL){
+        //Free music
+        Mix_FreeMusic(battleMusic);
+        battleMusic = NULL; 
+    }
 
-    Mix_FreeChunk(menuButton);
-    menuButton = NULL;
+    if(menuButton != NULL){
+        Mix_FreeChunk(menuButton);
+        menuButton = NULL;        
+    }
 
-    Mix_FreeChunk(buttonAction);
-    buttonAction = NULL;
+    if(buttonAction != NULL){
+        Mix_FreeChunk(buttonAction);
+        buttonAction = NULL; 
+    }
 
-    Mix_FreeChunk(warningBoss);
-    warningBoss = NULL;
+    if(warningBoss != NULL){
+        Mix_FreeChunk(warningBoss);
+        warningBoss = NULL;
+    }
 
     if(menuMusic != NULL){
         Mix_FreeMusic(menuMusic);
@@ -103,10 +114,11 @@ void SDLCommonFunc::Clear()
 
 int SDLCommonFunc::showMenu(){
     SDL_Texture* gMenu[4];
-    gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
+
     gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu0.jpg");
     gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
     gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
+    gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
 
     const int MenuItems = 3;
     SDL_Rect posItem[MenuItems];
@@ -121,14 +133,19 @@ int SDLCommonFunc::showMenu(){
     int x_m = 0;
     int y_m =  0;
     int lastMenuIndex = -1;
+    int menuIndex;
+
+    if( Mix_PlayingMusic() == 0 )
+    {
+        //Play the music
+        Mix_PlayMusic( menuMusic, -1 );
+    }
+
     SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
+    SDL_RenderPresent(gRenderer);
+    
     while(true){
-        if( Mix_PlayingMusic() == 0 )
-        {
-            //Play the music
-            Mix_PlayMusic( menuMusic, -1 );
-        }
-        int menuIndex = -1;
+        menuIndex = -1;
         while(SDL_PollEvent(&m_event)){
             switch(m_event.type){
                 case SDL_QUIT:
@@ -192,39 +209,26 @@ int SDLCommonFunc::showMenu(){
                         }
                     }
                     break;
-                case SDL_KEYDOWN:
-                    if(m_event.key.keysym.sym == SDLK_ESCAPE){
-                        SDL_RenderCopy(gRenderer, gMenu[1], NULL, NULL);
-                        if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
-                            Mix_PauseMusic();
-                            Mix_FreeMusic(menuMusic);
-                            menuMusic = NULL;
-                            for(int i = 0; i < 4; i++){
-                                SDL_DestroyTexture(gMenu[i]);
-                                gMenu[i] = NULL;
-                            }
-                        }
-                        SDL_RenderPresent(gRenderer);
-                        return 1;
-                    }
-                    break;
                 default:
                     break;
             }
         }
 
-        if (menuIndex != -1) {
-            SDL_RenderCopy(gRenderer, gMenu[menuIndex], NULL, NULL);
-        } else {
-            SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
-        }
-        SDL_RenderPresent(gRenderer);
-        
     }
+    
+    // Clean up resources
+    for (int i = 0; i < 4; ++i) {
+        SDL_DestroyTexture(gMenu[i]);
+        gMenu[i] = NULL;
+    }
+
     return 1;
 }
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
+
+TankObject mainTank;
+ThreatsObject* p_threats = new ThreatsObject[NUM_THREATS];
 
 BaseObject layoutBox;
 BaseObject heart;
@@ -328,12 +332,7 @@ int main(int argc, char* args[]){
 
 
     /* CREATE MAIN TANK - TANK OBJECT */
-    TankObject mainTank;
     bool check = mainTank.loadIMG(gNameMainTank);
-    if(check == false){
-        cout << "Unable to load Main Tank! " << SDL_GetError() << endl;
-        return 0;
-    }
     
     /* INIT EXPLODE OBJECT */
     // ExplosionObject explode;
@@ -342,7 +341,6 @@ int main(int argc, char* args[]){
     explode1.setTexture();
 
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
-    ThreatsObject * p_threats = new ThreatsObject[NUM_THREATS];
     for(int i = 0; i < NUM_THREATS; ++i){
 
         // THREATS OBJECT
@@ -496,7 +494,6 @@ int main(int argc, char* args[]){
 
                         explode.renderCopy2();
                         explode1.renderCopy2();
-                        SDL_Delay(48);
                         SDL_RenderPresent(gRenderer);
                     }
 
@@ -504,7 +501,6 @@ int main(int argc, char* args[]){
                     Mix_PauseMusic();
                     Mix_PlayChannel(-1, gExpSound[1], 0);
                     Mix_PlayChannel(-1, gExpSound[0], 0);
-                    SDL_Delay(888);
                     Mix_PlayChannel(-1, gameOver, 0);
 
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
@@ -523,7 +519,7 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         int x, y;
                         if(checkColl){
-                            int ran = rand() % 3 + 1;
+                            int ran = rand() % 2 + 1;
                             if(ran == 1){
                                 Tools* aGoldItem = new Tools();
                                 aGoldItem->setGoldTexture();
@@ -685,15 +681,15 @@ int main(int argc, char* args[]){
         if(minute < 10) str_minute = "0" + to_string(minute) + " : ";
         else str_minute = to_string(minute) + " : ";
 
-        string timeString = to_string(timeValue % 60);
-        if (timeString.length() < 2) {
-            timeString = "0" + timeString;
+        string secondString = to_string(timeValue % 60);
+        if (secondString.length() < 2) {
+            secondString = "0" + secondString;
         }
         
-        current_time = str_minute + timeString;
+        current_time = str_minute + secondString;
 
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 05", current_time, warningBoss);
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 06", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "01 : 24", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "01 : 25", current_time, warningBoss);
 
 
         timeGame.setText(current_time);
@@ -727,14 +723,24 @@ int main(int argc, char* args[]){
         goldText.createGameText(gFont);
 
         SDL_RenderPresent(gRenderer);
+
         // SET FPS
         frameTime = SDL_GetTicks() - frameStart;
         if(frameDelay > frameTime){
             SDL_Delay(frameDelay - frameTime);
         }
     }
-     
+
+    // CLEAR THREAT TEXTURE
+    for(int i = 0; i < NUM_THREATS; i++){
+        ThreatsObject* p_threat = p_threats + i;
+        if(p_threat != NULL){
+            p_threat->free();
+        }
+    }
+
     delete[] p_threats;
+
     SDLCommonFunc::Clear();
     quitSDL();
     return 0;
@@ -796,6 +802,8 @@ void initSDL(){
 }
 
 void quitSDL(){
+    mainTank.free();
+
     // Giải phóng biến Killed
     Killed.free();
 
@@ -829,13 +837,14 @@ void quitSDL(){
     // Giải phóng biến goldIcon
     goldIcon.free();
 
-    explode.free();
-    explode1.free();
+    explode.clearTexture();
+    explode1.clearTexture();
 
     timer.free();
+    timeGame.free();
 
     // Giải phóng các đối tượng trong vector goldItems
-    for (auto& item : goldItems) {
+    for(auto& item : goldItems) {
         item->free();
         delete item;
     }
@@ -863,12 +872,6 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
 
 bool SDLCommonFunc::loadSoundEffects(){
     bool check = true;
-    gBulletSound[0] = Mix_LoadWAV(gNameBulletSoundOfThreat);
-
-    if(gBulletSound[0] == NULL){
-        cout << "Unable to load sphere sound effects. SDL_mixer error: " << Mix_GetError() << endl;
-        check = false;
-    }
 
     gBulletSound[1] = Mix_LoadWAV(gNameBulletSoundOfTank);
 

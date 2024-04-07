@@ -5,7 +5,7 @@ FontText::FontText(){
 }
 
 FontText::~FontText(){
-
+    free();
 }
 
 void FontText::createGameText(TTF_Font* font){

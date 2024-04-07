@@ -17,9 +17,25 @@ TankObject::TankObject(){
     // rocketTexture.resize(ROCKET_ANIMATION_FRAMES, NULL); 
 }
 
-TankObject::~TankObject(){
-    ;
+TankObject::~TankObject() {
+    for (int i = 0; i < bulletOfTankList.size(); ++i) {
+        BulletObject* p_bullet = bulletOfTankList.at(i);
+        delete p_bullet;
+        p_bullet = nullptr;
+    }
+    bulletOfTankList.clear();
+
+    for (int i = 0; i < rocketOfTankList.size(); ++i) {
+        BulletObject* p_rocket = rocketOfTankList.at(i);
+        if (p_rocket != nullptr) {
+            p_rocket->clearRocketTexture();
+            delete p_rocket;
+            p_rocket = nullptr;
+        }
+    }
+    rocketOfTankList.clear();
 }
+
 
 void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]) {
     if (e.type == SDL_KEYDOWN) {
@@ -215,8 +231,6 @@ void TankObject::runRocket() {
         }
     }
 }
-
-
 
 void TankObject::removeRocket(const int& idx){
     for(int i = 0; i < rocketOfTankList.size(); i++){

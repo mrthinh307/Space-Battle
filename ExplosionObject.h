@@ -19,7 +19,7 @@ public:
     void setTexture();
     void renderCopy2();
 
-    void free();
+    void clearTexture();
 
 private:
     int frame;

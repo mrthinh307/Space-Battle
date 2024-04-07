@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-static int NUM_THREATS = 1;
+static int NUM_THREATS = 0;
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;
@@ -60,7 +60,6 @@ static char gNameThreatsObject[] = {"images/ThreatsObject/60x49.png"};
 static char gNameBulletOfMainTank[] = {"images/Bullets/defbullet.png"};
 static char gNameBulletOfThreatsObject[] = {"images/Bullets/sphere.png"};
 
-static char gNameBulletSoundOfThreat[] = {"images/SoundEffects/enemyBullet.wav"};
 static char gNameBulletSoundOfTank[] = {"images/SoundEffects/playerBullet.wav"};
 static char gNameRocketSoundOfTank[] = {"images/SoundEffects/runRocket.wav"};
 
