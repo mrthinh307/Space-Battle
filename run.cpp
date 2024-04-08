@@ -383,7 +383,7 @@ int main(int argc, char* args[]){
 
     /* SET FPS */
     const int FPS = 60;
-    const int frameDelay = 850 / FPS;
+    const int frameDelay = 1000 / FPS;
 
     Uint32 frameStart;
     int frameTime;
@@ -695,6 +695,7 @@ int main(int argc, char* args[]){
         timeGame.setText(current_time);
         timeGame.setPos(75, 20);
         timeGame.setPos2(60, 50);
+        timeGame.free();
         timeGame.createGameText(gFont);
 
 
@@ -702,24 +703,28 @@ int main(int argc, char* args[]){
         heartNumber.setText(heartToString);
         heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT - 2);
         heartNumber.setPos2(22, 22);
+        heartNumber.free();
         heartNumber.createGameText(gFont);
 
         string killedToString = to_string(currentKilled);
         Killed.setText(killedToString);
         Killed.setPos(1388, 20);
         Killed.setPos2(45, 45);
+        Killed.free();
         Killed.createGameText(gFont);
 
         string rocketToString = to_string(mainTank.getRocket());
         rocketText.setText(rocketToString);
         rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
         rocketText.setPos2(22, 22);
+        rocketText.free();
         rocketText.createGameText(gFont);
 
         string goldToString = to_string(currentGold);
         goldText.setText(goldToString);
         goldText.setPos(1388, 100);
         goldText.setPos2(45, 45);
+        goldText.free();
         goldText.createGameText(gFont);
 
         SDL_RenderPresent(gRenderer);
