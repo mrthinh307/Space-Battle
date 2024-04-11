@@ -5,8 +5,8 @@
 #include "BaseObject.h"
 #include "BulletObject.h"
 
-#define WIDTH_TANK_OBJECT 60
-#define HEIGHT_TANK_OBJECT 52
+#define WIDTH_TANK_OBJECT 70
+#define HEIGHT_TANK_OBJECT 67
 
 #define SPEED_BULLET_MAIN_TANK 8.0
 #define SPEED_ROCKET_MAIN_TANK 8.0
@@ -58,6 +58,7 @@ private:
     unsigned int currentRocket;
     SDL_Rect spriteTank_1[TANK_1_FRAME];
     static int frame;
+
 };
 
 #endif // TANKOBJECT_H_INCLUDED

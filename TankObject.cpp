@@ -161,8 +161,8 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
 }
 
 void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
+    pos.x += x_val * (WIDTH_TANK_OBJECT / 18);
+    pos.y += y_val * (HEIGHT_TANK_OBJECT / 18);
 
     // Check screen boundaries and wrap around if necessary
     if (pos.x < 0) {
@@ -252,35 +252,35 @@ int TankObject::frame = 0;
 void TankObject::Set_sprite_clips(){
     spriteTank_1[0].x = 0;
     spriteTank_1[0].y = 0;
-    spriteTank_1[0].w = 60;
-    spriteTank_1[0].h = 57;
+    spriteTank_1[0].w = 70;
+    spriteTank_1[0].h = 67;
 
-    spriteTank_1[1].x = 60;
+    spriteTank_1[1].x = 70;
     spriteTank_1[1].y = 0;
-    spriteTank_1[1].w = 60;
-    spriteTank_1[1].h = 57;
+    spriteTank_1[1].w = 70;
+    spriteTank_1[1].h = 67;
 
-    spriteTank_1[2].x = 120;
+    spriteTank_1[2].x = 140;
     spriteTank_1[2].y = 0;
-    spriteTank_1[2].w = 60;
-    spriteTank_1[2].h = 57;
+    spriteTank_1[2].w = 70;
+    spriteTank_1[2].h = 67;
     
-    spriteTank_1[3].x = 180;
+    spriteTank_1[3].x = 210;
     spriteTank_1[3].y = 0;
-    spriteTank_1[3].w = 60;
-    spriteTank_1[3].h = 53;
+    spriteTank_1[3].w = 70;
+    spriteTank_1[3].h = 67;
 
-    spriteTank_1[4].x = 240;
+    spriteTank_1[4].x = 280;
     spriteTank_1[4].y = 0;
-    spriteTank_1[4].w = 60;
-    spriteTank_1[4].h = 51;
+    spriteTank_1[4].w = 70;
+    spriteTank_1[4].h = 67;
 }
 
 void TankObject::runMainTank(){
     SDL_Rect* currentClip = &spriteTank_1[frame / TANK_1_FRAME];
     SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
     SDL_RenderPresent(gRenderer);
-    frame++;
+       frame++; 
     if( (frame / TANK_1_FRAME) >= TANK_1_FRAME )
     {
         frame = 0;

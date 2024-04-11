@@ -294,8 +294,6 @@ int main(int argc, char* args[]){
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
 
-    /* SET CLIP FOR MAIN TANK */
-    mainTank.Set_sprite_clips();
 
     //BaseObject layoutBox;
     layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
@@ -347,6 +345,7 @@ int main(int argc, char* args[]){
 
     /* CREATE MAIN TANK - TANK OBJECT */
     bool check = mainTank.loadIMG(gNameMainTank);
+    mainTank.Set_sprite_clips();
 
     /* INIT EXPLODE OBJECT */
     explode.setTexture();
@@ -426,11 +425,11 @@ int main(int argc, char* args[]){
         SDL_Rect posTank = mainTank.getPos();
         double flipTank = mainTank.getDegrees();
         SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
-        mainTank.handleMove();
         mainTank.runMainTank();
+        mainTank.handleMove();
         // Run bullets of tank object
         mainTank.runBullet();
-        mainTank.runRocket();s
+        mainTank.runRocket();
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
