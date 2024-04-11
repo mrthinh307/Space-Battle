@@ -10,7 +10,6 @@ void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
 bool loadSoundEffects();
-
 SDL_Texture* SDLCommonFunc::loadImage( string path){
     SDL_Texture* newTexture = NULL;
 
@@ -36,7 +35,7 @@ SDL_Texture* SDLCommonFunc::loadImage( string path){
             if(newTexture == nullptr){
                 cout << "Unable to create texture from " << path << " SDL Error: " << SDL_GetError() << endl;
             }
-            SDL_FreeSurface(optimizedSurface);        
+            SDL_FreeSurface(optimizedSurface);
         }
     }
     return newTexture;
@@ -50,12 +49,20 @@ SDL_Texture* SDLCommonFunc::loadText(string textureText, SDL_Color textColor, TT
     newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
 
     SDL_FreeSurface(loadedSurface);
-    
+
     return newTexture;
 }
 
 void SDLCommonFunc::render(SDL_Texture* loadedTexture, SDL_Rect clip, double angle , SDL_Point* center , SDL_RendererFlip flip ) {
     SDL_RenderCopyEx(gRenderer, loadedTexture, NULL, &clip, angle, center, flip);
+}
+
+void SDLCommonFunc::render_for_sprite(SDL_Texture* mTexture, int x, int y, SDL_Rect* clip, double angle , SDL_Point* center , SDL_RendererFlip flip ){
+	//Set rendering space and render to screen
+	SDL_Rect renderQuad = { x, y, clip->w, clip->h};
+
+	//Render to screen
+	SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
 void SDLCommonFunc::Clear()
@@ -77,28 +84,28 @@ void SDLCommonFunc::Clear()
 
     if(gameOver != NULL){
         Mix_FreeChunk(gameOver);
-        gameOver = NULL;        
+        gameOver = NULL;
     }
 
     if(gRocketSound != NULL){
         Mix_FreeChunk(gRocketSound);
-        gRocketSound = NULL;    
+        gRocketSound = NULL;
     }
 
     if(battleMusic != NULL){
         //Free music
         Mix_FreeMusic(battleMusic);
-        battleMusic = NULL; 
+        battleMusic = NULL;
     }
 
     if(menuButton != NULL){
         Mix_FreeChunk(menuButton);
-        menuButton = NULL;        
+        menuButton = NULL;
     }
 
     if(buttonAction != NULL){
         Mix_FreeChunk(buttonAction);
-        buttonAction = NULL; 
+        buttonAction = NULL;
     }
 
     if(warningBoss != NULL){
@@ -122,28 +129,28 @@ int SDLCommonFunc::showMenu(){
 
     const int MenuItems = 3;
     SDL_Rect posItem[MenuItems];
-    
+
     posItem[0] = {590, 390, 290, 40};
     posItem[1] = {590, 460, 290, 40};
     posItem[2] = {590, 530, 290, 40};
 
     bool selected[MenuItems] = {0, 0, 0};
 
-    SDL_Event m_event; 
+    SDL_Event m_event;
     int x_m = 0;
     int y_m =  0;
     int lastMenuIndex = -1;
     int menuIndex;
 
-    if( Mix_PlayingMusic() == 0 )
-    {
-        //Play the music
-        Mix_PlayMusic( menuMusic, -1 );
-    }
+    // if( Mix_PlayingMusic() == 0 )
+    // {
+    //     //Play the music
+    //     Mix_PlayMusic( menuMusic, -1 );
+    // }
 
     SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
     SDL_RenderPresent(gRenderer);
-    
+
     while(true){
         menuIndex = -1;
         while(SDL_PollEvent(&m_event)){
@@ -165,7 +172,7 @@ int SDLCommonFunc::showMenu(){
                     {
                         x_m = m_event.button.x;
                         y_m = m_event.button.y;
-                        
+
                         for(int i = 0; i < MenuItems; i++){
                             if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
                                 menuIndex = i;
@@ -215,7 +222,7 @@ int SDLCommonFunc::showMenu(){
         }
 
     }
-    
+
     // Clean up resources
     for (int i = 0; i < 4; ++i) {
         SDL_DestroyTexture(gMenu[i]);
@@ -227,8 +234,13 @@ int SDLCommonFunc::showMenu(){
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
 
+/* INT THREATS */
+void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path);
+
+void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const int& idx);
+
 TankObject mainTank;
-ThreatsObject* p_threats = new ThreatsObject[NUM_THREATS];
+static vector<ThreatsObject*> p_threats;
 
 BaseObject layoutBox;
 BaseObject heart;
@@ -254,16 +266,19 @@ vector<Tools*> goldItems;
 
 BaseObject warningNoti;
 
+// Boss* boss_1 = new Boss();
+// boss_1->Set_sprite_clips();
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
 
     /* INIT TIME START GAME*/
     string str_minute = "00 : ";
-    
+
     /* INIT SOUND EFFECTS */
     bool checkLoadSoundEffect = SDLCommonFunc::loadSoundEffects();
-    if(!checkLoadSoundEffect) return 0; 
+    if(!checkLoadSoundEffect) return 0;
 
     /* CREATE BACKGROUND */
     gBackground = SDLCommonFunc::loadImage(gNameBackground);
@@ -283,18 +298,18 @@ int main(int argc, char* args[]){
     layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
     layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
     bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
-    
+
     //BaseObject heart;
     heart.setPos(10, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
     heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
-    bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");    
+    bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");
     //FontText heartNumber;
     heartNumber.setColor(RED_COLOR);
 
     //BaseObject killEnemy;
     killEnemy.setPos(1320, 20);
     killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
-    bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");  
+    bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");
     //FontText Killed;
     Killed.setColor(CYAN_COLOR);
     //BaseObject killIcon;
@@ -307,20 +322,16 @@ int main(int argc, char* args[]){
     rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
     bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
     //FontText rocketText;
-    rocketText.setColor(GREEN_COLOR); 
+    rocketText.setColor(GREEN_COLOR);
 
-    //BaseObject gold;
     gold.setPos(1320, 100);
     gold.setPos2(50, 50);
     bool ret4 = gold.loadIMG("images/Backgrounds/gold.png");
-    //FontText goldText;
     goldText.setColor(YELLOW_COLOR);
-    //BaseObject goldIcon;
     goldIcon.setPos(1440, 108);
     goldIcon.setPos2(30, 34);
     bool ret41 = goldIcon.loadIMG("images/Backgrounds/goldicon.png");
 
-    //BaseObject timer;
     timer.setPos(10, 20);
     timer.setPos2(50, 50);
     bool ret51 = timer.loadIMG("images/Backgrounds/timer.png");
@@ -333,51 +344,13 @@ int main(int argc, char* args[]){
 
     /* CREATE MAIN TANK - TANK OBJECT */
     bool check = mainTank.loadIMG(gNameMainTank);
-    
+
     /* INIT EXPLODE OBJECT */
-    // ExplosionObject explode;
-    // ExplosionObject explode1;
     explode.setTexture();
     explode1.setTexture();
 
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
-    for(int i = 0; i < NUM_THREATS; ++i){
-
-        // THREATS OBJECT
-        ThreatsObject* p_threat = p_threats + i;
-        if(p_threat != NULL){
-            bool check1 = p_threat->loadIMG(gNameThreatsObject);
-            if(!check1){
-                cout <<"Unable to load Threat Images! " << endl;
-                return 0;
-            }
-            int rand_x, rand_y;
-            int tmp = rand() % 4;
-            if(tmp == 0){
-                rand_x = 0;
-                rand_y = rand() % SCREEN_HEIGHT;
-            }
-            else if(tmp == 1){
-                rand_x = rand() % SCREEN_WIDTH ;
-                rand_y = 0;
-            }
-            else if(tmp == 2){
-                rand_x = SCREEN_WIDTH;
-                rand_y = rand() % SCREEN_HEIGHT;
-            }
-            else if(tmp == 3){
-                rand_x = rand() % SCREEN_WIDTH;
-                rand_y = SCREEN_HEIGHT;
-            }
-
-            p_threat->setPos(rand_x, rand_y);
-
-            // BULLET OF THREATS OBJECT
-            BulletObject* t_bull = new BulletObject();
-            p_threat->initBullet(t_bull);
-        }
-
-    }
+    initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject);
 
     /*-----------------------RUN GAME---------------------------*/
 
@@ -407,9 +380,9 @@ int main(int argc, char* args[]){
         static string current_time;
 
         /* PLAY BATTLE MUSIC */
-        if(Mix_PlayingMusic() == 0){
-            Mix_PlayMusic(battleMusic, -1);
-        }
+        // if(Mix_PlayingMusic() == 0){
+        //     Mix_PlayMusic(battleMusic, -1);
+        // }
 
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -456,21 +429,39 @@ int main(int argc, char* args[]){
         mainTank.runBullet();
         mainTank.runRocket();
 
+        /* RUN BOSS LEVEL 1*/
+        static bool add = false;
+        int idx_Boss_1;
+        if(SDL_GetTicks() - timeStart >= 1000 && add == false){
+            NUM_THREATS++;
+            initializeThreats(p_threats, 1, "images/ThreatsObject/boss1/image1.png");
+            idx_Boss_1 = p_threats.size() - 1;
+            p_threats[idx_Boss_1]->Set_sprite_clips();
+            add = true;
+        }
 
         /* IMPLEMENT THREATS OBJECT & EXPLOSION */
-        for(int i = 0; i < NUM_THREATS; i++){
-            ThreatsObject* p_threat = (p_threats + i);
+        for(int i = 0; i < p_threats.size(); i++){
+            ThreatsObject* p_threat = p_threats[i];
             if(p_threat != NULL){
-                SDL_Rect posThreat = p_threat->getPos() ;
-
+                SDL_Rect posThreat = p_threat->getPos();
                 p_threat->setDegrees(mainTank.getPos(), i);
                 double degThreat = p_threat->getDegrees();
-                
+
+                if(i == idx_Boss_1){
+                    p_threat->runBoss();
+                }
+                else{
+                    p_threat->renderCopy(posThreat, degThreat, NULL, SDL_FLIP_NONE);
+
+                }
                 p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-                p_threat->renderCopy(posThreat, degThreat, NULL, SDL_FLIP_NONE);
 
                 //Run bullet of a threat
-                p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+                if(i != idx_Boss_1){
+                    p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+                }
+
 
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
@@ -480,7 +471,7 @@ int main(int argc, char* args[]){
 
                     //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                    
+
                         int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
                         int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_HEIGHT / 2;
                         explode.setPos(x_pos, y_pos);
@@ -504,13 +495,13 @@ int main(int argc, char* args[]){
                     Mix_PlayChannel(-1, gameOver, 0);
 
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-                        delete[] p_threats;
+                        clearThreats(p_threats, p_threats.size(), 0);
                         SDLCommonFunc::Clear();
                         quitSDL();
                         return 0;
                     }
                 }
-                
+
                 /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
                 for(int j = 0; j < bull_list.size(); j++){
@@ -525,13 +516,13 @@ int main(int argc, char* args[]){
                                 aGoldItem->setGoldTexture();
                                 aGoldItem->setTexture(aGoldItem->getGoldItem());
                                 if(aGoldItem != NULL){
-                                    x = p_threat->getPos().x; 
-                                    y = p_threat->getPos().y;        
+                                    x = p_threat->getPos().x;
+                                    y = p_threat->getPos().y;
                                     aGoldItem->setPos(x, y);
-                                    goldItems.push_back(aGoldItem);                    
-                                }                                
+                                    goldItems.push_back(aGoldItem);
+                                }
                             }
-                            
+
                             currentKilled++;
                             unsigned int currentRocket = mainTank.getRocket();
                             if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
@@ -543,7 +534,7 @@ int main(int argc, char* args[]){
                                 explode.setPos(x_pos, y_pos);
 
                                 explode.setFrame(ex);
-                                
+
                                 explode.renderCopy2();
                             }
 
@@ -552,12 +543,12 @@ int main(int argc, char* args[]){
 
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
-                            
+
                         }
-                    }                 
+                    }
                 }
 
-                if(currentKilled % 2 != 0) rocketAdded = false; 
+                if(currentKilled % 2 != 0) rocketAdded = false;
 
                 /* CHECK COLLISON: ROCKET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> rocket_list = mainTank.getRocketList();
@@ -573,11 +564,11 @@ int main(int argc, char* args[]){
                                 aGoldItem->setGoldTexture();
                                 aGoldItem->setTexture(aGoldItem->getGoldItem());
                                 if(aGoldItem != NULL){
-                                    x = p_threat->getPos().x; 
-                                    y = p_threat->getPos().y;        
+                                    x = p_threat->getPos().x;
+                                    y = p_threat->getPos().y;
                                     aGoldItem->setPos(x, y);
-                                    goldItems.push_back(aGoldItem);                    
-                                }                                
+                                    goldItems.push_back(aGoldItem);
+                                }
                             }
 
                             currentKilled++;
@@ -588,7 +579,7 @@ int main(int argc, char* args[]){
                                 explode.setPos(x_pos, y_pos);
 
                                 explode.setFrame(ex);
-                                
+
                                 explode.renderCopy2();
                             }
 
@@ -597,7 +588,7 @@ int main(int argc, char* args[]){
                             p_threat->resetThreat();
                         }
                     }
-                }       
+                }
 
                 /* HANDLE GOLD*/
                 for (int a = 0; a < goldItems.size();) {
@@ -611,7 +602,7 @@ int main(int argc, char* args[]){
                             goldItems[a]->setPos(x_pos, y_pos);
                             goldItems[a]->setPos2(w_pos, h_pos);
                             goldItems[a]->setFrame(ex);
-                            goldItems[a]->renderCopy2();    
+                            goldItems[a]->renderCopy2();
                         }
                         Mix_PlayChannel(-1, breakGold, 0);
                         delete goldItems[a];
@@ -625,7 +616,7 @@ int main(int argc, char* args[]){
                             delete goldItems[a];
                             goldItems.erase(goldItems.begin() + a);
                         }
-                        else ++a;                    
+                        else ++a;
                     }
                 }
 
@@ -644,9 +635,9 @@ int main(int argc, char* args[]){
                                 explode.setPos(x_pos, y_pos);
 
                                 explode.setFrame(ex);
-                                
+
                                 explode.renderCopy2();
-                                
+
                                 SDL_RenderPresent(gRenderer);
                             }
 
@@ -657,7 +648,7 @@ int main(int argc, char* args[]){
                             Mix_PlayChannel(-1, gameOver, 0);
 
                             if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-                                p_threat->removeBullet(k);
+                                clearThreats(p_threats, p_threats.size(), 0);
                                 SDLCommonFunc::Clear();
                                 quitSDL();
                                 return 0;
@@ -668,12 +659,13 @@ int main(int argc, char* args[]){
             }
         }
 
+        /* HANDLE TIME*/
         static int minute = 0;
-        Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000; 
+        Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000;
         static Uint32 lastTimeValue = 0;
 
         if(timeValue % 60 == 0 && lastTimeValue % 60 == 59){
-            minute++; 
+            minute++;
         }
 
         lastTimeValue = timeValue;
@@ -685,11 +677,12 @@ int main(int argc, char* args[]){
         if (secondString.length() < 2) {
             secondString = "0" + secondString;
         }
-        
+
         current_time = str_minute + secondString;
 
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "01 : 24", current_time, warningBoss);
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "01 : 25", current_time, warningBoss);
+        /* WARNING BOSS NOTI */
+        // blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 05", current_time, warningBoss);
+        // blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 06", current_time, warningBoss);
 
 
         timeGame.setText(current_time);
@@ -737,14 +730,7 @@ int main(int argc, char* args[]){
     }
 
     // CLEAR THREAT TEXTURE
-    for(int i = 0; i < NUM_THREATS; i++){
-        ThreatsObject* p_threat = p_threats + i;
-        if(p_threat != NULL){
-            p_threat->free();
-        }
-    }
-
-    delete[] p_threats;
+    clearThreats(p_threats, p_threats.size(), 0);
 
     SDLCommonFunc::Clear();
     quitSDL();
@@ -799,7 +785,7 @@ void initSDL(){
             printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
         }
 	}
-    
+
     gFont = TTF_OpenFont("images/Fonts/OpenSans-Bold.ttf", 28);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
@@ -853,9 +839,9 @@ void quitSDL(){
         item->free();
         delete item;
     }
-    goldItems.clear();  
+    goldItems.clear();
 
-    warningNoti.free();  
+    warningNoti.free();
 
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
@@ -865,7 +851,6 @@ void quitSDL(){
     SDL_Quit();
     Mix_Quit();
 }
-
 
 void logSDLError(ostream& os,const string& msg, bool fatal ){
     cout << msg << "Error: " << SDL_GetError() << endl;
@@ -962,7 +947,7 @@ bool SDLCommonFunc::loadSoundEffects(){
         check = false;
     }
     Mix_VolumeChunk(warningBoss, 128);
-    
+
     return check;
 }
 
@@ -986,6 +971,56 @@ void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& ta
 
         SDL_RenderCopy(gRenderer, texture, NULL, &position);
         Mix_PlayChannel(-1, sound, 0);
+    }
+}
+
+void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path) {
+    for (int i = 0; i < num_threats; ++i) {
+        // THREATS OBJECT
+        ThreatsObject* p_threat = new ThreatsObject();
+        if (p_threat != nullptr) {
+            bool check = p_threat->loadIMG(path);
+            if (!check) {
+                cout << "Unable to load Threat Images!" << endl;
+                return;
+            }
+            int rand_x, rand_y;
+            int tmp = rand() % 4;
+            if (tmp == 0) {
+                rand_x = 0;
+                rand_y = rand() % SCREEN_HEIGHT;
+            } else if (tmp == 1) {
+                rand_x = rand() % SCREEN_WIDTH;
+                rand_y = 0;
+            } else if (tmp == 2) {
+                rand_x = SCREEN_WIDTH;
+                rand_y = rand() % SCREEN_HEIGHT;
+            } else if (tmp == 3) {
+                rand_x = rand() % SCREEN_WIDTH;
+                rand_y = SCREEN_HEIGHT;
+            }
+
+            p_threat->setPos(rand_x, rand_y);
+
+            // BULLET OF THREATS OBJECT
+            BulletObject* t_bull = new BulletObject();
+            p_threat->initBullet(t_bull);
+        }
+        p_threats.push_back(p_threat);
+    }
+}
+
+void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const int& idx){
+    for(int i = num_threats - 1; i >= idx; --i){
+        if(p_threats[i] != NULL){
+            p_threats[i]->free();
+            delete p_threats[i];
+            p_threats[i] = NULL;
+            p_threats.erase(p_threats.begin() + i);
+        }
+    }
+    if(idx == 0 && num_threats == p_threats.size()){
+        p_threats.clear();
     }
 }
 

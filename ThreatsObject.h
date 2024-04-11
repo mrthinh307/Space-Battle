@@ -3,12 +3,19 @@
 
 #include "BaseObject.h"
 #include "BulletObject.h"
-#include "AdditionalTools.h"
 
 #define WIDTH_THREATS_OBJECT 60
 #define HEIGHT_THREATS_OBJECT 49
 #define SPEED_BULLET_THREATS_OBJECT 5.8
 #define SPEED_THREATS 3
+
+#define BOSS_WIDTH 200
+#define BOSS_HEIGHT 100
+#define SPEED_BULLET_BOSS 6.0
+#define BOSS_1_SPEED 4
+const int BOSS_1_FRAMES = 8;
+const int NUM_BOSS = 1;
+
 
 class ThreatsObject : public BaseObject
 {
@@ -39,8 +46,9 @@ public:
     void resetBullet(BulletObject* aBullet);
 
     void removeBullet(const int& idx);
-    
-    void initGoldItem(Tools* gold);
+
+    void Set_sprite_clips();
+    void runBoss();
 
 private:
     double x_val;
@@ -50,6 +58,9 @@ private:
     SDL_RendererFlip flipType;
 
     vector<BulletObject*> bulletOfThreatsList;
+    static int frame;
+    
+    SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
 };
 
 

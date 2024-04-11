@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-static int NUM_THREATS = 5;
+static int NUM_THREATS = 5; // 4 5 6 
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;
@@ -79,6 +79,7 @@ namespace SDLCommonFunc
     void Clear();
     bool CheckCollision(const SDL_Rect& object1, const SDL_Rect& object2, int offset);
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
+    void render_for_sprite(SDL_Texture* mTexture, int x, int y, SDL_Rect* clip, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
     bool checkFocusWidthRect(const int& x,const int& y,const SDL_Rect& rect);
     int showMenu();
     bool loadSoundEffects();

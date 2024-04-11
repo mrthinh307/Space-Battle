@@ -4,11 +4,15 @@ ThreatsObject::ThreatsObject(){
     x_val = 0;
     y_val = 0;
 
-    pos.x = SCREEN_WIDTH;
-    pos.y = SCREEN_HEIGHT * 0.5;
+    pos.x = SCREEN_WIDTH / 2;
+    pos.y = SCREEN_HEIGHT / 2;
     pos.w = WIDTH_THREATS_OBJECT;
     pos.h = HEIGHT_THREATS_OBJECT;
+
+    flipType = SDL_FLIP_NONE;
 }
+
+int ThreatsObject::frame = 0;
 
 ThreatsObject::~ThreatsObject(){
     if(bulletOfThreatsList.size() > 0){
@@ -90,9 +94,6 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
     }
 }
 
-
-
-
 void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
     for(int i = 0; i < bulletOfThreatsList.size(); ++i){
         BulletObject* aBullet = bulletOfThreatsList.at(i);
@@ -168,6 +169,62 @@ void ThreatsObject::removeBullet(const int& idx){
                 delete aBullet;
                 aBullet = NULL;
             }
+        }
+    }
+}
+
+void ThreatsObject::Set_sprite_clips(){
+    spriteBoss_1[0].x = 0;
+    spriteBoss_1[0].y = 0;
+    spriteBoss_1[0].w = 200;
+    spriteBoss_1[0].h = 100;
+
+    spriteBoss_1[1].x = 200;
+    spriteBoss_1[1].y = 0;
+    spriteBoss_1[1].w = 200;
+    spriteBoss_1[1].h = 100;
+
+    spriteBoss_1[2].x = 400;
+    spriteBoss_1[2].y = 0;
+    spriteBoss_1[2].w = 200;
+    spriteBoss_1[2].h = 100;
+    
+    spriteBoss_1[3].x = 600;
+    spriteBoss_1[3].y = 0;
+    spriteBoss_1[3].w = 200;
+    spriteBoss_1[3].h = 100;
+
+    spriteBoss_1[4].x = 800;
+    spriteBoss_1[4].y = 0;
+    spriteBoss_1[4].w = 200;
+    spriteBoss_1[4].h = 100;
+
+    spriteBoss_1[5].x = 1000;
+    spriteBoss_1[5].y = 0;
+    spriteBoss_1[5].w = 200;
+    spriteBoss_1[5].h = 100;
+
+    spriteBoss_1[6].x = 1200;
+    spriteBoss_1[6].y = 0;
+    spriteBoss_1[6].w = 200;
+    spriteBoss_1[6].h = 100;
+
+    spriteBoss_1[7].x = 1400;
+    spriteBoss_1[7].y = 0;
+    spriteBoss_1[7].w = 200;
+    spriteBoss_1[7].h = 100;
+
+}
+
+void ThreatsObject::runBoss(){
+    if(true){
+        SDL_Rect* currentClip = &spriteBoss_1[frame / 8];
+        SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(gRenderer);
+        frame++;
+        if( frame / 8 >= BOSS_1_FRAMES )
+        {
+            frame = 0;
         }
     }
 }
