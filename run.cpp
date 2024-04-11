@@ -294,6 +294,9 @@ int main(int argc, char* args[]){
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
 
+    /* SET CLIP FOR MAIN TANK */
+    mainTank.Set_sprite_clips();
+
     //BaseObject layoutBox;
     layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
     layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
@@ -424,17 +427,17 @@ int main(int argc, char* args[]){
         double flipTank = mainTank.getDegrees();
         SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
         mainTank.handleMove();
-        mainTank.renderCopy(posTank, flipTank, NULL, typeFlipOfTank);
+        mainTank.runMainTank();
         // Run bullets of tank object
         mainTank.runBullet();
-        mainTank.runRocket();
+        mainTank.runRocket();s
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
         int idx_Boss_1;
-        if(SDL_GetTicks() - timeStart >= 1000 && add == false){
+        if(SDL_GetTicks() - timeStart >= 5000 && add == false){
             NUM_THREATS++;
-            initializeThreats(p_threats, 1, "images/ThreatsObject/boss1/image1.png");
+            initializeThreats(p_threats, 1, gNameBoss1);
             idx_Boss_1 = p_threats.size() - 1;
             p_threats[idx_Boss_1]->Set_sprite_clips();
             add = true;
@@ -681,8 +684,8 @@ int main(int argc, char* args[]){
         current_time = str_minute + secondString;
 
         /* WARNING BOSS NOTI */
-        // blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 05", current_time, warningBoss);
-        // blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 06", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 03", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 04", current_time, warningBoss);
 
 
         timeGame.setText(current_time);
@@ -957,14 +960,14 @@ void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& ta
 
     Uint32 currentTime = SDL_GetTicks();
 
-    if (currentTime - lastBlinkTime > 200) {
+    if (currentTime - lastBlinkTime > 300) {
         transparent = !transparent;
         lastBlinkTime = currentTime;
     }
 
     if (current_time == target_time && !transparent) {
         if (transparent) {
-            SDL_SetTextureAlphaMod(texture, 150); // Giả sử alpha là 100 (trong suốt)
+            SDL_SetTextureAlphaMod(texture, 180); // Giả sử alpha là 100 (trong suốt)
         } else {
             SDL_SetTextureAlphaMod(texture, 255); // Giả sử alpha là 255 (không trong suốt)
         }

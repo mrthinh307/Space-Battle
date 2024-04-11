@@ -11,6 +11,7 @@
 #define SPEED_BULLET_MAIN_TANK 8.0
 #define SPEED_ROCKET_MAIN_TANK 8.0
 
+#define TANK_1_FRAME 5
 // const int ROCKET_ANIMATION_FRAMES = 4;
 
 class TankObject : public BaseObject
@@ -43,6 +44,9 @@ public:
     void setRocket(unsigned int& c) { currentRocket = c; }
     unsigned int getRocket() { return currentRocket; }
     void setRocketTexture();
+    
+    void Set_sprite_clips();
+    void runMainTank();
 private:
     int x_val;
     int y_val;
@@ -52,7 +56,8 @@ private:
     vector<BulletObject*> bulletOfTankList;
     vector<BulletObject*> rocketOfTankList;
     unsigned int currentRocket;
-    //vector<SDL_Texture*> rocketTexture;
+    SDL_Rect spriteTank_1[TANK_1_FRAME];
+    static int frame;
 };
 
 #endif // TANKOBJECT_H_INCLUDED
