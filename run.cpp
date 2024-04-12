@@ -117,6 +117,11 @@ void SDLCommonFunc::Clear()
         Mix_FreeMusic(menuMusic);
         menuMusic = NULL;
     }
+
+    if(bossDie != NULL){
+        Mix_FreeChunk(bossDie);
+        bossDie = NULL;
+    }
 }
 
 int SDLCommonFunc::showMenu(){
@@ -234,9 +239,8 @@ int SDLCommonFunc::showMenu(){
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
 
-/* INT THREATS */
+/* INIT THREATS */
 void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path);
-
 void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const int& idx);
 
 TankObject mainTank;
@@ -434,13 +438,21 @@ int main(int argc, char* args[]){
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
         int idx_Boss_1;
-        if(SDL_GetTicks() - timeStart >=   1000 && add == false){
+        if(SDL_GetTicks() - timeStart >= 5000 && add == false){
             NUM_THREATS++;
             initializeThreats(p_threats, 1, gNameBoss1);
             idx_Boss_1 = p_threats.size() - 1;
             p_threats[idx_Boss_1]->Set_sprite_clips();
             p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
             add = true;
+            
+            // Pause music 
+            if(Mix_PlayingMusic() != 0){
+                Mix_PauseMusic();
+            }
+            if(bossBattle != NULL){
+                Mix_PlayMusic(bossBattle, -1);
+            }
         }
 
         /* IMPLEMENT THREATS OBJECT & EXPLOSION */
@@ -467,7 +479,8 @@ int main(int argc, char* args[]){
 
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
                 if(i == idx_Boss_1){
-                        explode1.setPos2(480, 480);
+                    explode1.setPos2(480, 480);
+                    
                 }
 
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
@@ -495,7 +508,7 @@ int main(int argc, char* args[]){
                     // Play sound effect of event
                     Mix_PauseMusic();
                     Mix_PlayChannel(-1, gExpSound[1], 0);
-                    Mix_PlayChannel(-1, gExpSound[0], 0);
+                    Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
                     Mix_PlayChannel(-1, gameOver, 0);
 
                     if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
@@ -544,7 +557,7 @@ int main(int argc, char* args[]){
                             }
 
                             //Handle sound effects
-                            Mix_PlayChannel(-1, gExpSound[0], 0);
+                            Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
 
                             p_threat->resetThreat();
                             mainTank.removeBullet(j);
@@ -589,7 +602,7 @@ int main(int argc, char* args[]){
                             }
 
                             //Handle sound effects
-                            Mix_PlayChannel(-1, gExpSound[0], 0);
+                            Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
                             p_threat->resetThreat();
                         }
                     }
@@ -664,6 +677,13 @@ int main(int argc, char* args[]){
             }
             explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
         }
+        // Resume music when get over Turn boss lv1
+        if(SDL_GetTicks() - timeStart == 60000){
+            if(Mix_PlayingMusic() != 0){
+                Mix_PauseMusic();
+            }
+            if(battleMusic != NULL) Mix_PlayMusic(battleMusic, -1);
+        }
 
         /* HANDLE TIME*/
         static int minute = 0;
@@ -687,8 +707,8 @@ int main(int argc, char* args[]){
         current_time = str_minute + secondString;
 
         /* WARNING BOSS NOTI */
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 24", current_time, warningBoss);
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 25", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 01", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 02", current_time, warningBoss);
 
 
         timeGame.setText(current_time);
@@ -889,12 +909,14 @@ bool SDLCommonFunc::loadSoundEffects(){
         cout << "Unable to load explosion default sound effects. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
+    Mix_VolumeChunk(gExpSound[0], 120);
 
     gExpSound[1] = Mix_LoadWAV(gNameExplodeSoundOfTank);
     if(gExpSound[1] == NULL){
         cout << "Unable to load player die sound effect. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
+    Mix_VolumeChunk(gExpSound[1], 120);
 
     gameOver = Mix_LoadWAV(gGameOveMusic);
 
@@ -953,6 +975,20 @@ bool SDLCommonFunc::loadSoundEffects(){
         check = false;
     }
     Mix_VolumeChunk(warningBoss, 128);
+
+    bossDie = Mix_LoadWAV(gNameBossDie);
+    if(bossDie == NULL){
+        cout << "Unable to load boss sound." << " " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeChunk(bossDie, 110);
+    
+    bossBattle = Mix_LoadMUS(gBossMusic);
+    if(bossBattle == NULL){
+        cout << "Unable to load boss battle music." << " " << Mix_GetError() << endl;
+        check = false;
+    }
+    Mix_VolumeMusic(80);
 
     return check;
 }

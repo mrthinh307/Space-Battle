@@ -26,8 +26,6 @@ public:
 private:
     int frame;
     vector<SDL_Texture*> expTexture;
-    SDL_Rect boss[5];
-    
 
 };
 
