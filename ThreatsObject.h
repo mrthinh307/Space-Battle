@@ -53,6 +53,9 @@ public:
     void runThreats();
     void runBoss();
 
+    void set_num_frames(const int& fr) {num_frames = fr;}
+    int get_num_frames() { return num_frames; }
+
 private:
     double x_val;
     double y_val;
@@ -65,6 +68,7 @@ private:
     
     SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
     SDL_Rect spriteThreats_1[THREATS_1_FRAME];
+    int num_frames;
 };
 
 #endif

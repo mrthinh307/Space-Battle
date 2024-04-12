@@ -10,6 +10,7 @@ ThreatsObject::ThreatsObject(){
     pos.h = HEIGHT_THREATS_OBJECT;
 
     flipType = SDL_FLIP_NONE;
+    num_frames = 0;
 }
 
 int ThreatsObject::frame = 0;

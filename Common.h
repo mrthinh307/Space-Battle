@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-static int NUM_THREATS = 5; // 4 5 6 
+static int NUM_THREATS = 1; // 4 5 6 
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;
@@ -55,7 +55,7 @@ static Mix_Chunk* warningBoss;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
-static char gNameThreatsObject[] = {"images/ThreatsObject/60x49.png"};
+static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};
 static char gNameBoss1[] = {"images/ThreatsObject/boss1/image1.png"};
 
 static char gNameBulletOfMainTank[] = {"images/Bullets/defbullet.png"};

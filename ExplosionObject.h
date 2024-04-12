@@ -21,9 +21,14 @@ public:
 
     void clearTexture();
 
+    void set_expode_sprite_for_boss();
+    void run_explode_boss();
 private:
     int frame;
     vector<SDL_Texture*> expTexture;
+    SDL_Rect boss[5];
+    
+
 };
 
 #endif

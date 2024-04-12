@@ -434,11 +434,12 @@ int main(int argc, char* args[]){
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
         int idx_Boss_1;
-        if(SDL_GetTicks() - timeStart >= 30000 && add == false){
+        if(SDL_GetTicks() - timeStart >=   1000 && add == false){
             NUM_THREATS++;
             initializeThreats(p_threats, 1, gNameBoss1);
             idx_Boss_1 = p_threats.size() - 1;
             p_threats[idx_Boss_1]->Set_sprite_clips();
+            p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
             add = true;
         }
 
@@ -464,22 +465,23 @@ int main(int argc, char* args[]){
                     p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
 
-
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
+                if(i == idx_Boss_1){
+                        explode1.setPos2(480, 480);
+                }
+
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
-
                     currentHeart--;
-
                     //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
 
-                        int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
-                        int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_HEIGHT / 2;
+                        int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                        int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
                         explode.setPos(x_pos, y_pos);
 
-                        int x1_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
-                        int y1_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
+                        int x1_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                        int y1_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
                         explode1.setPos(x1_pos, y1_pos);
 
                         explode.setFrame(ex);
@@ -512,6 +514,7 @@ int main(int argc, char* args[]){
                         bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
                         int x, y;
                         if(checkColl){
+                            
                             int ran = rand() % 2 + 1;
                             if(ran == 1){
                                 Tools* aGoldItem = new Tools();
@@ -531,13 +534,13 @@ int main(int argc, char* args[]){
 
                             //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
-                                int y_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
-                                explode.setPos(x_pos, y_pos);
+                                int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                                int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                                explode1.setPos(x_pos, y_pos);
 
-                                explode.setFrame(ex);
+                                explode1.setFrame(ex);
 
-                                explode.renderCopy2();
+                                explode1.renderCopy2();
                             }
 
                             //Handle sound effects
@@ -576,13 +579,13 @@ int main(int argc, char* args[]){
                             currentKilled++;
                             //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                int x_pos = p_threat->getPos().x + WIDTH_THREATS_OBJECT / 2 - EXP_WIDTH / 2;
-                                int y_pos = p_threat->getPos().y + HEIGHT_THREATS_OBJECT / 2 - EXP_HEIGHT / 2;
-                                explode.setPos(x_pos, y_pos);
+                                int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                                int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                                explode1.setPos(x_pos, y_pos);
 
-                                explode.setFrame(ex);
+                                explode1.setFrame(ex);
 
-                                explode.renderCopy2();
+                                explode1.renderCopy2();
                             }
 
                             //Handle sound effects
@@ -632,8 +635,8 @@ int main(int argc, char* args[]){
                             currentHeart--;
                             //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - EXP_WIDTH / 2;
-                                int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - EXP_WIDTH / 2;
+                                int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                                int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
                                 explode.setPos(x_pos, y_pos);
 
                                 explode.setFrame(ex);
@@ -659,6 +662,7 @@ int main(int argc, char* args[]){
                     }
                 }
             }
+            explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
         }
 
         /* HANDLE TIME*/
@@ -1025,4 +1029,3 @@ void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, con
         p_threats.clear();
     }
 }
-
