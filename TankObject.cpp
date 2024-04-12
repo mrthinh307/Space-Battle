@@ -161,8 +161,8 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
 }
 
 void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 18);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 18);
+    pos.x += x_val * (WIDTH_TANK_OBJECT / 16);
+    pos.y += y_val * (HEIGHT_TANK_OBJECT / 16);
 
     // Check screen boundaries and wrap around if necessary
     if (pos.x < 0) {

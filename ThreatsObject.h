@@ -14,6 +14,7 @@
 #define SPEED_BULLET_BOSS 6.0
 #define BOSS_1_SPEED 4
 const int BOSS_1_FRAMES = 8;
+const int THREATS_1_FRAME = 6;
 const int NUM_BOSS = 1;
 
 
@@ -48,6 +49,8 @@ public:
     void removeBullet(const int& idx);
 
     void Set_sprite_clips();
+    void Set_sprite_clips_1();
+    void runThreats();
     void runBoss();
 
 private:
@@ -61,9 +64,8 @@ private:
     static int frame;
     
     SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
+    SDL_Rect spriteThreats_1[THREATS_1_FRAME];
 };
-
-
 
 #endif
 //up

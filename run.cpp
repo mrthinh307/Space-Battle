@@ -142,11 +142,11 @@ int SDLCommonFunc::showMenu(){
     int lastMenuIndex = -1;
     int menuIndex;
 
-    // if( Mix_PlayingMusic() == 0 )
-    // {
-    //     //Play the music
-    //     Mix_PlayMusic( menuMusic, -1 );
-    // }
+    if( Mix_PlayingMusic() == 0 )
+    {
+        //Play the music
+        Mix_PlayMusic( menuMusic, -1 );
+    }
 
     SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
     SDL_RenderPresent(gRenderer);
@@ -266,9 +266,6 @@ vector<Tools*> goldItems;
 
 BaseObject warningNoti;
 
-// Boss* boss_1 = new Boss();
-// boss_1->Set_sprite_clips();
-
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -353,6 +350,9 @@ int main(int argc, char* args[]){
 
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
     initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject);
+    for(int i = 0; i < p_threats.size(); i++){
+        p_threats[i]->Set_sprite_clips_1();
+    }
 
     /*-----------------------RUN GAME---------------------------*/
 
@@ -382,9 +382,9 @@ int main(int argc, char* args[]){
         static string current_time;
 
         /* PLAY BATTLE MUSIC */
-        // if(Mix_PlayingMusic() == 0){
-        //     Mix_PlayMusic(battleMusic, -1);
-        // }
+        if(Mix_PlayingMusic() == 0){
+            Mix_PlayMusic(battleMusic, -1);
+        }
 
         while(SDL_PollEvent(&e)){
             if(e.type == SDL_QUIT){
@@ -434,7 +434,7 @@ int main(int argc, char* args[]){
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
         int idx_Boss_1;
-        if(SDL_GetTicks() - timeStart >= 5000 && add == false){
+        if(SDL_GetTicks() - timeStart >= 30000 && add == false){
             NUM_THREATS++;
             initializeThreats(p_threats, 1, gNameBoss1);
             idx_Boss_1 = p_threats.size() - 1;
@@ -454,7 +454,7 @@ int main(int argc, char* args[]){
                     p_threat->runBoss();
                 }
                 else{
-                    p_threat->renderCopy(posThreat, degThreat, NULL, SDL_FLIP_NONE);
+                    p_threat->runThreats();
 
                 }
                 p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -527,7 +527,7 @@ int main(int argc, char* args[]){
 
                             currentKilled++;
                             unsigned int currentRocket = mainTank.getRocket();
-                            if(currentKilled != 0 && currentKilled % 2 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
+                            if(currentKilled != 0 && currentKilled % 5 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
 
                             //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
@@ -683,8 +683,8 @@ int main(int argc, char* args[]){
         current_time = str_minute + secondString;
 
         /* WARNING BOSS NOTI */
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 03", current_time, warningBoss);
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 04", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 24", current_time, warningBoss);
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 25", current_time, warningBoss);
 
 
         timeGame.setText(current_time);

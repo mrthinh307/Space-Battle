@@ -58,7 +58,7 @@ void ThreatsObject::handleMove(const int& x_border, const int& y_border){
 }
 
 float calculateAdjustedAngle(float target_angle, int index) {
-    const float MAX_DEVIATION = 10; 
+    const float MAX_DEVIATION = 11; 
     float deviation = (index * MAX_DEVIATION) - (NUM_THREATS - 1) * MAX_DEVIATION / 2;
     return target_angle + deviation;
 }
@@ -223,6 +223,52 @@ void ThreatsObject::runBoss(){
         SDL_RenderPresent(gRenderer);
         frame++;
         if( frame / 8 >= BOSS_1_FRAMES )
+        {
+            frame = 0;
+        }
+    }
+}
+
+void ThreatsObject::Set_sprite_clips_1(){
+    spriteThreats_1[0].x = 0;
+    spriteThreats_1[0].y = 0;
+    spriteThreats_1[0].w = 70;
+    spriteThreats_1[0].h = 61;
+
+    spriteThreats_1[1].x = 70;
+    spriteThreats_1[1].y = 0;
+    spriteThreats_1[1].w = 70;
+    spriteThreats_1[1].h = 61;
+
+    spriteThreats_1[2].x = 140;
+    spriteThreats_1[2].y = 0;
+    spriteThreats_1[2].w = 70;
+    spriteThreats_1[2].h = 61;
+    
+    spriteThreats_1[3].x = 210;
+    spriteThreats_1[3].y = 0;
+    spriteThreats_1[3].w = 70;
+    spriteThreats_1[3].h = 61;
+
+    spriteThreats_1[4].x = 280;
+    spriteThreats_1[4].y = 0;
+    spriteThreats_1[4].w = 70;
+    spriteThreats_1[4].h = 61;
+
+    spriteThreats_1[5].x = 350;
+    spriteThreats_1[5].y = 0;
+    spriteThreats_1[5].w = 70;
+    spriteThreats_1[5].h = 61;
+
+}
+
+void ThreatsObject::runThreats(){
+    if(true){
+        SDL_Rect* currentClip = &spriteThreats_1[frame / THREATS_1_FRAME];
+        SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+        SDL_RenderPresent(gRenderer);
+        frame++;
+        if( frame / THREATS_1_FRAME >= THREATS_1_FRAME )
         {
             frame = 0;
         }
