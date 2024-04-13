@@ -144,7 +144,7 @@ void ThreatsObject::run_bullet_boss(const int& x_limit, const int& y_limit){
         BulletObject* aBullet = bulletOfThreatsList.at(i);
         if(aBullet != NULL){
             if(aBullet->getIsMove()){
-                aBullet->setDegrees(i*90 + 90);
+                aBullet->setDegrees(degrees + i*90 + 90);
                 aBullet->run_boss_bullet();
                 aBullet->handleMoveBoss(x_limit, y_limit);
             }
@@ -154,7 +154,7 @@ void ThreatsObject::run_bullet_boss(const int& x_limit, const int& y_limit){
                     int bullet_start_x = pos.x + pos.w / 2 - BOSS_BULLET_WIDTH / 2;
                     int bullet_start_y = pos.y + pos.h / 2 - BOSS_BULLET_HEIGHT / 2;
                     aBullet->setPos(bullet_start_x, bullet_start_y - BOSS_BULLET_HEIGHT / 2);      
-                    aBullet->setDegrees(i*90 + 90);          
+                    aBullet->setDegrees(degrees + i*90 + 90);          
                 }
             }
         }
