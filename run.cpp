@@ -240,7 +240,7 @@ int SDLCommonFunc::showMenu(){
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
 
 /* INIT THREATS */
-void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path);
+void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet);
 void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const int& idx);
 
 TankObject mainTank;
@@ -353,7 +353,7 @@ int main(int argc, char* args[]){
     explode1.setTexture();
 
     /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
-    initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject);
+    initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject, 0);
     for(int i = 0; i < p_threats.size(); i++){
         p_threats[i]->Set_sprite_clips_1();
     }
@@ -440,19 +440,22 @@ int main(int argc, char* args[]){
         int idx_Boss_1;
         if(SDL_GetTicks() - timeStart >= 5000 && add == false){
             NUM_THREATS++;
-            initializeThreats(p_threats, 1, gNameBoss1);
-            idx_Boss_1 = p_threats.size() - 1;
-            p_threats[idx_Boss_1]->Set_sprite_clips();
-            p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
-            add = true;
-            
-            // Pause music 
-            if(Mix_PlayingMusic() != 0){
-                Mix_PauseMusic();
+            if(add == false){
+                initializeThreats(p_threats, 1, gNameBoss1, 1);
+                idx_Boss_1 = p_threats.size() - 1;
+                p_threats[idx_Boss_1]->Set_sprite_clips();
+                p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
+                add = true;
+                
+                // Pause music 
+                if(Mix_PlayingMusic() != 0){
+                    Mix_PauseMusic();
+                }
+                if(bossBattle != NULL){
+                    Mix_PlayMusic(bossBattle, -1);
+                }                
             }
-            if(bossBattle != NULL){
-                Mix_PlayMusic(bossBattle, -1);
-            }
+    
         }
 
         /* IMPLEMENT THREATS OBJECT & EXPLOSION */
@@ -475,6 +478,9 @@ int main(int argc, char* args[]){
                 //Run bullet of a threat
                 if(i != idx_Boss_1){
                     p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+                }
+                else{
+                    p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
 
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT
@@ -643,7 +649,7 @@ int main(int argc, char* args[]){
                 for(int k = 0; k < bull_listThreats.size(); k++){
                     BulletObject* aBulletOfThreat = bull_listThreats.at(k);
                     if(aBulletOfThreat != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 0);
+                        bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 10);
                         if(checkColl){
                             currentHeart--;
                             //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
@@ -778,7 +784,6 @@ void initSDL(){
     if(gWindow == nullptr){
         logSDLError(cout, "Create Window", true);
     }
-
 
     gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
@@ -1016,7 +1021,7 @@ void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& ta
     }
 }
 
-void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path) {
+void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet) {
     for (int i = 0; i < num_threats; ++i) {
         // THREATS OBJECT
         ThreatsObject* p_threat = new ThreatsObject();
@@ -1045,8 +1050,14 @@ void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats
             p_threat->setPos(rand_x, rand_y);
 
             // BULLET OF THREATS OBJECT
-            BulletObject* t_bull = new BulletObject();
-            p_threat->initBullet(t_bull);
+            
+            if(type_bullet == 0){
+                BulletObject* t_bull = new BulletObject();
+                p_threat->initBullet(t_bull);
+            }    
+            else if(type_bullet == 1){
+                p_threat->init_bullet_boss1();
+            } 
         }
         p_threats.push_back(p_threat);
     }

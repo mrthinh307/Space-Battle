@@ -10,7 +10,6 @@ ThreatsObject::ThreatsObject(){
     pos.h = HEIGHT_THREATS_OBJECT;
 
     flipType = SDL_FLIP_NONE;
-    num_frames = 0;
 }
 
 int ThreatsObject::frame = 0;
@@ -86,9 +85,9 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
             t_bull->sety_val(SPEED_BULLET_THREATS_OBJECT);
             t_bull->setDegrees(degrees);
 
-            int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
-            int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
-            t_bull->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+            int bullet_start_x = pos.x + pos.w / 2 - t_bull->getPos().w / 2;
+            int bullet_start_y = pos.y + pos.h / 2 - t_bull->getPos().h / 2;
+            t_bull->setPos(bullet_start_x, bullet_start_y + t_bull->getPos().h / 2); 
 
             bulletOfThreatsList.push_back(t_bull);
         }
@@ -118,6 +117,48 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
             }
         }
     }
+}
+
+void ThreatsObject::init_bullet_boss1() {
+
+    for (int i = 0; i < 4; i++) {
+        BulletObject* new_bullet = new BulletObject();
+        bool check = new_bullet->loadIMG("images/Bullets/bossbullet.png");
+        new_bullet->setIsMove(true);
+        new_bullet->setWidthHeight(BOSS_BULLET_WIDTH, BOSS_BULLET_HEIGHT);
+        new_bullet->setBulletType(BulletObject::BOSS_1_ARROW);  
+        new_bullet->set_boss_bullet();
+        new_bullet->sety_val(SPEED_BULLET_THREATS_OBJECT);
+
+        int bullet_start_x = pos.x + pos.w / 2 - BOSS_BULLET_WIDTH / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - BOSS_BULLET_HEIGHT / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + BOSS_BULLET_HEIGHT / 2); 
+
+        bulletOfThreatsList.push_back(new_bullet);
+    }
+
+}
+
+void ThreatsObject::run_bullet_boss(const int& x_limit, const int& y_limit){
+    for(int i = 0; i < bulletOfThreatsList.size(); i++){
+        BulletObject* aBullet = bulletOfThreatsList.at(i);
+        if(aBullet != NULL){
+            if(aBullet->getIsMove()){
+                aBullet->setDegrees(i*90 + 90);
+                aBullet->run_boss_bullet();
+                aBullet->handleMoveBoss(x_limit, y_limit);
+            }
+            else{
+                if(aBullet != NULL){
+                    aBullet->setIsMove(true);
+                    int bullet_start_x = pos.x + pos.w / 2 - BOSS_BULLET_WIDTH / 2;
+                    int bullet_start_y = pos.y + pos.h / 2 - BOSS_BULLET_HEIGHT / 2;
+                    aBullet->setPos(bullet_start_x, bullet_start_y - BOSS_BULLET_HEIGHT / 2);      
+                    aBullet->setDegrees(i*90 + 90);          
+                }
+            }
+        }
+    }        
 }
 
 void ThreatsObject::handleInputAction(SDL_Event e){

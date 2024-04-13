@@ -13,6 +13,7 @@
 #define BOSS_HEIGHT 100
 #define SPEED_BULLET_BOSS 6.0
 #define BOSS_1_SPEED 4
+
 const int BOSS_1_FRAMES = 8;
 const int THREATS_1_FRAME = 6;
 const int NUM_BOSS = 1;
@@ -53,9 +54,8 @@ public:
     void runThreats();
     void runBoss();
 
-    void set_num_frames(const int& fr) {num_frames = fr;}
-    int get_num_frames() { return num_frames; }
-
+    void init_bullet_boss1();
+    void run_bullet_boss(const int& x_limit, const int& y_limit);
 private:
     double x_val;
     double y_val;
@@ -68,7 +68,6 @@ private:
     
     SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
     SDL_Rect spriteThreats_1[THREATS_1_FRAME];
-    int num_frames;
 };
 
 #endif

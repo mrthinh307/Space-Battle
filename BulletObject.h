@@ -12,6 +12,10 @@
 #define ROCKET_WIDTH 40
 #define ROCKET_HEIGHT 99
 
+#define BOSS_BULLET_WIDTH 35
+#define BOSS_BULLET_HEIGHT 92
+
+
 static int ROCKET_ANIMATION_FRAMES = 4;
 
 class BulletObject : public BaseObject
@@ -22,7 +26,8 @@ public:
         SPHERE = 1,
         SPHERE1 = 2,
         LASER = 3,
-        ROCKET = 4
+        ROCKET = 4,
+        BOSS_1_ARROW = 5
     };
 
     BulletObject();
@@ -42,6 +47,7 @@ public:
     
     void setDegrees( double deg) { degrees = deg; }
     double getDegrees() const { return degrees; }
+    
 
     void setx_val(const double& x) { x_val = x; }
     double getx_val() const { return x_val; }
@@ -55,6 +61,11 @@ public:
     void setFrame(const int& fr) {frame = fr;}
     int getFrame() { return frame; }
 
+    void handleMoveBoss(const int& x_border, const int& y_border);
+
+    void set_boss_bullet();
+    void run_boss_bullet();
+
 private:
     double x_val;
     double y_val;
@@ -66,7 +77,9 @@ private:
     double degrees;
 
     vector<SDL_Texture*> rocketTexture;
-    int frame;
+    static int frame;
+
+    SDL_Rect boss_bullet[3];
 
 };
 

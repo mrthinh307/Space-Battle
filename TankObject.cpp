@@ -13,15 +13,15 @@ TankObject::TankObject(){
     flipType = SDL_FLIP_NONE;
 
     currentRocket = 0;
-
-    // rocketTexture.resize(ROCKET_ANIMATION_FRAMES, NULL); 
 }
 
 TankObject::~TankObject() {
     for (int i = 0; i < bulletOfTankList.size(); ++i) {
         BulletObject* p_bullet = bulletOfTankList.at(i);
-        delete p_bullet;
-        p_bullet = nullptr;
+        if(p_bullet != NULL){
+            delete p_bullet;
+            p_bullet = nullptr;            
+        }
     }
     bulletOfTankList.clear();
 
@@ -164,17 +164,16 @@ void TankObject::handleMove() {
     pos.x += x_val * (WIDTH_TANK_OBJECT / 16);
     pos.y += y_val * (HEIGHT_TANK_OBJECT / 16);
 
-    // Check screen boundaries and wrap around if necessary
     if (pos.x < 0) {
-        pos.x = SCREEN_WIDTH - pos.w; // Xuất hiện ở phía đối diện của màn hình
+        pos.x = SCREEN_WIDTH - pos.w;
     } else if (pos.x + pos.w > SCREEN_WIDTH) {
-        pos.x = 0; // Xuất hiện ở phía đối diện của màn hình
+        pos.x = 0;
     }
 
     if (pos.y < 0) {
-        pos.y = SCREEN_HEIGHT - pos.h; // Xuất hiện ở phía đối diện của màn hình
+        pos.y = SCREEN_HEIGHT - pos.h;
     } else if (pos.y + pos.h > SCREEN_HEIGHT) {
-        pos.y = 0; // Xuất hiện ở phía đối diện của màn hình
+        pos.y = 0;
     }
 
     flipType = SDL_FLIP_NONE;
