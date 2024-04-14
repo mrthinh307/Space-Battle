@@ -96,7 +96,7 @@ void ThreatsObject::Set_sprite_clips_1(){
 void ThreatsObject::set_heal_bar(){
     for(int i = 0; i < 15; i++){
         heal_bar[i].y = 0;
-        heal_bar[i].h = 18;
+        heal_bar[i].h = 10;
     }
 
     heal_bar[0].w = 228;
@@ -358,8 +358,8 @@ void ThreatsObject::runBoss(){
 
 
 void ThreatsObject::run_heal_bar() {
-    int heal_bar_x = pos.x;
-    int heal_bar_y = pos.y + pos.h + 20;
+    int heal_bar_x = pos.x - 10;
+    int heal_bar_y = pos.y + pos.h + 18;
 
     SDL_Rect* currentClip = &heal_bar[num_blood % HEAL_BAR];
     SDLCommonFunc::render_for_sprite(heal_bar_tex, heal_bar_x, heal_bar_y, currentClip, 0, NULL, SDL_FLIP_NONE);

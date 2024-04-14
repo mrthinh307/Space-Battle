@@ -432,8 +432,8 @@ int main(int argc, char* args[]){
         mainTank.runMainTank();
         mainTank.handleMove();
         // Run bullets of tank object
-        mainTank.runBullet();
         mainTank.runRocket();
+        mainTank.runBullet();
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
@@ -481,6 +481,8 @@ int main(int argc, char* args[]){
                     p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
 
+                /* ------------------CHECK COLLISION-------------------*/
+                
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT + RENDER HEAL BAR OF BOSS
                 if(i == idx_Boss_1){
                     explode1.setPos2(480, 480);
