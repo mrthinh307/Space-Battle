@@ -239,7 +239,9 @@ int SDLCommonFunc::showMenu(){
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
 
+/* HANDLE GIFT ITEM */
 void push_back_gift_item(ThreatsObject* p_threat);
+void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned int& currentGold);
 
 /* INIT THREATS */
 void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet);
@@ -620,35 +622,8 @@ int main(int argc, char* args[]){
                     }
                 }
 
-                /* HANDLE GOLD*/
-                for (int a = 0; a < gifts_list.size();) {
-                    gifts_list[a]->renderCopy(gifts_list[a]->getPos());
-                    if(gifts_list[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), p_threat->getPos(), 5)) {
-                        int x_pos = gifts_list[a]->getPos().x + gifts_list[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
-                        int y_pos = gifts_list[a]->getPos().y + gifts_list[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
-                        int w_pos = EXP_GOLD_WIDTH;
-                        int h_pos = EXP_GOLD_HEIGHT;
-                        for(int ex = 0; ex < EXPLODE_GOLD_ANIMATION_FRAMES; ex++){
-                            gifts_list[a]->setPos(x_pos, y_pos);
-                            gifts_list[a]->setPos2(w_pos, h_pos);
-                            gifts_list[a]->setFrame(ex);
-                            gifts_list[a]->renderCopy2();
-                        }
-                        Mix_PlayChannel(-1, breakGold, 0);
-                        delete gifts_list[a];
-                        gifts_list.erase(gifts_list.begin() + a);
-                    }
-                    else {
-                        bool checkGetGold = SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), mainTank.getPos(), 0);
-                        if(checkGetGold){
-                            Mix_PlayChannel(-1, getGold, 0);
-                            currentGold += gifts_list[a]->getGoldValue();
-                            delete gifts_list[a];
-                            gifts_list.erase(gifts_list.begin() + a);
-                        }
-                        else ++a;
-                    }
-                }
+                /* RUN + HANDLE GOLD*/
+                run_gift_item(gifts_list, p_threat, currentGold);
 
                 /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
                 vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
@@ -1094,6 +1069,37 @@ void push_back_gift_item(ThreatsObject* p_threat){
             a_gift_item->setPos(p_threat->getPos().x, p_threat->getPos().y);
             bool check = a_gift_item->get_gift();
             gifts_list.push_back(a_gift_item);
+        }
+    }
+}
+
+void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned int& currentGold){
+    for (int a = 0; a < gifts_list.size();) {
+        gifts_list[a]->renderCopy(gifts_list[a]->getPos());
+        if(gifts_list[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), p_threat->getPos(), 5)) {
+            int x_pos = gifts_list[a]->getPos().x + gifts_list[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
+            int y_pos = gifts_list[a]->getPos().y + gifts_list[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
+            int w_pos = EXP_GOLD_WIDTH;
+            int h_pos = EXP_GOLD_HEIGHT;
+            for(int ex = 0; ex < EXPLODE_GOLD_ANIMATION_FRAMES; ex++){
+                gifts_list[a]->setPos(x_pos, y_pos);
+                gifts_list[a]->setPos2(w_pos, h_pos);
+                gifts_list[a]->setFrame(ex);
+                gifts_list[a]->renderCopy2();
+            }
+            Mix_PlayChannel(-1, breakGold, 0);
+            delete gifts_list[a];
+            gifts_list.erase(gifts_list.begin() + a);
+        }
+        else {
+            bool checkGetGold = SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), mainTank.getPos(), 0);
+            if(checkGetGold){
+                Mix_PlayChannel(-1, getGold, 0);
+                currentGold += gifts_list[a]->getGoldValue();
+                delete gifts_list[a];
+                gifts_list.erase(gifts_list.begin() + a);
+            }
+            else ++a;
         }
     }
 }
