@@ -29,7 +29,7 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-static int NUM_THREATS = 0; // 4 5 6 
+static int NUM_THREATS = 2; // 4 5 6 
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
 const int NUMBER_OF_BULLET_SOUND = 3;
@@ -75,6 +75,8 @@ static char gBattleMusic[] = {"images/SoundEffects/battlemusic.wav"};
 static char gGetGoldSound[] = {"images/SoundEffects/getGold.wav"};
 static char gBreakGoldSound[] = {"images/SoundEffects/breakglass.wav"};
 static char gBossMusic[] = {"images/SoundEffects/boss_bg.wav"};
+
+static bool done = false; // check resume music after finish boss's time
 
 namespace SDLCommonFunc
 {

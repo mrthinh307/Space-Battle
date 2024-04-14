@@ -13,6 +13,7 @@
 #define BOSS_HEIGHT 100
 #define SPEED_BULLET_BOSS 6.0
 #define BOSS_1_SPEED 4
+#define HEAL_BAR 15
 
 const int BOSS_1_FRAMES = 8;
 const int THREATS_1_FRAME = 6;
@@ -49,13 +50,23 @@ public:
 
     void removeBullet(const int& idx);
 
-    void Set_sprite_clips();
-    void Set_sprite_clips_1();
+    void Set_sprite_clips_1(); // set for mini threats
+
+    void Set_sprite_clips(); // set for boss
+
     void runThreats();
     void runBoss();
-
     void init_bullet_boss1();
     void run_bullet_boss(const int& x_limit, const int& y_limit);
+
+    void set_heal_bar();
+    void run_heal_bar();
+
+    void set_num_blood(int val) { num_blood = val; }
+    int get_num_blood() {return num_blood; }
+
+    void set_heal_bar_texture( SDL_Texture* tex) { heal_bar_tex = tex; }
+    SDL_Texture* get_heal_bar_texture() { return heal_bar_tex; }
 private:
     double x_val;
     double y_val;
@@ -68,6 +79,10 @@ private:
     
     SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
     SDL_Rect spriteThreats_1[THREATS_1_FRAME];
+
+    SDL_Rect heal_bar[15];
+    SDL_Texture* heal_bar_tex;
+    int num_blood;
 };
 
 #endif

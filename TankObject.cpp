@@ -12,7 +12,7 @@ TankObject::TankObject(){
     degrees = 0;
     flipType = SDL_FLIP_NONE;
 
-    currentRocket = 0;
+    currentRocket = 5;
 }
 
 TankObject::~TankObject() {
@@ -216,9 +216,9 @@ void TankObject::removeBullet(const int& idx){
 }
 
 void TankObject::runRocket() {
-    for (int i = 0; i < rocketOfTankList.size(); i++) {
+    for (int i = rocketOfTankList.size() - 1; i >= 0; i--){
         BulletObject* aRocket = rocketOfTankList.at(i);
-        if (aRocket != nullptr && aRocket->getIsMove()) {
+        if (aRocket != NULL && aRocket->getIsMove()) {
             aRocket->renderCopy2(); 
             aRocket->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
             int frame = (aRocket->getFrame() + 1) % ROCKET_ANIMATION_FRAMES; 
@@ -234,10 +234,8 @@ void TankObject::runRocket() {
 void TankObject::removeRocket(const int& idx){
     for(int i = 0; i < rocketOfTankList.size(); i++){
         if(idx < rocketOfTankList.size()){
-
             BulletObject* aRocket = rocketOfTankList.at(idx);
             rocketOfTankList.erase(rocketOfTankList.begin() + idx);
-
             if(aRocket != NULL){
                 aRocket->clearRocketTexture();
                 aRocket = NULL;

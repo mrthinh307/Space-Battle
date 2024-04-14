@@ -10,9 +10,128 @@ ThreatsObject::ThreatsObject(){
     pos.h = HEIGHT_THREATS_OBJECT;
 
     flipType = SDL_FLIP_NONE;
+
+    heal_bar_tex = NULL;
+    num_blood = 0;
 }
 
 int ThreatsObject::frame = 0;
+
+void ThreatsObject::Set_sprite_clips(){
+    spriteBoss_1[0].x = 0;
+    spriteBoss_1[0].y = 0;
+    spriteBoss_1[0].w = 200;
+    spriteBoss_1[0].h = 100;
+
+    spriteBoss_1[1].x = 200;
+    spriteBoss_1[1].y = 0;
+    spriteBoss_1[1].w = 200;
+    spriteBoss_1[1].h = 100;
+
+    spriteBoss_1[2].x = 400;
+    spriteBoss_1[2].y = 0;
+    spriteBoss_1[2].w = 200;
+    spriteBoss_1[2].h = 100;
+    
+    spriteBoss_1[3].x = 600;
+    spriteBoss_1[3].y = 0;
+    spriteBoss_1[3].w = 200;
+    spriteBoss_1[3].h = 100;
+
+    spriteBoss_1[4].x = 800;
+    spriteBoss_1[4].y = 0;
+    spriteBoss_1[4].w = 200;
+    spriteBoss_1[4].h = 100;
+
+    spriteBoss_1[5].x = 1000;
+    spriteBoss_1[5].y = 0;
+    spriteBoss_1[5].w = 200;
+    spriteBoss_1[5].h = 100;
+
+    spriteBoss_1[6].x = 1200;
+    spriteBoss_1[6].y = 0;
+    spriteBoss_1[6].w = 200;
+    spriteBoss_1[6].h = 100;
+
+    spriteBoss_1[7].x = 1400;
+    spriteBoss_1[7].y = 0;
+    spriteBoss_1[7].w = 200;
+    spriteBoss_1[7].h = 100;
+
+}
+
+void ThreatsObject::Set_sprite_clips_1(){
+    spriteThreats_1[0].x = 0;
+    spriteThreats_1[0].y = 0;
+    spriteThreats_1[0].w = 70;
+    spriteThreats_1[0].h = 61;
+
+    spriteThreats_1[1].x = 70;
+    spriteThreats_1[1].y = 0;
+    spriteThreats_1[1].w = 70;
+    spriteThreats_1[1].h = 61;
+
+    spriteThreats_1[2].x = 140;
+    spriteThreats_1[2].y = 0;
+    spriteThreats_1[2].w = 70;
+    spriteThreats_1[2].h = 61;
+    
+    spriteThreats_1[3].x = 210;
+    spriteThreats_1[3].y = 0;
+    spriteThreats_1[3].w = 70;
+    spriteThreats_1[3].h = 61;
+
+    spriteThreats_1[4].x = 280;
+    spriteThreats_1[4].y = 0;
+    spriteThreats_1[4].w = 70;
+    spriteThreats_1[4].h = 61;
+
+    spriteThreats_1[5].x = 350;
+    spriteThreats_1[5].y = 0;
+    spriteThreats_1[5].w = 70;
+    spriteThreats_1[5].h = 61;
+
+}
+
+void ThreatsObject::set_heal_bar(){
+    for(int i = 0; i < 15; i++){
+        heal_bar[i].y = 0;
+        heal_bar[i].h = 18;
+    }
+
+    heal_bar[0].w = 228;
+    heal_bar[1].w = 193;
+    heal_bar[2].w = 181;
+    heal_bar[3].w = 169;
+    heal_bar[4].w = 159;
+    heal_bar[5].w = 147;
+    heal_bar[6].w = 134;
+    heal_bar[7].w = 123;
+    heal_bar[8].w = 96;
+    heal_bar[9].w = 82;
+    heal_bar[10].w = 71;
+    heal_bar[11].w = 59;
+    heal_bar[12].w = 26;
+    heal_bar[13].w = 15;
+    heal_bar[14].w = 228;
+
+    heal_bar[0].x = 0;
+    heal_bar[1].x = 228;
+    heal_bar[2].x = 421;
+    heal_bar[3].x = 602;
+    heal_bar[4].x = 771;
+    heal_bar[5].x = 930;
+    heal_bar[6].x = 1077;
+    heal_bar[7].x = 1211;
+    heal_bar[8].x = 1334;
+    heal_bar[9].x = 1430;
+    heal_bar[10].x = 1512;
+    heal_bar[11].x = 1583;
+    heal_bar[12].x = 1642;
+    heal_bar[13].x = 1668;
+    heal_bar[14].x = 1683;
+
+}
 
 ThreatsObject::~ThreatsObject(){
     if(bulletOfThreatsList.size() > 0){
@@ -161,10 +280,6 @@ void ThreatsObject::run_bullet_boss(const int& x_limit, const int& y_limit){
     }        
 }
 
-void ThreatsObject::handleInputAction(SDL_Event e){
-    ;
-}
-
 void ThreatsObject::resetThreat(){
     int tmp = rand() % 4;
 
@@ -215,94 +330,6 @@ void ThreatsObject::removeBullet(const int& idx){
     }
 }
 
-void ThreatsObject::Set_sprite_clips(){
-    spriteBoss_1[0].x = 0;
-    spriteBoss_1[0].y = 0;
-    spriteBoss_1[0].w = 200;
-    spriteBoss_1[0].h = 100;
-
-    spriteBoss_1[1].x = 200;
-    spriteBoss_1[1].y = 0;
-    spriteBoss_1[1].w = 200;
-    spriteBoss_1[1].h = 100;
-
-    spriteBoss_1[2].x = 400;
-    spriteBoss_1[2].y = 0;
-    spriteBoss_1[2].w = 200;
-    spriteBoss_1[2].h = 100;
-    
-    spriteBoss_1[3].x = 600;
-    spriteBoss_1[3].y = 0;
-    spriteBoss_1[3].w = 200;
-    spriteBoss_1[3].h = 100;
-
-    spriteBoss_1[4].x = 800;
-    spriteBoss_1[4].y = 0;
-    spriteBoss_1[4].w = 200;
-    spriteBoss_1[4].h = 100;
-
-    spriteBoss_1[5].x = 1000;
-    spriteBoss_1[5].y = 0;
-    spriteBoss_1[5].w = 200;
-    spriteBoss_1[5].h = 100;
-
-    spriteBoss_1[6].x = 1200;
-    spriteBoss_1[6].y = 0;
-    spriteBoss_1[6].w = 200;
-    spriteBoss_1[6].h = 100;
-
-    spriteBoss_1[7].x = 1400;
-    spriteBoss_1[7].y = 0;
-    spriteBoss_1[7].w = 200;
-    spriteBoss_1[7].h = 100;
-
-}
-
-void ThreatsObject::runBoss(){
-    if(true){
-        SDL_Rect* currentClip = &spriteBoss_1[frame / 8];
-        SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
-        SDL_RenderPresent(gRenderer);
-        frame++;
-        if( frame / 8 >= BOSS_1_FRAMES )
-        {
-            frame = 0;
-        }
-    }
-}
-
-void ThreatsObject::Set_sprite_clips_1(){
-    spriteThreats_1[0].x = 0;
-    spriteThreats_1[0].y = 0;
-    spriteThreats_1[0].w = 70;
-    spriteThreats_1[0].h = 61;
-
-    spriteThreats_1[1].x = 70;
-    spriteThreats_1[1].y = 0;
-    spriteThreats_1[1].w = 70;
-    spriteThreats_1[1].h = 61;
-
-    spriteThreats_1[2].x = 140;
-    spriteThreats_1[2].y = 0;
-    spriteThreats_1[2].w = 70;
-    spriteThreats_1[2].h = 61;
-    
-    spriteThreats_1[3].x = 210;
-    spriteThreats_1[3].y = 0;
-    spriteThreats_1[3].w = 70;
-    spriteThreats_1[3].h = 61;
-
-    spriteThreats_1[4].x = 280;
-    spriteThreats_1[4].y = 0;
-    spriteThreats_1[4].w = 70;
-    spriteThreats_1[4].h = 61;
-
-    spriteThreats_1[5].x = 350;
-    spriteThreats_1[5].y = 0;
-    spriteThreats_1[5].w = 70;
-    spriteThreats_1[5].h = 61;
-
-}
 
 void ThreatsObject::runThreats(){
     if(true){
@@ -316,3 +343,27 @@ void ThreatsObject::runThreats(){
         }
     }
 }
+
+void ThreatsObject::runBoss(){
+    SDL_Rect* currentClip = &spriteBoss_1[frame / BOSS_1_FRAMES];
+    SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+    run_heal_bar();
+    SDL_RenderPresent(gRenderer);
+    frame++;
+    if( frame / BOSS_1_FRAMES >= BOSS_1_FRAMES )
+    {
+        frame = 0;
+    }
+}
+
+
+void ThreatsObject::run_heal_bar() {
+    int heal_bar_x = pos.x;
+    int heal_bar_y = pos.y + pos.h + 20;
+
+    SDL_Rect* currentClip = &heal_bar[num_blood % HEAL_BAR];
+    SDLCommonFunc::render_for_sprite(heal_bar_tex, heal_bar_x, heal_bar_y, currentClip, 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderPresent(gRenderer);
+
+}
+
