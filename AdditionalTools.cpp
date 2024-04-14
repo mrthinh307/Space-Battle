@@ -2,20 +2,35 @@
 #include "AdditionalTools.h"
 
 Tools::Tools(){
+    gift_items.resize(NUM_SKILLS);
+    item_width.resize(NUM_SKILLS);
+    item_height.resize(NUM_SKILLS);
 
-    goldItem[0] = SDLCommonFunc::loadImage("images/Utils/1gold.png");
-    goldItem[1] = SDLCommonFunc::loadImage("images/Utils/3gold.png");
+    gift_items[0] = "images/Utils/1gold.png";
+    item_width[0] = 33;   item_height[0] = 41;
+    gift_items[1] = "images/Utils/3gold.png";
+    item_width[1] = 55;   item_height[1] = 32;
 
+    gift_items[2] = "images/Utils/gift/shield.png";
+    gift_items[3] = "images/Utils/gift/preventenemy.png";
+    gift_items[4] = "images/Utils/gift/x2gold.png";
+    gift_items[5] = "images/Utils/gift/booster.png";
+    gift_items[6] = "images/Utils/gift/plusrocket.png";
+    gift_items[7] = "images/Utils/gift/changetank.png";
+    gift_items[8] = "images/Utils/gift/dan4phia.png";
+    gift_items[9] = "images/Utils/gift/danloang.png";
+    gift_items[10] = "images/Utils/gift/4dan.png";
+    gift_items[11] = "images/Utils/gift/new1.png";
+    gift_items[12] =  "images/Utils/gift/new2.png";
+    gift_items[13] = "images/Utils/gift/gold.png";
 
-    goldWidth[0] = 21;
-    goldWidth[1] = 40;
-
-
-    goldHeight[0] = 26;
-    goldHeight[1] = 23;
-
+    for(int i = 2; i < gift_items.size(); i++){
+        item_width[i] = 55;
+        item_height[i] = 55;
+    }
 
     value = 0;
+    idx_skill = -1;
 
     startTime = SDL_GetTicks();
 
@@ -31,22 +46,31 @@ Tools::~Tools(){
         }
     }
     expGold.clear();  
-    freeGoldTexture();
+    free();
 }
 
-SDL_Texture* Tools::getGoldItem() {
+bool Tools::get_gift() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 70 ) { // 40% chance (5% + 40%)
+    if (randomNumber <= 40 ) {
         value = 1;
-        pos.w = goldWidth[0];
-        pos.h = goldHeight[0];
-        return goldItem[0];
-    } else { // 30% chance (5% + 40% + 30%)
+        pos.w = item_width[0];
+        pos.h = item_height[0];
+        return loadIMG(gift_items[0]);
+    }
+    else if(randomNumber <= 30) {
         value = 3;
-        pos.w = goldWidth[1];
-        pos.h = goldHeight[1];
-        return goldItem[1];
+        pos.w = item_width[1];
+        pos.h = item_height[1];
+        return loadIMG(gift_items[1]);
+    }
+    else{
+        int random_skill = rand() % (NUM_SKILLS - 2) + 2;
+        value = 0;
+        idx_skill = random_skill;
+        pos.w = item_width[random_skill];
+        pos.h = item_height[random_skill];
+        return loadIMG(gift_items[random_skill]);
     }
 }
 
@@ -73,7 +97,7 @@ Uint32 Tools::timer(){
     return SDL_GetTicks() - startTime;
 }
 
-void Tools::setGoldTexture(){
+void Tools::set_explode_gift(){
     expGold[0] = SDLCommonFunc::loadImage("images/Utils/P103947/exp1.png");
     expGold[1] = SDLCommonFunc::loadImage("images/Utils/P103947/exp2.png");
     expGold[2] = SDLCommonFunc::loadImage("images/Utils/P103947/exp3.png");
@@ -87,13 +111,4 @@ void Tools::setGoldTexture(){
 
 void Tools::renderCopy2(){
     SDLCommonFunc::render(expGold[frame], pos);
-}
-
-void Tools::freeGoldTexture(){
-    for(int i = 0; i < 2; i++){
-        if(goldItem[i] != NULL){
-            SDL_DestroyTexture(goldItem[i]);
-            goldItem[i] = NULL;
-        }
-    }
 }

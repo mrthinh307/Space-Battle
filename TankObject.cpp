@@ -20,7 +20,7 @@ TankObject::~TankObject() {
         BulletObject* p_bullet = bulletOfTankList.at(i);
         if(p_bullet != NULL){
             delete p_bullet;
-            p_bullet = nullptr;            
+            p_bullet = NULL;            
         }
     }
     bulletOfTankList.clear();
@@ -28,9 +28,12 @@ TankObject::~TankObject() {
     for (int i = 0; i < rocketOfTankList.size(); ++i) {
         BulletObject* p_rocket = rocketOfTankList.at(i);
         if (p_rocket != nullptr) {
-            p_rocket->clearRocketTexture();
+            if(gNameRocketSoundOfTank != NULL){
+                Mix_FreeChunk(gRocketSound);
+                gRocketSound = NULL;
+            }
             delete p_rocket;
-            p_rocket = nullptr;
+            p_rocket = NULL;
         }
     }
     rocketOfTankList.clear();
@@ -142,6 +145,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
             Mix_PlayChannel(-1, gRocketSound, 0);
 
             BulletObject* rocket = new BulletObject();
+            rocket->loadIMG("images/Bullets/rocket.png");
             rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
             rocket->setRocketTexture();
             rocket->setBulletType(BulletObject::ROCKET);
@@ -161,8 +165,8 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
 }
 
 void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 16);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 16);
+    pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
+    pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
 
     if (pos.x < 0) {
         pos.x = SCREEN_WIDTH - pos.w;
@@ -191,6 +195,10 @@ void TankObject::runBullet(){
             }
             else{
                 if(p_bullet != NULL){
+                    if(gRocketSound != NULL){
+                        Mix_FreeChunk(gRocketSound);
+                        gRocketSound = NULL;
+                    }
                     bulletOfTankList.erase(bulletOfTankList.begin() + i);
                     delete p_bullet; 
                     p_bullet = NULL;
@@ -219,10 +227,8 @@ void TankObject::runRocket() {
     for (int i = rocketOfTankList.size() - 1; i >= 0; i--){
         BulletObject* aRocket = rocketOfTankList.at(i);
         if (aRocket != NULL && aRocket->getIsMove()) {
-            aRocket->renderCopy2(); 
+            aRocket->runRocket(); 
             aRocket->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
-            int frame = (aRocket->getFrame() + 1) % ROCKET_ANIMATION_FRAMES; 
-            aRocket->setFrame(frame); 
             
             if (!aRocket->getIsMove()) {
                 removeRocket(i);
@@ -237,7 +243,7 @@ void TankObject::removeRocket(const int& idx){
             BulletObject* aRocket = rocketOfTankList.at(idx);
             rocketOfTankList.erase(rocketOfTankList.begin() + idx);
             if(aRocket != NULL){
-                aRocket->clearRocketTexture();
+                aRocket->free();
                 aRocket = NULL;
             } 
         }

@@ -266,7 +266,7 @@ FontText rocketText;
 BaseObject gold;
 FontText goldText;
 BaseObject goldIcon;
-vector<Tools*> goldItems;
+vector<Tools*> gifts_list;
 
 BaseObject warningNoti;
 
@@ -398,8 +398,8 @@ int main(int argc, char* args[]){
         }
 
         /* HANDLE MOVE:  ĐỒNG TIỀN */
-        for (auto& goldItem : goldItems) {
-            goldItem->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+        for (auto& item : gifts_list) {
+            item->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
         }
 
         /* CLEAR SCREEN */
@@ -459,7 +459,7 @@ int main(int argc, char* args[]){
 
         /* IMPLEMENT THREATS OBJECT & HANDLE EXPLODE */
         for(int i = 0; i < p_threats.size(); i++){
-            ThreatsObject* p_threat = p_threats[i];
+            ThreatsObject* p_threat = p_threats.at(i);
             if(p_threat != NULL){
                 SDL_Rect posThreat = p_threat->getPos();
                 p_threat->setDegrees(mainTank.getPos(), i);
@@ -467,26 +467,18 @@ int main(int argc, char* args[]){
 
                 if(i == idx_Boss_1){
                     p_threat->runBoss();
+                    explode1.setPos2(480, 480);
+                    p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
                 else{
                     p_threat->runThreats();
-                }
-                p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-                //Run bullet of a threat
-                if(i != idx_Boss_1){
                     p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
-                else{
-                    p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
-                }
+                p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
 
                 /* ------------------CHECK COLLISION-------------------*/
                 
                 //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT + RENDER HEAL BAR OF BOSS
-                if(i == idx_Boss_1){
-                    explode1.setPos2(480, 480);
-                }
 
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
@@ -545,14 +537,12 @@ int main(int argc, char* args[]){
 
                                 int ran = rand() % 2 + 1;
                                 if(ran == 1){
-                                    Tools* aGoldItem = new Tools();
-                                    aGoldItem->setGoldTexture();
-                                    aGoldItem->setTexture(aGoldItem->getGoldItem());
-                                    if(aGoldItem != NULL){
-                                        x = p_threat->getPos().x;
-                                        y = p_threat->getPos().y;
-                                        aGoldItem->setPos(x, y);
-                                        goldItems.push_back(aGoldItem);
+                                    Tools* a_gift_item = new Tools();
+                                    a_gift_item->set_explode_gift();
+                                    if(a_gift_item != NULL){
+                                        a_gift_item->setPos(p_threat->getPos().x, p_threat->getPos().y);
+                                        if(!a_gift_item->get_gift()) return 0;
+                                        gifts_list.push_back(a_gift_item);
                                     }
                                 }
 
@@ -595,26 +585,23 @@ int main(int argc, char* args[]){
                         if(checkColl){
                             int ran = rand() % 3 + 1;
                             if(ran == 1){
-                                Tools* aGoldItem = new Tools();
-                                aGoldItem->setGoldTexture();
-                                aGoldItem->setTexture(aGoldItem->getGoldItem());
-                                if(aGoldItem != NULL){
-                                    x = p_threat->getPos().x;
-                                    y = p_threat->getPos().y;
-                                    aGoldItem->setPos(x, y);
-                                    goldItems.push_back(aGoldItem);
+                                Tools* a_gift_item = new Tools();
+                                a_gift_item->set_explode_gift();
+                                if(a_gift_item != NULL){
+                                    a_gift_item->setPos(p_threat->getPos().x, p_threat->getPos().y);
+                                    if(!a_gift_item->get_gift()) return 0;
+                                    gifts_list.push_back(a_gift_item);
                                 }
                             }
 
                             currentKilled++;
                             //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
+                            int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                            int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                            explode1.setPos(x_pos, y_pos);
+
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
-                                int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
-                                explode1.setPos(x_pos, y_pos);
-
                                 explode1.setFrame(ex);
-
                                 explode1.renderCopy2();
                             }
 
@@ -626,30 +613,30 @@ int main(int argc, char* args[]){
                 }
 
                 /* HANDLE GOLD*/
-                for (int a = 0; a < goldItems.size();) {
-                    goldItems[a]->renderCopy(goldItems[a]->getPos());
-                    if(goldItems[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), p_threat->getPos(), 5)){
-                        int x_pos = goldItems[a]->getPos().x + goldItems[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
-                        int y_pos = goldItems[a]->getPos().y + goldItems[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
+                for (int a = 0; a < gifts_list.size();) {
+                    gifts_list[a]->renderCopy(gifts_list[a]->getPos());
+                    if(gifts_list[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), p_threat->getPos(), 5)) {
+                        int x_pos = gifts_list[a]->getPos().x + gifts_list[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
+                        int y_pos = gifts_list[a]->getPos().y + gifts_list[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
                         int w_pos = EXP_GOLD_WIDTH;
                         int h_pos = EXP_GOLD_HEIGHT;
                         for(int ex = 0; ex < EXPLODE_GOLD_ANIMATION_FRAMES; ex++){
-                            goldItems[a]->setPos(x_pos, y_pos);
-                            goldItems[a]->setPos2(w_pos, h_pos);
-                            goldItems[a]->setFrame(ex);
-                            goldItems[a]->renderCopy2();
+                            gifts_list[a]->setPos(x_pos, y_pos);
+                            gifts_list[a]->setPos2(w_pos, h_pos);
+                            gifts_list[a]->setFrame(ex);
+                            gifts_list[a]->renderCopy2();
                         }
                         Mix_PlayChannel(-1, breakGold, 0);
-                        delete goldItems[a];
-                        goldItems.erase(goldItems.begin() + a);
+                        delete gifts_list[a];
+                        gifts_list.erase(gifts_list.begin() + a);
                     }
                     else {
-                        bool checkGetGold = SDLCommonFunc::CheckCollision(goldItems[a]->getPos(), mainTank.getPos(), 0);
+                        bool checkGetGold = SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), mainTank.getPos(), 0);
                         if(checkGetGold){
                             Mix_PlayChannel(-1, getGold, 0);
-                            currentGold += goldItems[a]->getGoldValue();
-                            delete goldItems[a];
-                            goldItems.erase(goldItems.begin() + a);
+                            currentGold += gifts_list[a]->getGoldValue();
+                            delete gifts_list[a];
+                            gifts_list.erase(gifts_list.begin() + a);
                         }
                         else ++a;
                     }
@@ -879,11 +866,11 @@ void quitSDL(){
     timeGame.free();
 
     // Giải phóng các đối tượng trong vector goldItems
-    for(auto& item : goldItems) {
+    for(auto& item : gifts_list) {
         item->free();
         delete item;
     }
-    goldItems.clear();
+    gifts_list.clear();
 
     warningNoti.free();
 

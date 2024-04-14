@@ -55,9 +55,8 @@ public:
     double gety_val() const { return y_val; }
 
     void setRocketTexture();
-    SDL_Texture* getRocketTexture(const int& idx) { return rocketTexture[idx]; }
-    void clearRocketTexture();
-    void renderCopy2();
+    void runRocket();
+
     void setFrame(const int& fr) {frame = fr;}
     int getFrame() { return frame; }
 
@@ -76,10 +75,11 @@ private:
 
     double degrees;
 
-    vector<SDL_Texture*> rocketTexture;
     static int frame;
 
     SDL_Rect boss_bullet[3];
+    SDL_Rect rocket_tex[4];
+    static int frame_rocket;
 
 };
 

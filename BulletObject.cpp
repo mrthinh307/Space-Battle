@@ -12,7 +12,6 @@ BulletObject::BulletObject() {
     pos.w = WIDTH_LASER;
     pos.h = HEIGHT_LASER;
 
-    rocketTexture.resize(ROCKET_ANIMATION_FRAMES, NULL);
 }
 
 BulletObject::~BulletObject() {
@@ -50,24 +49,25 @@ void BulletObject::handleMoveBoss(const int& x_border, const int& y_border){
 }
 
 void BulletObject::setRocketTexture(){
-    rocketTexture[0] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket1.png");
-    rocketTexture[1] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket2.png");
-    rocketTexture[2] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket3.png");
-    rocketTexture[3] = SDLCommonFunc::loadImage("images/Bullets/P103720/rocket4.png");
-}
-
-void BulletObject::clearRocketTexture(){
-    for(int i = 0; i < ROCKET_ANIMATION_FRAMES; i++){
-        SDL_Texture* aTexture = rocketTexture.at(i);
-        if(aTexture != NULL){
-            SDL_DestroyTexture(aTexture);
-            aTexture = NULL;
-        }
+    for(int i = 0; i < 4; i++){
+        rocket_tex[i].x = 40 * i;
+        rocket_tex[i].y = 0;
+        rocket_tex[i].w = 40;
+        rocket_tex[i].h = 99;
     }
 }
 
-void BulletObject::renderCopy2(){
-    SDLCommonFunc::render(rocketTexture[frame], pos, degrees);
+int BulletObject::frame_rocket = 0;
+
+void BulletObject::runRocket(){
+    SDL_Rect* currentClip = &rocket_tex[frame_rocket / 4];
+    SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+    SDL_RenderPresent(gRenderer);
+       frame_rocket++; 
+    if( (frame_rocket / 4) >= 4 )
+    {
+        frame_rocket = 0;
+    }
 }
 
 void BulletObject::set_boss_bullet(){

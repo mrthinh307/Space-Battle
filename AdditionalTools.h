@@ -3,19 +3,19 @@
 
 #include "BaseObject.h"
 
-const int TIME_TO_EXPLODE_GOLD = 5000;
+const int TIME_TO_EXPLODE_GOLD = 10000;
 const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
+
+const int NUM_SKILLS = 14;
 
 class Tools : public BaseObject
 {
 public:
     Tools();
     ~Tools();
-
-    SDL_Texture* getGoldItem();
     
     void setGoldValue(const unsigned int& v);
     unsigned  getGoldValue() { return value; }
@@ -25,20 +25,22 @@ public:
     Uint32 timer();
 
     void setFrame(const int& fr) { frame = fr; }
-    void setGoldTexture();
+    void set_explode_gift();
     void renderCopy2();
 
-    void freeGoldTexture();
+    bool get_gift();
 
 private:
-    SDL_Texture* goldItem[2];
-    int goldWidth[2];
-    int goldHeight[2];
-    unsigned  value;
+    unsigned value;
     Uint32 startTime;
 
     int frame;
     vector<SDL_Texture*> expGold;
+
+    vector<string> gift_items;
+    vector<int> item_width;
+    vector<int> item_height;
+    int idx_skill;
 };
 
 #endif
