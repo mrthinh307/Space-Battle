@@ -12,7 +12,7 @@ TankObject::TankObject(){
     degrees = 0;
     flipType = SDL_FLIP_NONE;
 
-    currentRocket = 5;
+    currentRocket = 0;
 }
 
 TankObject::~TankObject() {
@@ -132,13 +132,13 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
         }
 
         else if(e.button.button == SDL_BUTTON_RIGHT){
-            if (!rocketOfTankList.empty()) {  // Kiểm tra xem có bullet đang di chuyển không
-                return;  // Nếu có, không cho phép bắn thêm
+            if (!rocketOfTankList.empty()) {
+                return; 
             }
-            if (currentRocket <= 0) {  // Kiểm tra xem còn rocket để bắn không
-                return;  // Nếu không, không cho phép bắn
+            if (currentRocket <= 0) {  
+                return; 
             }
-            currentRocket--;  // Giảm số lượng rocket khi bắn
+            currentRocket--;  
 
             gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
             Mix_VolumeChunk(gRocketSound, 48);
