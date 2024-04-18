@@ -102,7 +102,6 @@ void init_teleport(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const 
 
 void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have_tele) {
     static bool mouseClicked = false;
-    static int turn = 1;
     static int lastPosX = 0;
     static int lastPosY = 0;
 
@@ -139,21 +138,12 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
         }
     }
 
-    if (mouseClicked && turn < 1000) {
-        for (int i = 0; i < a.size(); i++) {
-            a[i]->setPos(lastPosX, lastPosY);
-            a[i]->run_teleport();
-        }
-        turn++;
-    } else {
-        for (int i = 0; i < a.size(); i++) {
-            delete a[i];
-        }
-        a.clear();
-        turn = 1;
-        mouseClicked = false;
-        have_tele = false;
+    for (int i = 0; i < a.size(); i++) {
+        delete a[i];
     }
+    a.clear();
+    mouseClicked = false;
+    have_tele = false;
 }
 
 

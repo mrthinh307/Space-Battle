@@ -9,10 +9,12 @@ const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 14;
+const int NUM_SKILLS = 15;
 
 const int SHIELD_WIDTH = 95;
 const int SHIELD_HEIGHT = 95;
+
+static unsigned int currentGold = 10;
 
 class Tools : public BaseObject
 {
@@ -22,7 +24,8 @@ public:
         GOLD_2 = 1,
         SHIELD = 2,
         MAGNET = 3, 
-        TELEPORT = 4
+        TELEPORT = 4, 
+        X2GOLD = 5
     };
 
     Tools();

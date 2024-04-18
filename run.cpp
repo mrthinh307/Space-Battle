@@ -183,7 +183,7 @@ int main(int argc, char* args[]){
     unsigned int currentHeart = 1;
     unsigned int currentKilled = 0;
     bool rocketAdded = false;
-    unsigned int currentGold = 0;
+    // static unsigned int currentGold = 10;
 
     int MENU = SDLCommonFunc::showMenu();
     if(MENU == 1) quit = true;
@@ -1157,6 +1157,9 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                         init_teleport(teleport_a, teleport_b, object::PLAYER, mainTank, p_threat);
                         have_tele = true;
                     }
+                }
+                else if(gifts_list[a]->get_skill() == Tools::X2GOLD){
+                    currentGold = currentGold * 2;
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);
