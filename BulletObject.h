@@ -65,6 +65,7 @@ public:
     void set_boss_bullet();
     void run_boss_bullet();
 
+
 private:
     double x_val;
     double y_val;
@@ -80,6 +81,8 @@ private:
     SDL_Rect boss_bullet[3];
     SDL_Rect rocket_tex[4];
     static int frame_rocket;
+
+    static bool check_col_shield;
 
 };
 

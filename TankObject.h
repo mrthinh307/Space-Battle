@@ -26,6 +26,9 @@ public:
     double getDegrees() const {return degrees; }
     void setDegrees(double d) { degrees = d; }
 
+    void setXVal(int x) { x_val = x; }
+    void setYVal(int y) { y_val = y; }
+
     SDL_RendererFlip getFlipType() const { return flipType; }
     void setFlipType (SDL_RendererFlip type) { flipType = type; }
 
@@ -47,6 +50,10 @@ public:
     
     void Set_sprite_clips();
     void runMainTank();
+
+    void set_sprite_for_shield();
+    void run_shield();
+
 private:
     int x_val;
     int y_val;

@@ -15,6 +15,20 @@ ThreatsObject::ThreatsObject(){
     num_blood = 0;
 }
 
+ThreatsObject::~ThreatsObject(){
+    if(bulletOfThreatsList.size() > 0){
+        for(int i = 0; i < bulletOfThreatsList.size(); i++){
+            BulletObject* t_bull = bulletOfThreatsList.at(i);
+            if(t_bull != NULL){
+                delete t_bull;
+            }
+            t_bull = NULL;
+        }
+        bulletOfThreatsList.clear();
+    }
+
+}
+
 int ThreatsObject::frame = 0;
 
 void ThreatsObject::Set_sprite_clips(){
@@ -133,19 +147,6 @@ void ThreatsObject::set_heal_bar(){
 
 }
 
-ThreatsObject::~ThreatsObject(){
-    if(bulletOfThreatsList.size() > 0){
-        for(int i = 0; i < bulletOfThreatsList.size(); i++){
-            BulletObject* t_bull = bulletOfThreatsList.at(i);
-            if(t_bull != NULL){
-                delete t_bull;
-            }
-            t_bull = NULL;
-        }
-        bulletOfThreatsList.clear();
-    }
-
-}
 
 void ThreatsObject::handleMove(const int& x_border, const int& y_border){
     float rad_angle = degrees * M_PI / 180.0;
@@ -190,7 +191,7 @@ void ThreatsObject::setDegrees(const SDL_Rect& posTank, int index){
 
     float angle = atan2(delta_y, delta_x) * (180.0 / M_PI);
 
-    degrees = calculateAdjustedAngle(angle, index); 
+    degrees = calculateAdjustedAngle(angle, index);
 }
 
 void ThreatsObject::initBullet(BulletObject* t_bull){
@@ -310,8 +311,8 @@ void ThreatsObject::resetThreat(){
 }
 
 void ThreatsObject::resetBullet(BulletObject* aBullet){
-    int bullet_start_x = pos.x + WIDTH_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
-    int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
+    int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
+    int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
     aBullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
 }
 
@@ -344,15 +345,17 @@ void ThreatsObject::runThreats(){
     }
 }
 
+int ThreatsObject::boss_frame = 0;
+
 void ThreatsObject::runBoss(){
-    SDL_Rect* currentClip = &spriteBoss_1[frame / BOSS_1_FRAMES];
+    SDL_Rect* currentClip = &spriteBoss_1[boss_frame / BOSS_1_FRAMES];
     SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
     run_heal_bar();
     SDL_RenderPresent(gRenderer);
-    frame++;
-    if( frame / BOSS_1_FRAMES >= BOSS_1_FRAMES )
+    boss_frame++;
+    if( boss_frame / BOSS_1_FRAMES >= BOSS_1_FRAMES )
     {
-        frame = 0;
+        boss_frame = 0;
     }
 }
 
@@ -364,6 +367,5 @@ void ThreatsObject::run_heal_bar() {
     SDL_Rect* currentClip = &heal_bar[num_blood % HEAL_BAR];
     SDLCommonFunc::render_for_sprite(heal_bar_tex, heal_bar_x, heal_bar_y, currentClip, 0, NULL, SDL_FLIP_NONE);
     SDL_RenderPresent(gRenderer);
-
 }
 

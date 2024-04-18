@@ -36,6 +36,7 @@ public:
 
     double getDegrees() const {return degrees; }
     void setDegrees(const SDL_Rect& posTank, int index);
+    
     SDL_RendererFlip getFlipType() const { return flipType; }
     void setFlipType (SDL_RendererFlip type) { flipType = type; }
 
@@ -79,6 +80,7 @@ private:
     
     SDL_Rect spriteBoss_1[BOSS_1_FRAMES];
     SDL_Rect spriteThreats_1[THREATS_1_FRAME];
+    static int boss_frame;
 
     SDL_Rect heal_bar[15];
     SDL_Texture* heal_bar_tex;

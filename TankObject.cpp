@@ -117,7 +117,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
             bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
             bullet->loadIMG(gNameBulletOfMainTank);
             bullet->setBulletType(BulletObject::SPHERE1);
-
+  
             Mix_PlayChannel(-1, bulletSound[1], 0);
 
             bullet->setx_val(SPEED_BULLET_MAIN_TANK);
@@ -164,24 +164,24 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
     
 }
 
-void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
+    void TankObject::handleMove() {
+        pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
+        pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
 
-    if (pos.x < 0) {
-        pos.x = SCREEN_WIDTH - pos.w;
-    } else if (pos.x + pos.w > SCREEN_WIDTH) {
-        pos.x = 0;
+        if (pos.x < 0) {
+            pos.x = SCREEN_WIDTH - pos.w;
+        } else if (pos.x + pos.w > SCREEN_WIDTH) {
+            pos.x = 0;
+        }
+
+        if (pos.y < 0) {
+            pos.y = SCREEN_HEIGHT - pos.h;
+        } else if (pos.y + pos.h > SCREEN_HEIGHT) {
+            pos.y = 0;
+        }
+
+        flipType = SDL_FLIP_NONE;
     }
-
-    if (pos.y < 0) {
-        pos.y = SCREEN_HEIGHT - pos.h;
-    } else if (pos.y + pos.h > SCREEN_HEIGHT) {
-        pos.y = 0;
-    }
-
-    flipType = SDL_FLIP_NONE;
-}
 
 void TankObject::runBullet(){  
     for(int i = 0; i < bulletOfTankList.size(); i++){

@@ -38,12 +38,14 @@ void BulletObject::handleMoveThreats(const int& x_border, const int& y_border) {
     }
 }
 
+bool BulletObject::check_col_shield = false;
+
 void BulletObject::handleMoveBoss(const int& x_border, const int& y_border){
     const double bullet_speed = y_val;
     pos.x += bullet_speed * sin(degrees * M_PI / 180.0);
     pos.y -= bullet_speed * cos(degrees * M_PI / 180.0); 
     
-    if (pos.x < 0 || pos.x > x_border || pos.y < 0 || pos.y > y_border) {
+    if (pos.x < 0 || pos.x > x_border || pos.y < 0 || pos.y > y_border || check_col_shield == true) {
         isMove = false;
     }
 }
