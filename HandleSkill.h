@@ -33,4 +33,7 @@ void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Ui
 // BULLET_SPREAD
 void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32& start);
 
+// STRAIGHT BEAM
+void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, Uint32& start);
+
 #endif

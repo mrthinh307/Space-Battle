@@ -174,3 +174,13 @@ void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32&
         }
     }
 }
+
+/* STRAIGHT BEAM */
+void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, Uint32& start){
+    if(have_straight_beam){
+        if(SDL_GetTicks() - start > 30000){
+            mainTank.set_bullet_style(TankObject::NORMAL);
+            have_straight_beam = false;
+        }
+    }
+}

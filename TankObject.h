@@ -21,7 +21,8 @@ public:
         NORMAL = 1,
         FOUR_DIRECTIONS_BULLET = 2,
         SUPER_BULLET = 3,
-        BULLET_SPREAD = 4
+        BULLET_SPREAD = 4,
+        STRAIGHT_BEAM = 5
     };
 
     TankObject();
@@ -72,6 +73,9 @@ public:
 
     void bullet_spread();
     void run_bullet_spread(const int& x_limit, const int& y_limit);
+
+    void straight_beam();
+    void run_straight_beam(const int& x_limit, const int& y_limit);
 
 
 private:

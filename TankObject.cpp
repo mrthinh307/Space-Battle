@@ -144,6 +144,9 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
             else if(bullet_style == TankObject::BULLET_SPREAD){
                 bullet_spread();
             }
+            else if(bullet_style == TankObject::STRAIGHT_BEAM){
+                straight_beam();
+            }
 
         }
 
@@ -405,6 +408,51 @@ void TankObject::bullet_spread(){
 }
 
 void TankObject::run_bullet_spread(const int& x_limit, const int& y_limit){
+    for(int i = 0; i < bulletOfTankList.size(); i++) {
+        BulletObject* aBullet = bulletOfTankList.at(i);
+        if(aBullet != NULL) {
+            if(aBullet->getIsMove()) {
+                aBullet->renderCopy(aBullet->getPos(), aBullet->getDegrees());
+                aBullet->handleMove(x_limit, y_limit);
+            }
+            else {
+                if(aBullet != NULL) {
+                    delete aBullet;
+                    aBullet = NULL;
+                    bulletOfTankList.erase(bulletOfTankList.begin() + i);
+                }
+            }
+        }
+    }         
+}
+
+void TankObject::straight_beam() {
+    // Tính toán khoảng cách giữa các viên đạn (chia đều thành 4 viên)
+    int spacing = pos.w / 4;
+
+    for (int i = 0; i < 4; i++) {
+        BulletObject* new_bullet = new BulletObject();
+        bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
+        new_bullet->setIsMove(true);
+        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
+        new_bullet->setBulletType(BulletObject::SPHERE1);  
+        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+        new_bullet->setDegrees(degrees);
+        // Tính toán vị trí bắt đầu của từng viên đạn
+        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2 + (i - 2) * spacing + spacing / 2;  
+        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
+        if(degrees == 90 || degrees == -90){
+            bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
+            bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2 + (i - 2) * spacing + spacing / 2;    
+        }
+        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+
+        bulletOfTankList.push_back(new_bullet);
+    }
+}
+
+
+void TankObject::run_straight_beam(const int& x_limit, const int& y_limit){
     for(int i = 0; i < bulletOfTankList.size(); i++) {
         BulletObject* aBullet = bulletOfTankList.at(i);
         if(aBullet != NULL) {

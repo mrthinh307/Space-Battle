@@ -29,7 +29,8 @@ public:
         ADD_ROCKET = 6,
         FOUR_DIRECTIONS_BULLET = 7,
         SUPER_BULLET = 8,
-        BULLET_SPREAD = 9
+        BULLET_SPREAD = 9,
+        STRAIGHT_BEAM = 10,
     };
 
     Tools();

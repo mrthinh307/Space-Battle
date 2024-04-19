@@ -89,6 +89,9 @@ static Uint32 start_super_bullet;
 static bool have_bullet_spread = false;
 static Uint32 start_bullet_spread;
 
+static bool have_straight_beam = false;
+static Uint32 start_straight_beam;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -261,6 +264,8 @@ int main(int argc, char* args[]){
             mainTank.run_super_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
         else if(mainTank.get_bullet_style() == TankObject::BULLET_SPREAD)
             mainTank.run_bullet_spread(SCREEN_WIDTH, SCREEN_HEIGHT);
+        else if(mainTank.get_bullet_style() == TankObject::STRAIGHT_BEAM)
+            mainTank.run_straight_beam(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
@@ -521,8 +526,10 @@ int main(int argc, char* args[]){
         set_time_for_4_bullet(mainTank, have_4_bullet, start_4_bullet);
         // RUN SUPER BULLET
         set_time_for_super_bullet(mainTank, have_super_bullet, start_super_bullet);
-        //RUN BULLET SPREAD
+        // RUN BULLET SPREAD
         set_time_for_bullet_spread(mainTank, have_bullet_spread, start_bullet_spread);
+        // RUN STRAIGHT BREAM
+        set_time_for_straight_beam(mainTank, have_straight_beam, start_straight_beam);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -1194,19 +1201,33 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                     mainTank.setRocket(mainTank.getRocket() + num);
                 }
                 else if(gifts_list[a]->get_skill() == Tools::FOUR_DIRECTIONS_BULLET){
-                    mainTank.set_bullet_style(TankObject::FOUR_DIRECTIONS_BULLET);
-                    have_4_bullet = true;
-                    start_4_bullet = SDL_GetTicks();
+                    if(have_4_bullet == false){
+                        mainTank.set_bullet_style(TankObject::FOUR_DIRECTIONS_BULLET);
+                        have_4_bullet = true;
+                        start_4_bullet = SDL_GetTicks();                        
+                    }
+
                 }
                 else if(gifts_list[a]->get_skill() == Tools::SUPER_BULLET){
-                    mainTank.set_bullet_style(TankObject::SUPER_BULLET);
-                    have_super_bullet = true;
-                    start_super_bullet = SDL_GetTicks();
+                    if(have_super_bullet  == false){
+                        mainTank.set_bullet_style(TankObject::SUPER_BULLET);
+                        have_super_bullet = true;
+                        start_super_bullet = SDL_GetTicks();                        
+                    }
                 }
                 else if(gifts_list[a]->get_skill() == Tools::BULLET_SPREAD){
-                    mainTank.set_bullet_style(TankObject::BULLET_SPREAD);
-                    have_bullet_spread = true;
-                    start_bullet_spread = SDL_GetTicks();
+                    if(!have_bullet_spread){
+                        mainTank.set_bullet_style(TankObject::BULLET_SPREAD);
+                        have_bullet_spread = true;
+                        start_bullet_spread = SDL_GetTicks();                        
+                    }
+                }
+                else if(gifts_list[a]->get_skill() == Tools::STRAIGHT_BEAM){
+                    if(!have_straight_beam){
+                        mainTank.set_bullet_style(TankObject::STRAIGHT_BEAM);
+                        have_straight_beam = true;
+                        start_straight_beam = SDL_GetTicks();                        
+                    }
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);
