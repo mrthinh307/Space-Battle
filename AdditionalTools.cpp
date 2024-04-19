@@ -17,7 +17,7 @@ Tools::Tools(){
     gift_items[5] = "images/Utils/gift/x2gold.png";
     gift_items[6] = "images/Utils/gift/plusrocket.png";
     gift_items[7] = "images/Utils/gift/dan4phia.png";
-    gift_items[8] = "images/Utils/gift/changetank.png";
+    gift_items[8] = "images/Utils/gift/superbullet.png";
     gift_items[9] = "images/Utils/gift/danloang.png";
     gift_items[10] = "images/Utils/gift/4dan.png";
     gift_items[11] = "images/Utils/gift/new1.png";
@@ -73,7 +73,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 7;
+        int random_skill = 8;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;

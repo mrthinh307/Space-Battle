@@ -19,7 +19,8 @@ public:
     enum BULLET_STYLE {
         NONE = 0,
         NORMAL = 1,
-        FOUR_DIRECTIONS_BULLET = 2
+        FOUR_DIRECTIONS_BULLET = 2,
+        SUPER_BULLET = 3
     };
 
     TankObject();
@@ -64,6 +65,9 @@ public:
 
     void four_directions_bullet();
     void run_four_bullet(const int& x_limit, const int& y_limit);
+
+    void super_bullet();
+    void run_super_bullet(const int& x_limit, const int& y_limit);
 
 
 private:

@@ -83,6 +83,9 @@ static Uint32 start = 0;
 static bool have_4_bullet = false;
 static Uint32 start_4_bullet;
 
+static bool have_super_bullet = false;
+static Uint32 start_super_bullet;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -251,6 +254,8 @@ int main(int argc, char* args[]){
             mainTank.runBullet();
         else if(mainTank.get_bullet_style() == TankObject::FOUR_DIRECTIONS_BULLET)
             mainTank.run_four_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+        else if(mainTank.get_bullet_style() == TankObject::SUPER_BULLET)
+            mainTank.run_super_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
@@ -508,7 +513,9 @@ int main(int argc, char* args[]){
         // RUN TELEPORT SKILL
         run_teleport_for_player(teleport_a, mainTank, have_tele);
         // RUN 4 BULLET
-        handle_4_bullet(mainTank, have_4_bullet, start_4_bullet);
+        set_time_for_4_bullet(mainTank, have_4_bullet, start_4_bullet);
+        // RUN SUPER BULLET
+        set_time_for_super_bullet(mainTank, have_super_bullet, start_super_bullet);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -823,8 +830,6 @@ bool SDLCommonFunc::loadSoundEffects(){
     }
     Mix_VolumeMusic(80);
 
-    gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
-    Mix_VolumeChunk(gRocketSound, 48);
 
     return check;
 }
@@ -1185,6 +1190,11 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                     mainTank.set_bullet_style(TankObject::FOUR_DIRECTIONS_BULLET);
                     have_4_bullet = true;
                     start_4_bullet = SDL_GetTicks();
+                }
+                else if(gifts_list[a]->get_skill() == Tools::SUPER_BULLET){
+                    mainTank.set_bullet_style(TankObject::SUPER_BULLET);
+                    have_super_bullet = true;
+                    start_super_bullet = SDL_GetTicks();
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);

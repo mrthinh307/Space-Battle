@@ -30,7 +30,7 @@ TankObject::~TankObject() {
     for (int i = 0; i < rocketOfTankList.size(); ++i) {
         BulletObject* p_rocket = rocketOfTankList.at(i);
         if (p_rocket != nullptr) {
-            if(gNameRocketSoundOfTank != NULL){
+            if(gRocketSound != NULL){
                 Mix_FreeChunk(gRocketSound);
                 gRocketSound = NULL;
             }
@@ -38,11 +38,11 @@ TankObject::~TankObject() {
             p_rocket = NULL;
         }
     }
+
     rocketOfTankList.clear();
 }
 
-
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND]) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -114,14 +114,16 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
         }
     }
     if(e.type == SDL_MOUSEBUTTONDOWN){
+
         if(e.button.button == SDL_BUTTON_LEFT){
+            Mix_PlayChannel(-1, gBulletSound[1], 0);
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
                 bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
                 bullet->loadIMG(gNameBulletOfMainTank);
                 bullet->setBulletType(BulletObject::SPHERE1);
     
-                Mix_PlayChannel(-1, bulletSound[1], 0);
+                
 
                 bullet->setx_val(SPEED_BULLET_MAIN_TANK);
                 bullet->setDegrees(degrees);
@@ -129,12 +131,15 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
 
                 int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - WIDTH_SPHERE / 2;
                 int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - HEIGHT_SPHERE / 2;
-                bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); // Điều chỉnh để đạn bắt đầu từ giữa đầu xe tăng
+                bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); 
 
                 bulletOfTankList.push_back(bullet);                
             }
             else if(bullet_style == TankObject::FOUR_DIRECTIONS_BULLET){
                 four_directions_bullet();
+            }
+            else if(bullet_style == TankObject::SUPER_BULLET){
+                super_bullet();
             }
 
         }
@@ -147,6 +152,9 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF
                 return; 
             }
             currentRocket--;  
+
+            gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
+            Mix_VolumeChunk(gRocketSound, 48);
 
             Mix_PlayChannel(-1, gRocketSound, 0);
 
@@ -201,6 +209,10 @@ void TankObject::runBullet(){
             }
             else{
                 if(p_bullet != NULL){
+                    if(gRocketSound != NULL){
+                        Mix_FreeChunk(gRocketSound);
+                        gRocketSound = NULL;
+                    }
                     delete p_bullet; 
                     p_bullet = NULL;
                     bulletOfTankList.erase(bulletOfTankList.begin() + i);
@@ -302,7 +314,7 @@ void TankObject::four_directions_bullet() {
         new_bullet->setDegrees((i*90)%360);
         new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
 
-        Mix_PlayChannel(-1, gBulletSound[1], 0);
+        //Mix_PlayChannel(-1,gBulletSound[1], 0);
 
         int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
         int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
@@ -312,17 +324,56 @@ void TankObject::four_directions_bullet() {
     }
 }
 
-void TankObject::run_four_bullet(const int& x_limit, const int& y_limit){
-    for(int i = 0; i < bulletOfTankList.size(); i++){
+void TankObject::run_four_bullet(const int& x_limit, const int& y_limit) {
+    for(int i = 0; i < bulletOfTankList.size(); i++) {
         BulletObject* aBullet = bulletOfTankList.at(i);
-        if(aBullet != NULL){
-            if(aBullet->getIsMove()){
+        if(aBullet != NULL) {
+            if(aBullet->getIsMove()) {
                 aBullet->renderCopy(aBullet->getPos(), aBullet->getDegrees(), NULL, SDL_FLIP_NONE);
                 aBullet->handleMove(x_limit, y_limit);
             }
-            else{
-                if(aBullet != NULL){
-                    delete aBullet; 
+            else {
+                if(aBullet != NULL) {
+                    delete aBullet;
+                    aBullet = NULL;
+                    bulletOfTankList.erase(bulletOfTankList.begin() + i);
+                }
+            }
+        }
+    }        
+}
+
+void TankObject::super_bullet() {
+    for (int i = 0; i < 4; i++) {
+        BulletObject* new_bullet = new BulletObject();
+        bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
+        new_bullet->setIsMove(true);
+        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
+        new_bullet->setBulletType(BulletObject::SPHERE1);  
+        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+
+        //Mix_PlayChannel(-1, gBulletSound[1], 0);
+
+        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+
+        bulletOfTankList.push_back(new_bullet);
+    }
+}
+
+void TankObject::run_super_bullet(const int& x_limit, const int& y_limit) {
+    for(int i = 0; i < bulletOfTankList.size(); i++) {
+        BulletObject* aBullet = bulletOfTankList.at(i);
+        if(aBullet != NULL) {
+            if(aBullet->getIsMove()) {
+                aBullet->setDegrees(i*90 + 90);
+                aBullet->renderCopy(aBullet->getPos(), aBullet->getDegrees());
+                aBullet->handleMove(x_limit, y_limit);
+            }
+            else {
+                if(aBullet != NULL) {
+                    delete aBullet;
                     aBullet = NULL;
                     bulletOfTankList.erase(bulletOfTankList.begin() + i);
                 }

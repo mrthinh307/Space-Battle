@@ -146,7 +146,7 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
 }
 
 /* 4_BULLET */
-void handle_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start){
+void set_time_for_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start){
     if(have_4_bullet){
         if(SDL_GetTicks() - start > 30000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -155,5 +155,13 @@ void handle_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start){
     }
 }
 
-
+/* SUPER_BULLET*/
+void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Uint32& start){
+    if(have_super_bullet){
+        if(SDL_GetTicks() - start > 8000){
+            mainTank.set_bullet_style(TankObject::NORMAL);
+            have_super_bullet = false;
+        }
+    }
+}
 

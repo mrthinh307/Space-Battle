@@ -27,7 +27,8 @@ public:
         TELEPORT = 4, 
         X2GOLD = 5,
         ADD_ROCKET = 6,
-        FOUR_DIRECTIONS_BULLET = 7
+        FOUR_DIRECTIONS_BULLET = 7,
+        SUPER_BULLET = 8
     };
 
     Tools();
