@@ -141,6 +141,9 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
             else if(bullet_style == TankObject::SUPER_BULLET){
                 super_bullet();
             }
+            else if(bullet_style == TankObject::BULLET_SPREAD){
+                bullet_spread();
+            }
 
         }
 
@@ -380,4 +383,42 @@ void TankObject::run_super_bullet(const int& x_limit, const int& y_limit) {
             }
         }
     }        
+}
+
+void TankObject::bullet_spread(){
+    for (int i = 0; i < 3; i++) {
+        BulletObject* new_bullet = new BulletObject();
+        bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
+        new_bullet->setIsMove(true);
+        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
+        new_bullet->setBulletType(BulletObject::SPHERE1);  
+        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+
+        new_bullet->setDegrees(degrees + 30 * (i - 1));
+
+        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+
+        bulletOfTankList.push_back(new_bullet);
+    }
+}
+
+void TankObject::run_bullet_spread(const int& x_limit, const int& y_limit){
+    for(int i = 0; i < bulletOfTankList.size(); i++) {
+        BulletObject* aBullet = bulletOfTankList.at(i);
+        if(aBullet != NULL) {
+            if(aBullet->getIsMove()) {
+                aBullet->renderCopy(aBullet->getPos(), aBullet->getDegrees());
+                aBullet->handleMove(x_limit, y_limit);
+            }
+            else {
+                if(aBullet != NULL) {
+                    delete aBullet;
+                    aBullet = NULL;
+                    bulletOfTankList.erase(bulletOfTankList.begin() + i);
+                }
+            }
+        }
+    }         
 }

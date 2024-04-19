@@ -165,3 +165,12 @@ void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Ui
     }
 }
 
+/* BULLET SPREAD */
+void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32& start){
+    if(have_spread){
+        if(SDL_GetTicks() - start > 30000){
+            mainTank.set_bullet_style(TankObject::NORMAL);
+            have_spread = false;
+        }
+    }
+}

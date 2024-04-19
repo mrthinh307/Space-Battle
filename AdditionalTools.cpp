@@ -73,7 +73,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 8;
+        int random_skill = 9;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;

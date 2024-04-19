@@ -20,7 +20,8 @@ public:
         NONE = 0,
         NORMAL = 1,
         FOUR_DIRECTIONS_BULLET = 2,
-        SUPER_BULLET = 3
+        SUPER_BULLET = 3,
+        BULLET_SPREAD = 4
     };
 
     TankObject();
@@ -68,6 +69,9 @@ public:
 
     void super_bullet();
     void run_super_bullet(const int& x_limit, const int& y_limit);
+
+    void bullet_spread();
+    void run_bullet_spread(const int& x_limit, const int& y_limit);
 
 
 private:

@@ -30,4 +30,7 @@ void set_time_for_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& st
 // SUPER_BULLET
 void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Uint32& start);
 
+// BULLET_SPREAD
+void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32& start);
+
 #endif
