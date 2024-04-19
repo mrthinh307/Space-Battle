@@ -27,7 +27,8 @@ public:
         SPHERE1 = 2,
         LASER = 3,
         ROCKET = 4,
-        BOSS_1_ARROW = 5
+        BOSS_1_ARROW = 5,
+        FOUR_DIRECTIONS_BULLET = 6
     };
 
     BulletObject();

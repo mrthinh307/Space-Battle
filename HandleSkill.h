@@ -24,4 +24,7 @@ void implement_magnet_skill(vector<Tools*>& gift_list, TankObject& mainTank, boo
 void init_teleport(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat);
 void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have_tele);
 
+// 4_BULLET
+void handle_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start);
+
 #endif

@@ -30,9 +30,4 @@ void BaseObject::renderCopy(SDL_Rect clip, double degrees, SDL_Point* center, SD
     }
 }
 
-// void BaseObject::renderCopy_for_spire(SDL_Rect* clip, int x, int y,double degrees, SDL_Point center, SDL_RenderFlip flip){
-//     if(p_object != NULL){
-//         SDLCommonFunc::render_for_sprite(p_object, x, y, clip, degrees, center, flip);
-//     }
-// }
 

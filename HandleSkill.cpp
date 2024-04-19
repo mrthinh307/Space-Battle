@@ -70,8 +70,7 @@ void shield_vs_bullet(vector<Tools*>& static_skills_a,const TankObject& mainTank
 //     return false;
 // }
 
-
-/* PREVENT */
+/* MAGNET */
 void implement_magnet_skill(vector<Tools*>& gift_list, TankObject& mainTank, bool& have_magnet, const Uint32& start_skill){
     if(have_magnet){
         if(SDL_GetTicks() - start_skill <= 10000){
@@ -144,6 +143,16 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
     a.clear();
     mouseClicked = false;
     have_tele = false;
+}
+
+/* 4_BULLET */
+void handle_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start){
+    if(have_4_bullet){
+        if(SDL_GetTicks() - start > 30000){
+            mainTank.set_bullet_style(TankObject::NORMAL);
+            have_4_bullet = false;
+        }
+    }
 }
 
 

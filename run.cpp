@@ -80,6 +80,9 @@ vector<Tools*> teleport_b;
 static bool have_tele = false;
 static Uint32 start = 0;
 
+static bool have_4_bullet = false;
+static Uint32 start_4_bullet;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -244,7 +247,10 @@ int main(int argc, char* args[]){
         mainTank.handleMove();
         // Run bullets of tank object
         mainTank.runRocket();
-        mainTank.runBullet();
+        if(mainTank.get_bullet_style() == TankObject::NORMAL)
+            mainTank.runBullet();
+        else if(mainTank.get_bullet_style() == TankObject::FOUR_DIRECTIONS_BULLET)
+            mainTank.run_four_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
@@ -501,6 +507,8 @@ int main(int argc, char* args[]){
         implement_magnet_skill(gifts_list, mainTank, have_magnet, start_skill);
         // RUN TELEPORT SKILL
         run_teleport_for_player(teleport_a, mainTank, have_tele);
+        // RUN 4 BULLET
+        handle_4_bullet(mainTank, have_4_bullet, start_4_bullet);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -815,6 +823,9 @@ bool SDLCommonFunc::loadSoundEffects(){
     }
     Mix_VolumeMusic(80);
 
+    gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
+    Mix_VolumeChunk(gRocketSound, 48);
+
     return check;
 }
 
@@ -994,6 +1005,11 @@ void SDLCommonFunc::Clear()
         Mix_FreeChunk(bossDie);
         bossDie = NULL;
     }
+
+    if(gRocketSound != NULL){
+        Mix_FreeChunk(gRocketSound);
+        gRocketSound = NULL;
+    }
 }
 
 int SDLCommonFunc::showMenu(){
@@ -1160,6 +1176,15 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                 }
                 else if(gifts_list[a]->get_skill() == Tools::X2GOLD){
                     currentGold = currentGold * 2;
+                }
+                else if(gifts_list[a]->get_skill() == Tools::ADD_ROCKET){
+                    unsigned int num = rand() % 5 + 5;
+                    mainTank.setRocket(mainTank.getRocket() + num);
+                }
+                else if(gifts_list[a]->get_skill() == Tools::FOUR_DIRECTIONS_BULLET){
+                    mainTank.set_bullet_style(TankObject::FOUR_DIRECTIONS_BULLET);
+                    have_4_bullet = true;
+                    start_4_bullet = SDL_GetTicks();
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);

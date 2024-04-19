@@ -25,7 +25,9 @@ public:
         SHIELD = 2,
         MAGNET = 3, 
         TELEPORT = 4, 
-        X2GOLD = 5
+        X2GOLD = 5,
+        ADD_ROCKET = 6,
+        FOUR_DIRECTIONS_BULLET = 7
     };
 
     Tools();
