@@ -54,6 +54,11 @@ static Mix_Music* menuMusic;
 static Mix_Chunk* warningBoss;
 static Mix_Chunk* bossDie;
 static Mix_Music* bossBattle;
+static Mix_Chunk* haveShield;
+static Mix_Chunk* haveTele;
+static Mix_Chunk* finishTele;
+static Mix_Chunk* bulletUpgrade;
+static Mix_Chunk* defaultSkill;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};

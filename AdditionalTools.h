@@ -33,7 +33,8 @@ public:
         STRAIGHT_BEAM = 10,
         NEW_BULLET_1 = 11,
         TRAP_BULLET = 12,
-        ROUNDABOUT = 13
+        ROUNDABOUT = 13,
+        DEFAULT = 14,
         
     };
 

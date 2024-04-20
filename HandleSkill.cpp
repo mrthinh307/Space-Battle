@@ -115,6 +115,7 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
                     SDL_GetMouseState(&mouseX, &mouseY);
 
                     mainTank.setPos(mouseX, mouseY);
+                    Mix_PlayChannel(-1, finishTele, 0);
 
                     lastPosX = mainTank.getPos().x;
                     lastPosY = mainTank.getPos().y;
