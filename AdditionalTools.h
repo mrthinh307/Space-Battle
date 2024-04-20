@@ -32,7 +32,9 @@ public:
         BULLET_SPREAD = 9,
         STRAIGHT_BEAM = 10,
         NEW_BULLET_1 = 11,
-        TRAP_BULLET = 12
+        TRAP_BULLET = 12,
+        ROUNDABOUT = 13
+        
     };
 
     Tools();

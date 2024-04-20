@@ -60,7 +60,7 @@ static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
 static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};
 static char gNameBoss1[] = {"images/ThreatsObject/boss1/image1.png"};
 
-static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png"};
+static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png", "images/Bullets/roundabout.png"};
 static string gNameBulletOfMainTank = nameBulletTank1[0];
 static char gNameBulletOfThreatsObject[] = {"images/Bullets/enemy1.png"};
 

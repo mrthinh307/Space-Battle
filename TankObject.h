@@ -29,7 +29,8 @@ public:
     enum BulletType {
         SPHERE1 = 0,
         ROCKET = 1,
-        NEW_1 = 2
+        NEW_1 = 2,
+        ROUNDABOUT = 3
     };
 
     TankObject();

@@ -126,6 +126,10 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 width_bullet = WIDTH_NEW_1;    height_bullet = HEIGHT_NEW_1;   speed_bullet = SPEED_BULLET_MAIN_TANK + 1;
                 Mix_PlayChannel(-1, gBulletSound[2], 0);
             }
+            else if(bulletType == TankObject::ROUNDABOUT){
+                width_bullet = WIDTH_ROUNDABOUT;    height_bullet = HEIGHT_ROUNDABOUT;   speed_bullet = SPEED_BULLET_MAIN_TANK - 1;
+                Mix_PlayChannel(-1, gBulletSound[0], 0);
+            }
                 
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
@@ -154,7 +158,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 straight_beam();
             }
             else if(bullet_style == TankObject::TRAP){
-                zic_zac();
+                trap();
             }
         }
 
