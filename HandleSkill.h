@@ -39,4 +39,8 @@ void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, 
 // ZIC_ZAC
 void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start);
 
+// BOOSTER
+void init_booster_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat);
+void handle_booster_skill(vector<Tools*>&a, TankObject& mainTank, bool& have_booster, Uint32& start);
+
 #endif

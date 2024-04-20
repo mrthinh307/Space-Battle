@@ -186,12 +186,79 @@ void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, 
     }
 }
 
-/* ZIC ZAC */
+/* TRAP */
 void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start){
     if(have_zic_zac){
         if(SDL_GetTicks() - start > 20000){
             mainTank.set_bullet_style(TankObject::NORMAL);
             have_zic_zac = false;
+        }
+    }
+}
+
+/* BOOSTER */
+void init_booster_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
+    Tools* booster = new Tools();
+    booster->loadIMG("images/Skills/booster.png");
+    booster->set_sprite_for_booster();
+
+    if(set_for_ == PLAYER) a.push_back(booster);
+    else if(set_for_ == ENEMY) b.push_back(booster);
+}
+
+void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_booster, Uint32& start){
+    if(have_booster){
+        if(SDL_GetTicks() - start < 10000){
+            mainTank.set_tank_speed(DEFAULT_SPEED * 2 + 2);
+            SDL_Rect posTank = mainTank.getPos();
+            double deg = mainTank.getDegrees();
+            int x_, y_;
+            if(deg == 0){
+                x_ = posTank.x + (posTank.w - 60) / 2;
+                y_ = posTank.y + posTank.h - 5;                
+            }
+            else if(deg == 90){
+                x_ = posTank.x - 60;
+                y_ = posTank.y + (posTank.h - 88) / 2;
+            }
+            else if(deg == 180){
+                x_ = posTank.x + (posTank.w - 60) / 2;
+                y_ = posTank.y - 60;
+            }
+            else if(deg == -90){
+                x_ = posTank.x + posTank.w;
+                y_ = posTank.y + (posTank.h - 88) / 2;
+            }
+            // else if(deg == 45){
+            //     x_ = posTank.x + posTank.w - (30 / 2) + cos(deg * M_PI / 180.0) * posTank.h / 2 - 100;
+            //     y_ = posTank.y + posTank.h + sin(deg * M_PI / 180.0) * posTank.h / 2 - 30;
+            // }
+            // else if(deg == 135){
+            //     x_ = posTank.x + posTank.w + cos(deg * M_PI / 180.0) * posTank.h / 2 - 70;
+            //     y_ = posTank.y + posTank.h + sin(deg * M_PI / 180.0) * posTank.h / 2 - 120;                
+            // }
+            // else if(deg == -135){
+            //     x_ = posTank.x + posTank.w / 2 - 30 / 2;
+            //     y_ = posTank.y + posTank.h;
+            // }
+            // else if(deg == -45){
+            //     x_ = posTank.x + cos(deg * M_PI / 180.0) * posTank.h / 2 - 70;
+            //     y_ = posTank.y + sin(deg * M_PI / 180.0) * posTank.h / 2 - 120;
+            // }
+
+            for(int i = 0; i < a.size(); i++){
+                a[i]->setPos(x_, y_);
+                a[i]->setDegrees(mainTank.getDegrees());
+
+                a[i]->run_booster();                
+            }
+
+        }
+        else{
+            for(int i = 0; i < a.size(); i++) delete a[i];
+            a.clear();
+            mainTank.set_tank_speed(DEFAULT_SPEED);
+            have_booster = false;
         }
     }
 }

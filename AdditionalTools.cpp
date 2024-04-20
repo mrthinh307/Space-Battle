@@ -25,9 +25,12 @@ Tools::Tools(){
     gift_items[12] = "images/Utils/gift/ziczac.png";
     gift_items[13] = "images/Utils/gift/new2.png";
     gift_items[14] = "images/Utils/gift/default.png";
+    gift_items[15] = "images/Utils/gift/treasure.png";
+    item_width[15] = 70;   item_height[15] = 61;
+    gift_items[16] = "images/Utils/gift/booster.png";
 
     for(int i = 2; i < gift_items.size(); i++){
-        if(i != 11){
+        if(i != 11 && i != 15){
             item_width[i] = 60;
             item_height[i] = 60;            
         }
@@ -77,7 +80,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 14;
+        int random_skill = 16;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;
@@ -195,5 +198,27 @@ void Tools::run_teleport(){
     if( (frame_tele / 10) >= 10 )
     {
         frame_tele = 0;
+    }
+}
+
+int Tools::frame_booster = 0;
+
+void Tools::set_sprite_for_booster(){
+    for(int i = 0; i < 5; i++){
+        booster[i].x = 60 * i;
+        booster[i].y = 0;
+        booster[i].w = 60;
+        booster[i].h = 88;
+    }
+}
+
+void Tools::run_booster(){
+    SDL_Rect* currentClip = &booster[frame_booster / 5];
+    SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+    SDL_RenderPresent(gRenderer);
+       frame_booster++; 
+    if( (frame_booster / 5) >= 5 )
+    {
+        frame_booster = 0;
     }
 }

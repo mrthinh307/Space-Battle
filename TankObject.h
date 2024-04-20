@@ -11,6 +11,8 @@
 #define SPEED_BULLET_MAIN_TANK 8.0
 #define SPEED_ROCKET_MAIN_TANK 8.0
 
+static unsigned int DEFAULT_SPEED = 4;
+
 #define TANK_1_FRAME 5
 
 class TankObject : public BaseObject
@@ -91,6 +93,9 @@ public:
     void trap();
     void run_trap(const int& x_limit, const int& y_limit);
 
+    void set_tank_speed(const unsigned int& s) { tank_speed = s; }
+    unsigned int get_tank_speed() { return tank_speed; }
+
 
 private:
     int x_val;
@@ -111,6 +116,7 @@ private:
 
     int bulletType;
 
+    static unsigned int tank_speed;
 };
 
 #endif // TANKOBJECT_H_INCLUDED

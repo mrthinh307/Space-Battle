@@ -97,6 +97,11 @@ static Uint32 start_straight_beam;
 static bool have_trap = false;
 static Uint32 start_trap;
 
+vector<Tools*> booster_a;
+vector<Tools*> booster_b;
+static bool have_booster = false;
+static Uint32 start_booster;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -200,7 +205,6 @@ int main(int argc, char* args[]){
     unsigned int currentHeart = 1;
     unsigned int currentKilled = 0;
     bool rocketAdded = false;
-    // static unsigned int currentGold = 10;
 
     int MENU = SDLCommonFunc::showMenu();
     if(MENU == 1) quit = true;
@@ -539,8 +543,10 @@ int main(int argc, char* args[]){
         set_time_for_bullet_spread(mainTank, have_bullet_spread, start_bullet_spread);
         // RUN STRAIGHT BREAM
         set_time_for_straight_beam(mainTank, have_straight_beam, start_straight_beam);
-        // RUN ZIC ZAC
+        // RUN TRAP BULLET
         set_time_for_trap(mainTank, have_trap, start_trap);
+        // RUN BOOSTER
+        handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -734,6 +740,43 @@ void quitSDL(){
 
     warningNoti.free();
 
+    for(auto &item : teleport_a){
+        item->free();
+        delete item;
+    }
+
+    for(auto &item : teleport_b){
+        item->free();
+        delete item;
+    }
+
+    for(auto &item : static_skills_a){
+        item->free();
+        delete item;
+    }
+
+    for(auto &item : static_skills_b){
+        item->free();
+        delete item;
+    }
+
+    for(auto &item : booster_a){
+        item->free();
+        delete item;
+    }
+
+    for(auto &item : booster_b){
+        item->free();
+        delete item;
+    }
+
+    // Giải phóng các đối tượng trong vector p_threats
+    for(auto& p_threat : p_threats){
+        p_threat->free();
+        delete p_threat;
+    }
+    p_threats.clear();
+
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
@@ -869,6 +912,8 @@ bool SDLCommonFunc::loadSoundEffects(){
     finishTele = Mix_LoadWAV("iamges/SoundEffects/tele2.wav");
     bulletUpgrade = Mix_LoadWAV("images/SoundEffects/bullet_upgrade.wav");
     defaultSkill = Mix_LoadWAV("images/SoundEffects/default.wav");
+    treasureSound = Mix_LoadWAV("images/SoundEffects/treasure.wav");
+    boosterSound = Mix_LoadWAV("images/SoundEffects/booster.wav");
 
     return check;
 }
@@ -1078,6 +1123,16 @@ void SDLCommonFunc::Clear()
     if(defaultSkill != NULL){
         Mix_FreeChunk(defaultSkill);
         defaultSkill = NULL;
+    }
+
+    if(treasureSound != NULL){
+        Mix_FreeChunk(treasureSound);
+        treasureSound = NULL;
+    }
+    
+    if(boosterSound != NULL){
+        Mix_FreeChunk(boosterSound);
+        boosterSound = NULL;
     }
 }
 
@@ -1311,6 +1366,18 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                     Mix_PlayChannel(-1, defaultSkill, 0);
                     gNameBulletOfMainTank = nameBulletTank1[0];
                     mainTank.setBulletType(TankObject::SPHERE1);
+                }
+                else if(gifts_list[a]->get_skill() == Tools::TREASURE){
+                    Mix_PlayChannel(-1, treasureSound, 0);
+                    currentGold += rand() % 21 + 30;
+                }
+                else if(gifts_list[a]->get_skill() == Tools::BOOSTER){
+                    if(have_booster == false){
+                        Mix_PlayChannel(-1, boosterSound, 0);
+                        start_booster = SDL_GetTicks();
+                        have_booster = true;
+                        init_booster_skill(booster_a, booster_b, object::PLAYER, mainTank, p_threat);
+                    }
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);

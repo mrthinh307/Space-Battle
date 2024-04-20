@@ -59,6 +59,8 @@ static Mix_Chunk* haveTele;
 static Mix_Chunk* finishTele;
 static Mix_Chunk* bulletUpgrade;
 static Mix_Chunk* defaultSkill;
+static Mix_Chunk* treasureSound;
+static Mix_Chunk* boosterSound;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};

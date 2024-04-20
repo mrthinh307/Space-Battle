@@ -14,6 +14,7 @@ TankObject::TankObject(){
 
     currentRocket = 0;
 }
+unsigned int TankObject::tank_speed = DEFAULT_SPEED;
 
 int TankObject::bullet_style = TankObject::NORMAL;
 
@@ -197,8 +198,8 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
 }
 
 void TankObject::handleMove() {
-    pos.x += x_val * (WIDTH_TANK_OBJECT / 15);
-    pos.y += y_val * (HEIGHT_TANK_OBJECT / 15);
+    pos.x += x_val * tank_speed;
+    pos.y += y_val * tank_speed;
 
     if (pos.x < 0) {
         pos.x = SCREEN_WIDTH - pos.w;

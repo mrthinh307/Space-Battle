@@ -9,12 +9,12 @@ const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 15;
+const int NUM_SKILLS = 17;
 
 const int SHIELD_WIDTH = 95;
 const int SHIELD_HEIGHT = 95;
 
-static unsigned int currentGold = 10;
+static unsigned int currentGold = 0;
 
 class Tools : public BaseObject
 {
@@ -35,7 +35,8 @@ public:
         TRAP_BULLET = 12,
         ROUNDABOUT = 13,
         DEFAULT = 14,
-        
+        TREASURE  = 15,
+        BOOSTER = 16
     };
 
     Tools();
@@ -76,8 +77,13 @@ public:
     void set_sprite_for_teleport();
     void run_teleport();
 
+    //3. MAGNET
     void set_magnet(bool x) { magnet = x; }
     bool get_magnet() { return magnet; }
+
+    //4. BOOSTER
+    void set_sprite_for_booster();
+    void run_booster();
 
 private:
     unsigned value;
@@ -101,6 +107,9 @@ private:
     static int frame_tele;
 
     bool magnet;
+
+    static int frame_booster;
+    SDL_Rect booster[5];
 };
 
 #endif
