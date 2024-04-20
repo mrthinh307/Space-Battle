@@ -94,6 +94,9 @@ static Uint32 start_bullet_spread;
 static bool have_straight_beam = false;
 static Uint32 start_straight_beam;
 
+static bool have_trap = false;
+static Uint32 start_trap;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -268,6 +271,8 @@ int main(int argc, char* args[]){
             mainTank.run_bullet_spread(SCREEN_WIDTH, SCREEN_HEIGHT);
         else if(mainTank.get_bullet_style() == TankObject::STRAIGHT_BEAM)
             mainTank.run_straight_beam(SCREEN_WIDTH, SCREEN_HEIGHT);
+        else if(mainTank.get_bullet_style() == TankObject::ZIC_ZAC)
+            mainTank.run_zic_zac(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* RUN BOSS LEVEL 1*/
         static bool add = false;
@@ -534,6 +539,8 @@ int main(int argc, char* args[]){
         set_time_for_bullet_spread(mainTank, have_bullet_spread, start_bullet_spread);
         // RUN STRAIGHT BREAM
         set_time_for_straight_beam(mainTank, have_straight_beam, start_straight_beam);
+        // RUN ZIC ZAC
+        set_time_for_zic_zac(mainTank, have_trap, start_trap);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -1236,6 +1243,13 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                 else if(gifts_list[a]->get_skill() == Tools::NEW_BULLET_1){
                     gNameBulletOfMainTank = nameBulletTank1[1];
                     mainTank.setBulletType(TankObject::NEW_1);
+                }
+                else if(gifts_list[a]->get_skill() == Tools::ZIC_ZAC){
+                    if(!have_trap){
+                        mainTank.set_bullet_style(TankObject::ZIC_ZAC);
+                        have_trap = true;
+                        start_trap = SDL_GetTicks();
+                    }
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);

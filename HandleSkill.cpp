@@ -184,3 +184,13 @@ void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, 
         }
     }
 }
+
+/* ZIC ZAC */
+void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start){
+    if(have_zic_zac){
+        if(SDL_GetTicks() - start > 20000){
+            mainTank.set_bullet_style(TankObject::NORMAL);
+            have_zic_zac = false;
+        }
+    }
+}

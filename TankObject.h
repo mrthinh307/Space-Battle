@@ -22,7 +22,8 @@ public:
         FOUR_DIRECTIONS_BULLET = 2,
         SUPER_BULLET = 3,
         BULLET_SPREAD = 4,
-        STRAIGHT_BEAM = 5
+        STRAIGHT_BEAM = 5,
+        TRAP = 6
     };
 
     enum BulletType {
@@ -85,6 +86,9 @@ public:
 
     void straight_beam();
     void run_straight_beam(const int& x_limit, const int& y_limit);
+
+    void trap();
+    void run_trap(const int& x_limit, const int& y_limit);
 
 
 private:

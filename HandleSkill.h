@@ -36,4 +36,7 @@ void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32&
 // STRAIGHT BEAM
 void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, Uint32& start);
 
+// ZIC_ZAC
+void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start);
+
 #endif
