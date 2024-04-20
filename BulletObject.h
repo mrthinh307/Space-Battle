@@ -6,8 +6,14 @@
 #define WIDTH_LASER 8
 #define HEIGHT_LASER 8
 
-#define WIDTH_SPHERE 5
-#define HEIGHT_SPHERE 5
+#define WIDTH_SPHERE 15
+#define HEIGHT_SPHERE 15
+
+#define WIDTH_NEW_1 16
+#define HEIGHT_NEW_1 25
+
+#define WIDTH_BULLET_1_ENEMY 20
+#define HEIGHT_BULLET_1_ENEMY 21
 
 #define ROCKET_WIDTH 40
 #define ROCKET_HEIGHT 99
@@ -28,7 +34,7 @@ public:
         LASER = 3,
         ROCKET = 4,
         BOSS_1_ARROW = 5,
-        FOUR_DIRECTIONS_BULLET = 6
+        NEW_1 = 6
     };
 
     BulletObject();

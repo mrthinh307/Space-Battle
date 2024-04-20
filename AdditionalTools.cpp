@@ -21,13 +21,17 @@ Tools::Tools(){
     gift_items[9] = "images/Utils/gift/danloang.png";
     gift_items[10] = "images/Utils/gift/4dan.png";
     gift_items[11] = "images/Utils/gift/new1.png";
+    item_width[11] = 50;   item_height[11] = 77;
     gift_items[12] = "images/Utils/gift/new2.png";
     gift_items[13] = "images/Utils/gift/treasure.png";
     gift_items[14] = "images/Utils/booster.png";
 
     for(int i = 2; i < gift_items.size(); i++){
-        item_width[i] = 60;
-        item_height[i] = 60;
+        if(i != 11){
+            item_width[i] = 60;
+            item_height[i] = 60;            
+        }
+
     }
 
     value = 0;
@@ -73,7 +77,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 10;
+        int random_skill = 11;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;

@@ -25,13 +25,22 @@ public:
         STRAIGHT_BEAM = 5
     };
 
+    enum BulletType {
+        SPHERE1 = 0,
+        ROCKET = 1,
+        NEW_1 = 2
+    };
+
     TankObject();
     ~TankObject();
+
+    int getBulletType() const { return bulletType; }
+    void setBulletType(int type) { bulletType = type; }
 
     void set_bullet_style(const int& s) {bullet_style = s; }
     int get_bullet_style() const { return bullet_style; }
 
-    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND]);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank);
     void handleMove();
 
     double getDegrees() const {return degrees; }
@@ -92,6 +101,10 @@ private:
     static int frame;
 
     static int bullet_style;
+
+    int width_bullet, height_bullet, speed_bullet;
+
+    int bulletType;
 
 };
 

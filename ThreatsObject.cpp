@@ -199,7 +199,7 @@ void ThreatsObject::initBullet(BulletObject* t_bull){
         bool check = t_bull->loadIMG(gNameBulletOfThreatsObject);
         if(check){
             t_bull->setIsMove(true);
-            t_bull->setWidthHeight(WIDTH_SPHERE, WIDTH_SPHERE);
+            t_bull->setWidthHeight(WIDTH_BULLET_1_ENEMY, HEIGHT_BULLET_1_ENEMY);
             t_bull->setBulletType(BulletObject::SPHERE);
 
             t_bull->sety_val(SPEED_BULLET_THREATS_OBJECT);
@@ -228,8 +228,8 @@ void ThreatsObject::runBullet(const int& x_limit, const int& y_limit){
                 if(aBullet != NULL){
                     aBullet->setIsMove(true);
                     // Set new position
-                    int bullet_start_x = pos.x + HEIGHT_THREATS_OBJECT / 2 - WIDTH_SPHERE / 2;
-                    int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_SPHERE / 2;
+                    int bullet_start_x = pos.x + HEIGHT_THREATS_OBJECT / 2 - WIDTH_BULLET_1_ENEMY / 2;
+                    int bullet_start_y = pos.y + HEIGHT_THREATS_OBJECT / 2 - HEIGHT_BULLET_1_ENEMY / 2;
                     aBullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2);  
                     // Set new flip degrees     
                     aBullet->setDegrees(degrees);            
@@ -311,9 +311,9 @@ void ThreatsObject::resetThreat(){
 }
 
 void ThreatsObject::resetBullet(BulletObject* aBullet){
-    int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
-    int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
-    aBullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+    int bullet_start_x = pos.x + pos.w / 2 - WIDTH_BULLET_1_ENEMY / 2;
+    int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_BULLET_1_ENEMY / 2;
+    aBullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_BULLET_1_ENEMY / 2); 
 }
 
 void ThreatsObject::removeBullet(const int& idx){

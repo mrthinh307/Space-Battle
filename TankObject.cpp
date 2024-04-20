@@ -42,7 +42,7 @@ TankObject::~TankObject() {
     rocketOfTankList.clear();
 }
 
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND]) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -116,22 +116,28 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
     if(e.type == SDL_MOUSEBUTTONDOWN){
 
         if(e.button.button == SDL_BUTTON_LEFT){
-            Mix_PlayChannel(-1, gBulletSound[1], 0);
+            
+
+            if(bulletType == TankObject::SPHERE1){
+                width_bullet = WIDTH_SPHERE;   height_bullet = HEIGHT_SPHERE;  speed_bullet = SPEED_BULLET_MAIN_TANK;
+                Mix_PlayChannel(-1, gBulletSound[1], 0);
+            }
+            else if(bulletType == TankObject::NEW_1){
+                width_bullet = WIDTH_NEW_1;    height_bullet = HEIGHT_NEW_1;   speed_bullet = SPEED_BULLET_MAIN_TANK + 1;
+                Mix_PlayChannel(-1, gBulletSound[2], 0);
+            }
+                
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
-                bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-                bullet->loadIMG(gNameBulletOfMainTank);
-                bullet->setBulletType(BulletObject::SPHERE1);
-    
-                
-
-                bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+                bullet->loadIMG(gNameBulletOfMainTank); 
+                bullet->setWidthHeight(width_bullet, height_bullet);
+                bullet->setx_val(speed_bullet);
                 bullet->setDegrees(degrees);
                 bullet->setIsMove(true);
 
-                int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - WIDTH_SPHERE / 2;
-                int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - HEIGHT_SPHERE / 2;
-                bullet->setPos(bullet_start_x, bullet_start_y - HEIGHT_SPHERE / 2); 
+                int bullet_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - bullet->getPos().w / 2;
+                int bullet_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - bullet->getPos().h / 2;
+                bullet->setPos(bullet_start_x, bullet_start_y); 
 
                 bulletOfTankList.push_back(bullet);                
             }
@@ -315,16 +321,15 @@ void TankObject::four_directions_bullet() {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
         new_bullet->setIsMove(true);
-        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-        new_bullet->setBulletType(BulletObject::SPHERE1);  
+        new_bullet->setWidthHeight(width_bullet, height_bullet);
         new_bullet->setDegrees((i*90)%360);
-        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+        new_bullet->setx_val(speed_bullet);
 
         //Mix_PlayChannel(-1,gBulletSound[1], 0);
 
-        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
-        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+        int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -354,15 +359,12 @@ void TankObject::super_bullet() {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
         new_bullet->setIsMove(true);
-        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-        new_bullet->setBulletType(BulletObject::SPHERE1);  
-        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+        new_bullet->setWidthHeight(width_bullet, height_bullet);
+        new_bullet->setx_val(speed_bullet);
 
-        //Mix_PlayChannel(-1, gBulletSound[1], 0);
-
-        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
-        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+        int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -393,15 +395,14 @@ void TankObject::bullet_spread(){
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
         new_bullet->setIsMove(true);
-        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-        new_bullet->setBulletType(BulletObject::SPHERE1);  
-        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+        new_bullet->setWidthHeight(width_bullet, height_bullet); 
+        new_bullet->setx_val(speed_bullet);
 
         new_bullet->setDegrees(degrees + 30 * (i - 1));
 
-        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
-        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+        int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
+        int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
+        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -434,23 +435,21 @@ void TankObject::straight_beam() {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
         new_bullet->setIsMove(true);
-        new_bullet->setWidthHeight(WIDTH_SPHERE, HEIGHT_SPHERE);
-        new_bullet->setBulletType(BulletObject::SPHERE1);  
-        new_bullet->setx_val(SPEED_BULLET_MAIN_TANK);
+        new_bullet->setWidthHeight(width_bullet, height_bullet);
+        new_bullet->setx_val(speed_bullet);
         new_bullet->setDegrees(degrees);
         // Tính toán vị trí bắt đầu của từng viên đạn
-        int bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2 + (i - 2) * spacing + spacing / 2;  
-        int bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2;
+        int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2 + (i - 2) * spacing + spacing / 2;  
+        int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
         if(degrees == 90 || degrees == -90){
-            bullet_start_x = pos.x + pos.w / 2 - WIDTH_SPHERE / 2;
-            bullet_start_y = pos.y + pos.h / 2 - HEIGHT_SPHERE / 2 + (i - 2) * spacing + spacing / 2;    
+            bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
+            bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2 + (i - 2) * spacing + spacing / 2;    
         }
-        new_bullet->setPos(bullet_start_x, bullet_start_y + HEIGHT_SPHERE / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
 
         bulletOfTankList.push_back(new_bullet);
     }
 }
-
 
 void TankObject::run_straight_beam(const int& x_limit, const int& y_limit){
     for(int i = 0; i < bulletOfTankList.size(); i++) {

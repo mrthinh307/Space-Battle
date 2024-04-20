@@ -69,6 +69,8 @@ vector<Tools*> gifts_list;
 
 BaseObject warningNoti;
 
+static Uint32 delay;
+
 vector<Tools*> static_skills_a;
 vector<Tools*> static_skills_b;
 
@@ -216,7 +218,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e, gBulletSound);
+            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank);
         }
 
         /* HANDLE MOVE:  ĐỒNG TIỀN */
@@ -518,6 +520,8 @@ int main(int argc, char* args[]){
             explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
         }
 
+        
+
         // RUN PREVENT SKILL
         implement_magnet_skill(gifts_list, mainTank, have_magnet, start_skill);
         // RUN TELEPORT SKILL
@@ -750,10 +754,10 @@ bool SDLCommonFunc::loadSoundEffects(){
         check = false;
     }
 
-    gBulletSound[2] = Mix_LoadWAV("images/SoundEffects/laser.wav");
+    gBulletSound[2] = Mix_LoadWAV("images/SoundEffects/new_1.wav");
 
     if(gBulletSound[2] == NULL){
-        cout << "Unable to load laser sound effects. SDL_mixer error: " << Mix_GetError() << endl;
+        cout << "Unable to load new_1 sound effects. SDL_mixer error: " << Mix_GetError() << endl;
         check = false;
     }
 
@@ -1228,6 +1232,10 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                         have_straight_beam = true;
                         start_straight_beam = SDL_GetTicks();                        
                     }
+                }
+                else if(gifts_list[a]->get_skill() == Tools::NEW_BULLET_1){
+                    gNameBulletOfMainTank = nameBulletTank1[1];
+                    mainTank.setBulletType(TankObject::NEW_1);
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);
