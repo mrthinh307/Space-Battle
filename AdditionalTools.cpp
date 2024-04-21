@@ -28,6 +28,7 @@ Tools::Tools(){
     gift_items[15] = "images/Utils/gift/treasure.png";
     item_width[15] = 70;   item_height[15] = 61;
     gift_items[16] = "images/Utils/gift/booster.png";
+    gift_items[17] = "images/Utils/gift/hp.png";
 
     for(int i = 2; i < gift_items.size(); i++){
         if(i != 11 && i != 15){
@@ -80,7 +81,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 16;
+        int random_skill = 17;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;

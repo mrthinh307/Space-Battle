@@ -53,6 +53,8 @@ public:
     void setXVal(int x) { x_val = x; }
     void setYVal(int y) { y_val = y; }
 
+    void setAlpha(const Uint8& alpha) { SDL_SetTextureAlphaMod(p_object, alpha); }
+
     SDL_RendererFlip getFlipType() const { return flipType; }
     void setFlipType (SDL_RendererFlip type) { flipType = type; }
 

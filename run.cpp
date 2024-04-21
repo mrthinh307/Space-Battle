@@ -202,8 +202,6 @@ int main(int argc, char* args[]){
     bool quit = false;
     SDL_Event e;
 
-    unsigned int currentHeart = 1;
-    unsigned int currentKilled = 0;
     bool rocketAdded = false;
 
     int MENU = SDLCommonFunc::showMenu();
@@ -333,7 +331,6 @@ int main(int argc, char* args[]){
 
                 bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
                 if(isCol){
-                    currentHeart--;
                     //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
                     int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
                     int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
@@ -353,17 +350,12 @@ int main(int argc, char* args[]){
                     }
 
                     // Play sound effect of event
-                    Mix_PauseMusic();
                     Mix_PlayChannel(-1, gExpSound[1], 0);
                     Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
-                    Mix_PlayChannel(-1, gameOver, 0);
 
-                    if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-                        clearThreats(p_threats, p_threats.size() - 1, 0);
-                        SDLCommonFunc::Clear();
-                        quitSDL();
-                        return 0;
-                    }
+                    p_threat->resetThreat();
+
+                    currentHeart -= 1;
                 }
 
                 /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
@@ -510,24 +502,24 @@ int main(int argc, char* args[]){
                     //             SDL_RenderPresent(gRenderer);
                     //         }
 
-                    //         //Handle sound effects
-                    //         Mix_PauseMusic();
                     //         Mix_PlayChannel(-1, gExpSound[1], 0);
-                    //         SDL_Delay(888);
-                    //         Mix_PlayChannel(-1, gameOver, 0);
-
-                    //         if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-                    //             clearThreats(p_threats, p_threats.size() - 1, 0);
-                    //             SDLCommonFunc::Clear();
-                    //             quitSDL();
-                    //             return 0;
-                    //         }
-                    //     }
-                    // }
+                    //currentHeart -= 1;
                 }
             }
             explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
+
+            if(currentHeart == 0){
+                Mix_PauseMusic();
+                Mix_PlayChannel(-1, gameOver, 0);
+                if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+                    clearThreats(p_threats, p_threats.size() - 1, 0);
+                    SDLCommonFunc::Clear();
+                    quitSDL();
+                    return 0;
+                }
+            }
         }
+
 
         
 
@@ -1378,6 +1370,10 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                         have_booster = true;
                         init_booster_skill(booster_a, booster_b, object::PLAYER, mainTank, p_threat);
                     }
+                }
+                else if(gifts_list[a]->get_skill() == Tools::HEART){
+                    Mix_PlayChannel(-1, getGold, 0);
+                    currentHeart += 1;
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);
