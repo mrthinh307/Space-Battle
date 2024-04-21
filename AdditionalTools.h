@@ -9,13 +9,13 @@ const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 21;
+const int NUM_SKILLS = 23;
 
 const int SHIELD_WIDTH = 95;
 const int SHIELD_HEIGHT = 95;
 
 static unsigned int currentGold = 0;
-static unsigned int currentHeart = 1;
+static unsigned int currentHeart = 3;
 static unsigned int currentKilled = 0;
 
 class Tools : public BaseObject
@@ -42,7 +42,9 @@ public:
         HEART = 17,
         STUN = 18,
         TIA_BULLET = 19,
-        ROCKET_2 = 20
+        ROCKET_2 = 20,
+        PHI_TIEU = 21,
+        SUPER_LASER = 22
     };
 
     Tools();

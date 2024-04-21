@@ -124,7 +124,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 Mix_PlayChannel(-1, gBulletSound[1], 0);
             }
             else if(bulletType == TankObject::NEW_1){
-                width_bullet = WIDTH_NEW_1;    height_bullet = HEIGHT_NEW_1;   speed_bullet = SPEED_BULLET_MAIN_TANK + 1;
+                width_bullet = WIDTH_NEW_1;    height_bullet = HEIGHT_NEW_1;   speed_bullet = SPEED_BULLET_MAIN_TANK + 2;
                 Mix_PlayChannel(-1, gBulletSound[2], 0);
             }
             else if(bulletType == TankObject::ROUNDABOUT){
@@ -132,8 +132,16 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 Mix_PlayChannel(-1, gBulletSound[0], 0);
             }
             else if(bulletType == TankObject::TIA_BULLET){
-                width_bullet = 38;    height_bullet = 130;   speed_bullet = SPEED_BULLET_MAIN_TANK + 2;
+                width_bullet = 38;    height_bullet = 130;   speed_bullet = SPEED_BULLET_MAIN_TANK + 3;
+                Mix_PlayChannel(-1, gBulletSound[4], 0);
+            }
+            else if(bulletType == TankObject::PHI_TIEU){
+                width_bullet = 30;    height_bullet = 30;   speed_bullet = SPEED_BULLET_MAIN_TANK + 6;
                 Mix_PlayChannel(-1, gBulletSound[3], 0);
+            }
+            else if(bulletType == TankObject::SUPER_LASER){
+                width_bullet = 30;    height_bullet = 60;   speed_bullet = SPEED_BULLET_MAIN_TANK + 8;
+                Mix_PlayChannel(-1, gBulletSound[3], 0);                
             }
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
@@ -150,19 +158,19 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 bulletOfTankList.push_back(bullet);                
             }
             else if(bullet_style == TankObject::FOUR_DIRECTIONS_BULLET){
-                four_directions_bullet();
+                four_directions_bullet(gNameBulletOfMainTank);
             }
             else if(bullet_style == TankObject::SUPER_BULLET){
-                super_bullet();
+                super_bullet(gNameBulletOfMainTank);
             }
             else if(bullet_style == TankObject::BULLET_SPREAD){
-                bullet_spread();
+                bullet_spread(gNameBulletOfMainTank);
             }
             else if(bullet_style == TankObject::STRAIGHT_BEAM){
-                straight_beam();
+                straight_beam(gNameBulletOfMainTank);
             }
             else if(bullet_style == TankObject::TRAP){
-                trap();
+                trap(gNameBulletOfMainTank);
             }
         }
 
@@ -183,7 +191,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 width_rocket = 60; height_rocket = 149; speed_rocket = SPEED_ROCKET_MAIN_TANK;
             }
             else if(rocketType == TankObject::ROCKET_2){
-                width_rocket = 100; height_rocket = 99; speed_rocket = SPEED_ROCKET_MAIN_TANK + 2;
+                width_rocket = 100; height_rocket = 98; speed_rocket = SPEED_ROCKET_MAIN_TANK + 2;
             }
 
 
@@ -334,7 +342,7 @@ void TankObject::runMainTank(){
     }
 }
 
-void TankObject::four_directions_bullet() {
+void TankObject::four_directions_bullet(string gNameBulletOfMainTank) {
     for (int i = 0; i < 4; i++) {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
@@ -372,7 +380,7 @@ void TankObject::run_four_bullet(const int& x_limit, const int& y_limit) {
     }        
 }
 
-void TankObject::super_bullet() {
+void TankObject::super_bullet(string gNameBulletOfMainTank) {
     for (int i = 0; i < 4; i++) {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
@@ -408,7 +416,7 @@ void TankObject::run_super_bullet(const int& x_limit, const int& y_limit) {
     }        
 }
 
-void TankObject::bullet_spread(){
+void TankObject::bullet_spread(string gNameBulletOfMainTank){
     for (int i = 0; i < 3; i++) {
         BulletObject* new_bullet = new BulletObject();
         bool check = new_bullet->loadIMG(gNameBulletOfMainTank);
@@ -445,7 +453,7 @@ void TankObject::run_bullet_spread(const int& x_limit, const int& y_limit){
     }         
 }
 
-void TankObject::straight_beam() {
+void TankObject::straight_beam(string gNameBulletOfMainTank) {
     int spacing = pos.w / 4;
 
     for (int i = 0; i < 4; i++) {
@@ -487,7 +495,7 @@ void TankObject::run_straight_beam(const int& x_limit, const int& y_limit){
     }         
 }
 
-void TankObject::trap() {
+void TankObject::trap(string gNameBulletOfMainTank) {
     int spacing = pos.w / 2;
 
     for (int i = 0; i < 2; i++) {

@@ -34,10 +34,15 @@ Tools::Tools(){
     gift_items[19] = "images/Utils/gift/tia.png";
     item_width[19] = 30;   item_height[19] = 102;
     gift_items[20] = "images/Utils/gift/rocket2.png";
-    item_width[20] = 70;   item_height[20] = 59;
+    item_width[20] = 60;   item_height[20] = 59;
+    gift_items[21] = "images/Utils/gift/phitieu.png";
+    item_width[21] = 60;   item_height[21] = 60;
+    gift_items[22] = "images/Utils/gift/superlaser.png";
+    item_width[22] = 65;   item_height[22] = 51;
+
 
     for(int i = 2; i < gift_items.size(); i++){
-        if(i != 11 && i != 15 && i != 18 && i != 19 && i != 20){
+        if(i != 11 && i != 15 && i != 18 && i != 19 && i != 20 && i != 21 && i != 22){
             item_width[i] = 60;
             item_height[i] = 60;            
         }
@@ -72,25 +77,24 @@ Tools::~Tools(){
 bool Tools::get_gift() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 1 ) {
-        value = 1;
+    if (randomNumber <= 20 ) {
+        value = 5;
         pos.w = item_width[0];
         pos.h = item_height[0];
         set_skill(Tools::GOLD_1);
         return loadIMG(gift_items[0]);
     }
-    else if(randomNumber <= 2) {
-        value = 3;
+    else if(randomNumber <= 20) {
+        value = 8;
         pos.w = item_width[1];
         pos.h = item_height[1];
         set_skill(Tools::GOLD_2);
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 20;
-        /* rand() % (NUM_SKILLS - 2) + 2; */
+        int random_skill = rand() % (NUM_SKILLS - 2) + 2;
+        
         value = 0;
-        //idx_skill = random_skill;
         pos.w = item_width[random_skill];
         pos.h = item_height[random_skill];
         set_skill(random_skill);

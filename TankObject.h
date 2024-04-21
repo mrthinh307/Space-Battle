@@ -11,7 +11,7 @@
 #define SPEED_BULLET_MAIN_TANK 8.0
 #define SPEED_ROCKET_MAIN_TANK 8.0
 
-static unsigned int DEFAULT_SPEED = 4;
+static unsigned int DEFAULT_SPEED = 5;
 
 #define TANK_1_FRAME 5
 
@@ -33,6 +33,8 @@ public:
         NEW_1 = 1,
         ROUNDABOUT = 2,
         TIA_BULLET = 3,
+        PHI_TIEU = 4,
+        SUPER_LASER = 5
     };
 
     enum RocketType {
@@ -87,19 +89,19 @@ public:
     void set_sprite_for_shield();
     void run_shield();
 
-    void four_directions_bullet();
+    void four_directions_bullet(string gNameBulletOfMainTank);
     void run_four_bullet(const int& x_limit, const int& y_limit);
 
-    void super_bullet();
+    void super_bullet(string gNameBulletOfMainTank);
     void run_super_bullet(const int& x_limit, const int& y_limit);
 
-    void bullet_spread();
+    void bullet_spread(string gNameBulletOfMainTank);
     void run_bullet_spread(const int& x_limit, const int& y_limit);
 
-    void straight_beam();
+    void straight_beam(string gNameBulletOfMainTank);
     void run_straight_beam(const int& x_limit, const int& y_limit);
 
-    void trap();
+    void trap(string gNameBulletOfMainTank);
     void run_trap(const int& x_limit, const int& y_limit);
 
     void set_tank_speed(const unsigned int& s) { tank_speed = s; }

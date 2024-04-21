@@ -100,7 +100,7 @@ void BulletObject::set_rocket_2(){
         rocket_tex_2[i].x = 100 * i;
         rocket_tex_2[i].y = 0;
         rocket_tex_2[i].w = 100;
-        rocket_tex_2[i].h = 99;
+        rocket_tex_2[i].h = 98;
     }
 }
 

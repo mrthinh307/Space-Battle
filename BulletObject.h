@@ -18,8 +18,6 @@
 #define WIDTH_BULLET_1_ENEMY 20
 #define HEIGHT_BULLET_1_ENEMY 21
 
-
-
 #define ROCKET_WIDTH 40
 #define ROCKET_HEIGHT 99
 

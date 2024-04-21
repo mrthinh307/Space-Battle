@@ -29,10 +29,10 @@ const int KILL_ENEMY_HEIGHT = 50;
 const int ROCKET_WIDTH = 38;
 const int ROCKET_HEIGHT = 63;
 
-static int NUM_THREATS = 3;  
+static int NUM_THREATS = 5;  
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
-const int NUMBER_OF_BULLET_SOUND = 3;
+const int NUMBER_OF_BULLET_SOUND = 5;
 
 static SDL_Window* gWindow;
 static SDL_Surface* gScreenSurface;
@@ -61,13 +61,15 @@ static Mix_Chunk* bulletUpgrade;
 static Mix_Chunk* defaultSkill;
 static Mix_Chunk* treasureSound;
 static Mix_Chunk* boosterSound;
+static Mix_Chunk* stunSound;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
 static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};
 static char gNameBoss1[] = {"images/ThreatsObject/boss1/image1.png"};
 
-static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png", "images/Bullets/roundabout.png", "images/Bullets/tia.png"};
+static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png", "images/Bullets/roundabout.png",
+                                     "images/Bullets/tia.png", "images/Bullets/phitieu.png", "images/Bullets/superlaser.png"};
 static string gNameBulletOfMainTank = nameBulletTank1[0];
 static char gNameBulletOfThreatsObject[] = {"images/Bullets/enemy1.png"};
 
@@ -77,7 +79,7 @@ static string gNameRocket = nameRocket[0];
 static char gNameBulletSoundOfTank[] = {"images/SoundEffects/playerBullet.wav"};
 static char gNameRocketSoundOfTank[] = {"images/SoundEffects/runRocket.wav"};
 
-static char gNameExplodeSoundOfThreat[] = {"images/SoundEffects/explosionDefault.wav"};
+static char gNameExplodeSoundOfThreat[] = {"images/SoundEffects/defex.wav"};
 static char gNameExplodeSoundOfTank[] = {"images/SoundEffects/player_die.wav"};
 static char gNameBossDie[] = {"images/SoundEffects/bossdie.wav"};
 
