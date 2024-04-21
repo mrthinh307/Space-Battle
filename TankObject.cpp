@@ -43,7 +43,7 @@ TankObject::~TankObject() {
     rocketOfTankList.clear();
 }
 
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank) {
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank, string gNameRocket) {
     if (e.type == SDL_KEYDOWN) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
@@ -131,7 +131,10 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 width_bullet = WIDTH_ROUNDABOUT;    height_bullet = HEIGHT_ROUNDABOUT;   speed_bullet = SPEED_BULLET_MAIN_TANK - 1;
                 Mix_PlayChannel(-1, gBulletSound[0], 0);
             }
-                
+            else if(bulletType == TankObject::TIA_BULLET){
+                width_bullet = 38;    height_bullet = 130;   speed_bullet = SPEED_BULLET_MAIN_TANK + 2;
+                Mix_PlayChannel(-1, gBulletSound[3], 0);
+            }
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
                 bullet->loadIMG(gNameBulletOfMainTank); 
@@ -174,21 +177,28 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
 
             gRocketSound = Mix_LoadWAV(gNameRocketSoundOfTank);
             Mix_VolumeChunk(gRocketSound, 48);
-
             Mix_PlayChannel(-1, gRocketSound, 0);
 
-            BulletObject* rocket = new BulletObject();
-            rocket->loadIMG("images/Bullets/rocket.png");
-            rocket->setWidthHeight(ROCKET_WIDTH, ROCKET_HEIGHT);
-            rocket->setRocketTexture();
-            rocket->setBulletType(BulletObject::ROCKET);
+            if(rocketType == TankObject::ROCKET){
+                width_rocket = 60; height_rocket = 149; speed_rocket = SPEED_ROCKET_MAIN_TANK;
+            }
+            else if(rocketType == TankObject::ROCKET_2){
+                width_rocket = 100; height_rocket = 99; speed_rocket = SPEED_ROCKET_MAIN_TANK + 2;
+            }
 
-            rocket->setx_val(SPEED_ROCKET_MAIN_TANK);
+
+            BulletObject* rocket = new BulletObject();
+            rocket->loadIMG(gNameRocket);
+            rocket->setWidthHeight(width_rocket, height_rocket);
+            if(rocketType == TankObject::ROCKET)    rocket->setRocketTexture();
+            else if(rocketType == TankObject::ROCKET_2)  rocket->set_rocket_2();
+
+            rocket->setx_val(speed_rocket);
             rocket->setDegrees(degrees);
             rocket->setIsMove(true);
 
-            int rocket_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - ROCKET_WIDTH / 2;
-            int rocket_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - ROCKET_HEIGHT / 2;
+            int rocket_start_x = pos.x + WIDTH_TANK_OBJECT / 2 - rocket->getPos().w / 2;
+            int rocket_start_y = pos.y + HEIGHT_TANK_OBJECT / 2 - rocket->getPos().h / 2;
             rocket->setPos(rocket_start_x, rocket_start_y);
 
             rocketOfTankList.push_back(rocket);
@@ -260,7 +270,8 @@ void TankObject::runRocket() {
     for (int i = rocketOfTankList.size() - 1; i >= 0; i--){
         BulletObject* aRocket = rocketOfTankList.at(i);
         if (aRocket != NULL && aRocket->getIsMove()) {
-            aRocket->runRocket(); 
+            if(rocketType == TankObject::ROCKET)    aRocket->runRocket();
+            else if(rocketType == TankObject::ROCKET_2) aRocket->run_rocket_2(); 
             aRocket->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT); 
             
             if (!aRocket->getIsMove()) {

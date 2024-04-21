@@ -30,9 +30,14 @@ public:
 
     enum BulletType {
         SPHERE1 = 0,
-        ROCKET = 1,
-        NEW_1 = 2,
-        ROUNDABOUT = 3,
+        NEW_1 = 1,
+        ROUNDABOUT = 2,
+        TIA_BULLET = 3,
+    };
+
+    enum RocketType {
+        ROCKET = 0,
+        ROCKET_2 = 1
     };
 
     TankObject();
@@ -41,10 +46,13 @@ public:
     int getBulletType() const { return bulletType; }
     void setBulletType(int type) { bulletType = type; }
 
+    int getRocketType() const { return rocketType; }
+    void setRocketType(int t) { rocketType = t; }
+
     void set_bullet_style(const int& s) {bullet_style = s; }
     int get_bullet_style() const { return bullet_style; }
 
-    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank, string gNameRocket);
     void handleMove();
 
     double getDegrees() const {return degrees; }
@@ -72,7 +80,6 @@ public:
 
     void setRocket(const unsigned int& c) { currentRocket = c; }
     unsigned int getRocket() { return currentRocket; }
-    void setRocketTexture();
     
     void Set_sprite_clips();
     void runMainTank();
@@ -98,6 +105,14 @@ public:
     void set_tank_speed(const unsigned int& s) { tank_speed = s; }
     unsigned int get_tank_speed() { return tank_speed; }
 
+    void set_speed_bullet(const int& s) { speed_bullet = s; }
+    int get_speed_bullet() { return speed_bullet; }
+
+    void set_speed_rocket(const int& s) { speed_rocket = s; }
+    int get_speed_rocket() { return speed_rocket; }
+
+
+
 
 private:
     int x_val;
@@ -115,10 +130,14 @@ private:
     static int bullet_style;
 
     int width_bullet, height_bullet, speed_bullet;
+    int width_rocket, height_rocket, speed_rocket;
 
     int bulletType;
+    int rocketType;
 
     static unsigned int tank_speed;
+
+
 };
 
 #endif // TANKOBJECT_H_INCLUDED

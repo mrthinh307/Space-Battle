@@ -18,6 +18,8 @@
 #define WIDTH_BULLET_1_ENEMY 20
 #define HEIGHT_BULLET_1_ENEMY 21
 
+
+
 #define ROCKET_WIDTH 40
 #define ROCKET_HEIGHT 99
 
@@ -67,6 +69,9 @@ public:
     void setRocketTexture();
     void runRocket();
 
+    void set_rocket_2();
+    void run_rocket_2();
+
     void setFrame(const int& fr) {frame = fr;}
     int getFrame() { return frame; }
 
@@ -90,10 +95,12 @@ private:
 
     SDL_Rect boss_bullet[3];
     SDL_Rect rocket_tex[4];
+    SDL_Rect rocket_tex_2[5];
+
     static int frame_rocket;
+    static int frame_rocket_2;
 
     static bool check_col_shield;
-
 };
 
 

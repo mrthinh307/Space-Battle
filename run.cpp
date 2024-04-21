@@ -228,7 +228,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank);
+            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank, gNameRocket);
         }
 
         /* HANDLE MOVE:  ĐỒNG TIỀN */
@@ -1366,7 +1366,10 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                 else if(gifts_list[a]->get_skill() == Tools::DEFAULT){
                     Mix_PlayChannel(-1, defaultSkill, 0);
                     gNameBulletOfMainTank = nameBulletTank1[0];
+                    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
                     mainTank.setBulletType(TankObject::SPHERE1);
+                    mainTank.setRocketType(TankObject::ROCKET);
+                    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
                 }
                 else if(gifts_list[a]->get_skill() == Tools::TREASURE){
                     Mix_PlayChannel(-1, treasureSound, 0);
@@ -1391,6 +1394,16 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                         have_stun = true;
                         init_stun(stun_a, stun_b, object::PLAYER, mainTank, p_threats);
                     }
+                }
+                else if(gifts_list[a]->get_skill() == Tools::TIA_BULLET){
+                    Mix_PlayChannel(-1, bulletUpgrade, 0);
+                    gNameBulletOfMainTank = nameBulletTank1[3];
+                    mainTank.setBulletType(TankObject::TIA_BULLET);                   
+                }
+                else if(gifts_list[a]->get_skill() == Tools::ROCKET_2){
+                    Mix_PlayChannel(-1, bulletUpgrade, 0);
+                    gNameRocket = nameRocket[1];
+                    mainTank.setRocketType(TankObject::ROCKET_2);
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);

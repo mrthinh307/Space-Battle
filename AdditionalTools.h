@@ -9,7 +9,7 @@ const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 19;
+const int NUM_SKILLS = 21;
 
 const int SHIELD_WIDTH = 95;
 const int SHIELD_HEIGHT = 95;
@@ -40,7 +40,9 @@ public:
         TREASURE  = 15,
         BOOSTER = 16,
         HEART = 17,
-        STUN = 18
+        STUN = 18,
+        TIA_BULLET = 19,
+        ROCKET_2 = 20
     };
 
     Tools();

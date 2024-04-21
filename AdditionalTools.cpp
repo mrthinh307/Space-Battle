@@ -31,9 +31,13 @@ Tools::Tools(){
     gift_items[17] = "images/Utils/gift/hp.png";
     gift_items[18] = "images/Utils/gift/stunned.png";
     item_width[18] = 63;   item_height[18] = 53;
+    gift_items[19] = "images/Utils/gift/tia.png";
+    item_width[19] = 30;   item_height[19] = 102;
+    gift_items[20] = "images/Utils/gift/rocket2.png";
+    item_width[20] = 70;   item_height[20] = 59;
 
     for(int i = 2; i < gift_items.size(); i++){
-        if(i != 11 && i != 15 && i != 18){
+        if(i != 11 && i != 15 && i != 18 && i != 19 && i != 20){
             item_width[i] = 60;
             item_height[i] = 60;            
         }
@@ -83,7 +87,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 18;
+        int random_skill = 20;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;

@@ -52,10 +52,10 @@ void BulletObject::handleMoveBoss(const int& x_border, const int& y_border){
 
 void BulletObject::setRocketTexture(){
     for(int i = 0; i < 4; i++){
-        rocket_tex[i].x = 40 * i;
+        rocket_tex[i].x = 60 * i;
         rocket_tex[i].y = 0;
-        rocket_tex[i].w = 40;
-        rocket_tex[i].h = 99;
+        rocket_tex[i].w = 60;
+        rocket_tex[i].h = 149;
     }
 }
 
@@ -91,5 +91,28 @@ void BulletObject::run_boss_bullet(){
     if( (frame / 3) >= 3 )
     {
         frame = 0;
+    }
+}
+
+
+void BulletObject::set_rocket_2(){
+    for(int i = 0; i < 5; i++){
+        rocket_tex_2[i].x = 100 * i;
+        rocket_tex_2[i].y = 0;
+        rocket_tex_2[i].w = 100;
+        rocket_tex_2[i].h = 99;
+    }
+}
+
+int BulletObject::frame_rocket_2 = 0;
+
+void BulletObject::run_rocket_2(){
+    SDL_Rect* currentClip = &rocket_tex_2[frame_rocket_2 / 5];
+    SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
+    SDL_RenderPresent(gRenderer);
+       frame_rocket_2++; 
+    if( (frame_rocket_2 / 5) >= 5 )
+    {
+        frame_rocket_2 = 0;
     }
 }
