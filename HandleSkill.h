@@ -43,4 +43,8 @@ void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start);
 void init_booster_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat);
 void handle_booster_skill(vector<Tools*>&a, TankObject& mainTank, bool& have_booster, Uint32& start);
 
+// STUN
+void init_stun(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, vector<ThreatsObject*> p_threats);
+void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, Uint32& start);
+
 #endif

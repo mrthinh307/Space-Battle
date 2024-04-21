@@ -29,9 +29,11 @@ Tools::Tools(){
     item_width[15] = 70;   item_height[15] = 61;
     gift_items[16] = "images/Utils/gift/booster.png";
     gift_items[17] = "images/Utils/gift/hp.png";
+    gift_items[18] = "images/Utils/gift/stunned.png";
+    item_width[18] = 63;   item_height[18] = 53;
 
     for(int i = 2; i < gift_items.size(); i++){
-        if(i != 11 && i != 15){
+        if(i != 11 && i != 15 && i != 18){
             item_width[i] = 60;
             item_height[i] = 60;            
         }
@@ -81,7 +83,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[1]);
     } 
     else{
-        int random_skill = 17;
+        int random_skill = 18;
         /* rand() % (NUM_SKILLS - 2) + 2; */
         value = 0;
         //idx_skill = random_skill;
@@ -221,5 +223,27 @@ void Tools::run_booster(){
     if( (frame_booster / 5) >= 5 )
     {
         frame_booster = 0;
+    }
+}
+
+void Tools::set_sprite_for_stun(){
+    for(int i = 0; i < 6; i++){
+        stun[i].x = 150 * i;
+        stun[i].y = 0;
+        stun[i].w = 150;
+        stun[i].h = 109;
+    }
+}
+
+int Tools::frame_stun = 0;
+
+void Tools::run_stun(){
+    SDL_Rect* currentClip = &stun[frame_stun / 6];
+    SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, 0, NULL, SDL_FLIP_NONE);
+    SDL_RenderPresent(gRenderer);
+       frame_stun++; 
+    if( (frame_stun / 6) >= 6 )
+    {
+        frame_stun = 0;
     }
 }

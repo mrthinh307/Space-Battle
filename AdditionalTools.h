@@ -9,7 +9,7 @@ const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 18;
+const int NUM_SKILLS = 19;
 
 const int SHIELD_WIDTH = 95;
 const int SHIELD_HEIGHT = 95;
@@ -39,7 +39,8 @@ public:
         DEFAULT = 14,
         TREASURE  = 15,
         BOOSTER = 16,
-        HEART = 17
+        HEART = 17,
+        STUN = 18
     };
 
     Tools();
@@ -88,6 +89,10 @@ public:
     void set_sprite_for_booster();
     void run_booster();
 
+    //5. STUN
+    void set_sprite_for_stun();
+    void run_stun();
+
 private:
     unsigned value;
     double degrees;
@@ -113,6 +118,9 @@ private:
 
     static int frame_booster;
     SDL_Rect booster[5];
+
+    static int frame_stun;
+    SDL_Rect stun[6];
 };
 
 #endif

@@ -262,3 +262,38 @@ void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_bo
         }
     }
 }
+
+/* STUN */
+void init_stun(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, vector<ThreatsObject*> p_threats){
+    if(set_for_ == PLAYER){
+        for(int i = 0; i < p_threats.size(); i++){
+            Tools* stun = new Tools();
+            stun->loadIMG("images/Skills/stun.png");
+            stun->set_sprite_for_stun();
+            a.push_back(stun);
+        }
+    }
+    else if(set_for_ == ENEMY){
+        Tools* stun = new Tools();
+        stun->loadIMG("images/Skills/stun.png");
+        stun->set_sprite_for_stun();
+        b.push_back(stun);
+    }
+}
+
+void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, Uint32& start){
+    if(have_stun){
+        if(SDL_GetTicks() - start < 5000){
+            for(int i = 0; i < a.size(); i++){
+                SDL_Rect pos = p_threats[i]->getPos();
+                a[i]->setPos(pos.x + (pos.w - 150) / 2, pos.y + (pos.h - 109) / 2);
+                a[i]->run_stun();
+            }
+        }
+        else{
+            for(int i = 0; i < a.size(); i++) delete a[i];
+            a.clear();
+            have_stun = false;
+        }
+    }
+}

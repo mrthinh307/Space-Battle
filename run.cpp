@@ -102,6 +102,11 @@ vector<Tools*> booster_b;
 static bool have_booster = false;
 static Uint32 start_booster;
 
+vector<Tools*> stun_a;
+vector<Tools*> stun_b;
+static bool have_stun = false;
+static Uint32 start_stun;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -319,9 +324,13 @@ int main(int argc, char* args[]){
                     p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
                     cur_enemy = MINI_THREATS;
                 }
-                p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-                
 
+                if(have_stun){
+                    handle_stun(stun_a, p_threats, have_stun, start_stun);
+                }
+                else{
+                    p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                }
 
                 /* ------------------CHECK COLLISION-------------------*/
                 
@@ -1374,6 +1383,14 @@ void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned
                 else if(gifts_list[a]->get_skill() == Tools::HEART){
                     Mix_PlayChannel(-1, getGold, 0);
                     currentHeart += 1;
+                }
+                else if(gifts_list[a]->get_skill() == Tools::STUN){
+                    if(have_stun == false){
+                        Mix_PlayChannel(-1, getGold, 0);
+                        start_stun = SDL_GetTicks();
+                        have_stun = true;
+                        init_stun(stun_a, stun_b, object::PLAYER, mainTank, p_threats);
+                    }
                 }
                 delete gifts_list[a];
                 gifts_list.erase(gifts_list.begin() + a);
