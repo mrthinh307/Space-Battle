@@ -3,6 +3,7 @@
 
 #include "BaseObject.h"
 #include "BulletObject.h"
+#include "SoundEffects.h"
 
 #define WIDTH_THREATS_OBJECT 60
 #define HEIGHT_THREATS_OBJECT 49

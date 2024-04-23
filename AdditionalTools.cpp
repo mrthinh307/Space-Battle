@@ -12,23 +12,37 @@ Tools::Tools(){
     item_width[1] = 55;   item_height[1] = 32;
 
     gift_items[2] = "images/Utils/gift/shield.png";
+    item_width[2] = 65;   item_height[2] = 65;
     gift_items[3] = "images/Utils/gift/preventenemy.png";
+    item_width[3] = 70;   item_height[3] = 60;
     gift_items[4] = "images/Utils/gift/teleport.png";
+    item_width[4] = 63;   item_height[4] = 54;
     gift_items[5] = "images/Utils/gift/x2gold.png";
+    item_width[5] = 63;   item_height[5] = 54;
     gift_items[6] = "images/Utils/gift/plusrocket.png";
+    item_width[6] = 65;   item_height[6] = 60;
     gift_items[7] = "images/Utils/gift/dan4phia.png";
+    item_width[7] = 65;   item_height[7] = 53;
     gift_items[8] = "images/Utils/gift/superbullet.png";
+    item_width[8] = 65;   item_height[8] = 57;
     gift_items[9] = "images/Utils/gift/danloang.png";
+    item_width[9] = 65;   item_height[9] = 55;
     gift_items[10] = "images/Utils/gift/4dan.png";
+    item_width[10] = 65;   item_height[10] = 52;
     gift_items[11] = "images/Utils/gift/new1.png";
     item_width[11] = 50;   item_height[11] = 77;
     gift_items[12] = "images/Utils/gift/ziczac.png";
+    item_width[12] = 65;   item_height[12] = 51;
     gift_items[13] = "images/Utils/gift/new2.png";
+    item_width[13] = 60;   item_height[13] = 55;
     gift_items[14] = "images/Utils/gift/default.png";
+    item_width[14] = 55;   item_height[14] = 55;
     gift_items[15] = "images/Utils/gift/treasure.png";
     item_width[15] = 70;   item_height[15] = 61;
     gift_items[16] = "images/Utils/gift/booster.png";
+    item_width[16] = 65;   item_height[16] = 55;
     gift_items[17] = "images/Utils/gift/hp.png";
+    item_width[17] = 70;   item_height[17] = 65;    
     gift_items[18] = "images/Utils/gift/stunned.png";
     item_width[18] = 63;   item_height[18] = 53;
     gift_items[19] = "images/Utils/gift/tia.png";
@@ -39,25 +53,24 @@ Tools::Tools(){
     item_width[21] = 60;   item_height[21] = 60;
     gift_items[22] = "images/Utils/gift/superlaser.png";
     item_width[22] = 65;   item_height[22] = 51;
-
-
-    for(int i = 2; i < gift_items.size(); i++){
-        if(i != 11 && i != 15 && i != 18 && i != 19 && i != 20 && i != 21 && i != 22){
-            item_width[i] = 60;
-            item_height[i] = 60;            
-        }
-
-    }
+    gift_items[23] = "images/Utils/gift/speedupbullet.png";
+    item_width[23] = 65;   item_height[23] = 60;
+    gift_items[24] = "images/Utils/5gold.png";
+    item_width[24] = 80;   item_height[24] = 48;
+    gift_items[25] = "images/Utils/8gold.png";
+    item_width[25] = 100;   item_height[25] = 60;
 
     value = 0;
 
     startTime = SDL_GetTicks();
 
-    expGold.resize(EXPLODE_GOLD_ANIMATION_FRAMES, NULL);
-
-    int speed = 1;
+    speed = 1;
     
     magnet = false;
+
+    frame = 0;
+
+    expGold.resize(EXPLODE_GOLD_ANIMATION_FRAMES, NULL);
 }
 
 Tools::~Tools(){
@@ -77,22 +90,36 @@ Tools::~Tools(){
 bool Tools::get_gift() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 20 ) {
-        value = 5;
+    if (randomNumber <= 1 ) {
+        value = 1;
         pos.w = item_width[0];
         pos.h = item_height[0];
         set_skill(Tools::GOLD_1);
         return loadIMG(gift_items[0]);
     }
-    else if(randomNumber <= 20) {
-        value = 8;
+    else if(randomNumber <= 2) {
+        value = 3;
         pos.w = item_width[1];
         pos.h = item_height[1];
         set_skill(Tools::GOLD_2);
         return loadIMG(gift_items[1]);
+    }
+    else if(randomNumber <= 3){
+        value = 5;
+        pos.w = item_width[24];
+        pos.h = item_height[24];
+        set_skill(Tools::GOLD_5);
+        return loadIMG(gift_items[23]);
+    }
+    else if(randomNumber <= 4){
+        value = 8;
+        pos.w = item_width[25];
+        pos.h = item_height[25];
+        set_skill(Tools::GOLD_8);
+        return loadIMG(gift_items[24]);
     } 
     else{
-        int random_skill = rand() % (NUM_SKILLS - 2) + 2;
+        int random_skill = 16;//rand() % 22 + 2;
         
         value = 0;
         pos.w = item_width[random_skill];
@@ -174,28 +201,34 @@ void Tools::renderCopy2(){
     SDLCommonFunc::render(expGold[frame], pos);
 }
 
-
 void Tools::set_sprite_for_shield(){
-    for(int i = 0; i < 3; i++){
-        shield[i].x = 95 * i;
+    for(int i = 0; i < 8; i++){
+        shield[i].x = 100 * i;
         shield[i].y = 0;
-        shield[i].w = 95;
-        shield[i].h = 95;
+        shield[i].w = 100;
+        shield[i].h = 131;
     }
 }
 
-void Tools::run_shield() {
-    SDL_Rect* currentClip = &shield[shield_frame % 3];
+int Tools::frame_shield = 0;
+
+void Tools::run_shield(){
+    SDL_Rect* currentClip = &shield[frame_shield / 8];
     SDLCommonFunc::render_for_sprite(p_object, pos.x, pos.y, currentClip, degrees, NULL, SDL_FLIP_NONE);
     SDL_RenderPresent(gRenderer);
+       frame_shield++; 
+    if( (frame_shield / 8) >= 8 )
+    {
+        frame_shield = 0;
+    }
 }
 
 void Tools::set_sprite_for_teleport(){
-    for(int i = 0; i < 10; i++){
-        teleport[i].x = 100 * i;
+    for(int i = 0; i < 12; i++){
+        teleport[i].x = 80 * i;
         teleport[i].y = 0;
-        teleport[i].w = 100;
-        teleport[i].h = 100;
+        teleport[i].w = 80;
+        teleport[i].h = 141;
     }
 }
 

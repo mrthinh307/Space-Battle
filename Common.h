@@ -41,28 +41,6 @@ static SDL_Texture* gBackground;
 
 static TTF_Font* gFont = NULL;
 
-static Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
-static Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
-static Mix_Chunk* gRocketSound = NULL;
-static Mix_Chunk* gameOver;
-static Mix_Music* battleMusic;
-static Mix_Chunk* getGold;
-static Mix_Chunk* breakGold;
-static Mix_Chunk* menuButton;
-static Mix_Chunk* buttonAction;
-static Mix_Music* menuMusic;
-static Mix_Chunk* warningBoss;
-static Mix_Chunk* bossDie;
-static Mix_Music* bossBattle;
-static Mix_Chunk* haveShield;
-static Mix_Chunk* haveTele;
-static Mix_Chunk* finishTele;
-static Mix_Chunk* bulletUpgrade;
-static Mix_Chunk* defaultSkill;
-static Mix_Chunk* treasureSound;
-static Mix_Chunk* boosterSound;
-static Mix_Chunk* stunSound;
-
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
 static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};

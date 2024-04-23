@@ -1,2 +1,0 @@
-- shield: collison
-- teleport: load effect

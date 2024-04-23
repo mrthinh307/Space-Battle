@@ -2,21 +2,19 @@
 #define TOOLS_H_INCLUDED
 
 #include "BaseObject.h"
+#include "SoundEffects.h"
+#include "Common.h"
 
-const int TIME_TO_EXPLODE_GOLD = 10000;
+const int TIME_TO_EXPLODE_GOLD = 5000;
 const int EXPLODE_GOLD_ANIMATION_FRAMES = 9;
 
 const int EXP_GOLD_WIDTH = 60;
 const int EXP_GOLD_HEIGHT = 90;
 
-const int NUM_SKILLS = 23;
+const int NUM_SKILLS = 26;
 
-const int SHIELD_WIDTH = 95;
-const int SHIELD_HEIGHT = 95;
-
-static unsigned int currentGold = 0;
-static unsigned int currentHeart = 3;
-static unsigned int currentKilled = 0;
+const int SHIELD_WIDTH = 90;
+const int SHIELD_HEIGHT = 90;
 
 class Tools : public BaseObject
 {
@@ -44,7 +42,10 @@ public:
         TIA_BULLET = 19,
         ROCKET_2 = 20,
         PHI_TIEU = 21,
-        SUPER_LASER = 22
+        SUPER_LASER = 22,
+        SPEED_UP_BULLET = 23,
+        GOLD_5 = 24,
+        GOLD_8 = 25
     };
 
     Tools();
@@ -78,8 +79,6 @@ public:
     //1. SHIELD
     void set_sprite_for_shield();
     void run_shield();
-    int get_shield_frame() { return shield_frame; }
-    void set_shield_frame(int x) { shield_frame = x; }
 
     //2. Teleport
     void set_sprite_for_teleport();
@@ -98,13 +97,11 @@ public:
     void run_stun();
 
 private:
-    unsigned value;
+    unsigned int value;
+
     double degrees;
     Uint32 startTime;
     int speed;
-
-    int frame;
-    vector<SDL_Texture*> expGold;
 
     vector<string> gift_items;
     vector<int> item_width;
@@ -112,10 +109,13 @@ private:
 
     int skill;
 
-    SDL_Rect shield[3];
-    int shield_frame;
+    int frame;
+    vector<SDL_Texture*> expGold;
 
-    SDL_Rect teleport[10];
+    SDL_Rect shield[8];
+    static int frame_shield;
+
+    SDL_Rect teleport[12];
     static int frame_tele;
 
     bool magnet;

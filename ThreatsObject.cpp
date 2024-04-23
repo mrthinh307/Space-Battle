@@ -147,7 +147,6 @@ void ThreatsObject::set_heal_bar(){
 
 }
 
-
 void ThreatsObject::handleMove(const int& x_border, const int& y_border){
     float rad_angle = degrees * M_PI / 180.0;
     x_val = cos(rad_angle) * SPEED_THREATS; 

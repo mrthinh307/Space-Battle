@@ -4,12 +4,13 @@
 #include "Common.h"
 #include "BaseObject.h"
 #include "BulletObject.h"
+#include "SoundEffects.h"
 
 #define WIDTH_TANK_OBJECT 70
 #define HEIGHT_TANK_OBJECT 67
 
-#define SPEED_BULLET_MAIN_TANK 8.0
-#define SPEED_ROCKET_MAIN_TANK 8.0
+#define SPEED_BULLET_MAIN_TANK 9.0
+#define SPEED_ROCKET_MAIN_TANK 10.0
 
 static unsigned int DEFAULT_SPEED = 5;
 
@@ -112,8 +113,6 @@ public:
 
     void set_speed_rocket(const int& s) { speed_rocket = s; }
     int get_speed_rocket() { return speed_rocket; }
-
-
 
 
 private:

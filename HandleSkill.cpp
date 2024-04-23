@@ -1,77 +1,41 @@
 #include "HandleSkill.h"
 
 /* SHIELD */
-void init_shield_skill(vector<Tools*>& static_skills_a, vector<Tools*>& static_skills_b,const object& set_for_){
+extern Mix_Chunk* haveShield;
+extern Mix_Chunk* breakShield;
+
+void init_shield_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
     Tools* shield = new Tools();
-    if(shield == NULL) return;
-    shield->loadIMG("images/Skills/Shield/cayvcl.png");
+    shield->loadIMG("images/Skills/Shield/Shield1.png");
     shield->set_sprite_for_shield();
-    if(set_for_ == PLAYER){
-        static_skills_a.push_back(shield);
-    }
-    else if(set_for_ == ENEMY){
-        static_skills_b.push_back(shield);
-    }
+
+    if(set_for_ == PLAYER) a.push_back(shield);
+    else if(set_for_ == ENEMY) b.push_back(shield);
 }
 
-void handle_move_shield(Tools* shield,const TankObject& mainTank, ThreatsObject* p_threat,const object& set_for_){
-    if(shield == NULL || p_threat == NULL) return;
-    if(set_for_ == PLAYER){
-        shield->setDegrees(mainTank.getDegrees());
-        int x_ = mainTank.getPos().x - ((SHIELD_WIDTH - mainTank.getPos().w) / 2);
-        int y_ = mainTank.getPos().y - ((SHIELD_HEIGHT - mainTank.getPos().h) / 2);
-        shield->setPos(x_, y_);
-        shield->run_shield();
-    }
-    else if(set_for_ == ENEMY){
-        shield->setDegrees(p_threat->getDegrees());
-        int x_ = p_threat->getPos().x - ((SHIELD_WIDTH - p_threat->getPos().w) / 2);
-        int y_ = p_threat->getPos().y - ((SHIELD_HEIGHT - p_threat->getPos().h) / 2);
-        shield->setPos(x_, y_);
-        shield->run_shield();
-    }
-}
+void handle_shield_skill(vector<Tools*>& a,const TankObject& mainTank, bool& have_shield,const Uint32& start){
+    if(have_shield){
+        if(SDL_GetTicks() - start < 10000){
+            SDL_Rect posTank = mainTank.getPos();
+            int x_ = posTank.x + (posTank.w - 100) / 2;
+            int y_ = posTank.y + (posTank.h - 131) / 2;
 
-void shield_vs_bullet(vector<Tools*>& static_skills_a,const TankObject& mainTank, ThreatsObject* p_threat, BulletObject* aBulletOfThreat, const enemy& cur_enemy){
-    for(int idx = static_skills_a.size() - 1; idx >= 0; idx--){
-        Tools* skill = static_skills_a.at(idx);
-        skill->setDegrees(mainTank.getDegrees());
-        handle_move_shield(skill, mainTank, p_threat, object::PLAYER);
-        bool check_col = SDLCommonFunc::CheckCollision(skill->getPos(), aBulletOfThreat->getPos(), 0);
-        if(check_col){
-            if(cur_enemy == MINI_THREATS) p_threat->resetBullet(aBulletOfThreat);
-            else if(cur_enemy == BOSS) aBulletOfThreat->setIsMove(false);
-
-            //skill->set_shield_frame(skill->get_shield_frame() + 1);
-            // if(skill->get_shield_frame() == 3){
-                if(static_skills_a[idx] != nullptr) delete static_skills_a[idx];
-                static_skills_a.clear();
-            // }
-
+            for(int i = 0; i < a.size(); i++){            
+                a[i]->setDegrees(mainTank.getDegrees());
+                a[i]->setPos(x_, y_);
+                a[i]->run_shield();
+            }
+        }
+        else{
+            for(int i = 0; i < a.size(); i++) delete a[i];
+            a.clear();
+            have_shield = false;
         }
     }
 }
 
-// bool shield_vs_enemy(vector<Tools*>& static_skills_a,const TankObject& mainTank, ThreatsObject* p_threat){
-//     for(int idx = static_skills_a.size() - 1; idx >= 0; idx--){
-//         Tools* skill = static_skills_a.at(idx);
-//         skill->setDegrees(mainTank.getDegrees());
-//         handle_move_shield(skill, mainTank, p_threat, object::PLAYER);
-//         bool check_col = SDLCommonFunc::CheckCollision(skill->getPos(), aBulletOfThreat->getPos(), 0);
-//         if(check_col){
-//             //skill->set_shield_frame(skill->get_shield_frame() + 1);
-//             // if(skill->get_shield_frame() == 3){
-//                 if(static_skills_a[idx] != nullptr) delete static_skills_a[idx];
-//                 static_skills_a.clear();
-//             // }
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
 /* MAGNET */
-void implement_magnet_skill(vector<Tools*>& gift_list, TankObject& mainTank, bool& have_magnet, const Uint32& start_skill){
+void implement_magnet_skill(vector<Tools*>& gift_list, const TankObject& mainTank, bool& have_magnet, const Uint32& start_skill){
     if(have_magnet){
         if(SDL_GetTicks() - start_skill <= 10000){
             for(int i = 0; i < gift_list.size(); i++){
@@ -90,9 +54,15 @@ void implement_magnet_skill(vector<Tools*>& gift_list, TankObject& mainTank, boo
 }
 
 /* TELEPORT */
+extern Mix_Chunk* haveTele;
+extern Mix_Chunk* finishTele;
+extern bool have_tele;
+extern bool run_animation;
+extern Uint32 start_tele;
+
 void init_teleport(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
     Tools* tele = new Tools();
-    tele->loadIMG("images/Skills/image1.png");
+    tele->loadIMG("images/Skills/tele.png");
     tele->set_sprite_for_teleport();
 
     if(set_for_ == PLAYER) a.push_back(tele);
@@ -101,8 +71,6 @@ void init_teleport(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const 
 
 void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have_tele) {
     static bool mouseClicked = false;
-    static int lastPosX = 0;
-    static int lastPosY = 0;
 
     if (a.empty() || !have_tele) return;
 
@@ -115,10 +83,7 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
                     SDL_GetMouseState(&mouseX, &mouseY);
 
                     mainTank.setPos(mouseX, mouseY);
-                    Mix_PlayChannel(-1, finishTele, 0);
-
-                    lastPosX = mainTank.getPos().x;
-                    lastPosY = mainTank.getPos().y;
+                    start_tele = SDL_GetTicks();
 
                     int dx = mouseX - mainTank.getPos().x;
                     int dy = mouseY - mainTank.getPos().y;
@@ -133,21 +98,41 @@ void run_teleport_for_player(vector<Tools*>& a, TankObject& mainTank, bool& have
                     }
                     mouseClicked = true;
                     have_tele = false;
+                    run_animation = true;
+                    break;
                 }                
             }
         }
     }
 
-    for (int i = 0; i < a.size(); i++) {
-        delete a[i];
-    }
-    a.clear();
+    Mix_PlayChannel(-1, finishTele, 0);
+    
+    lastX = mainTank.getPos().x;
+    lastY = mainTank.getPos().y;
+
     mouseClicked = false;
     have_tele = false;
 }
 
+void run_animation_for_teleport(vector<Tools*>& a, const TankObject& mainTank, bool& run_animation){
+    if(run_animation){
+        if(SDL_GetTicks() - start_tele < 3000){
+            for(int i = 0; i < a.size(); i++){
+                SDL_Rect pos = mainTank.getPos();
+                a[i]->setPos(pos.x + (pos.w - 80) / 2, pos.y + (pos.h - 141) / 2);
+                a[i]->run_teleport();
+            }
+        }
+        else{
+            for(int i = 0; i < a.size(); i++) delete a[i];
+            a.clear();
+            run_animation = false;
+        }
+    }
+}
+
 /* 4_BULLET */
-void set_time_for_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& start){
+void set_time_for_4_bullet(TankObject& mainTank, bool& have_4_bullet, const Uint32& start){
     if(have_4_bullet){
         if(SDL_GetTicks() - start > 30000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -157,7 +142,7 @@ void set_time_for_4_bullet(TankObject& mainTank, bool& have_4_bullet, Uint32& st
 }
 
 /* SUPER_BULLET*/
-void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Uint32& start){
+void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, const Uint32& start){
     if(have_super_bullet){
         if(SDL_GetTicks() - start > 8000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -167,7 +152,7 @@ void set_time_for_super_bullet(TankObject& mainTank, bool& have_super_bullet, Ui
 }
 
 /* BULLET SPREAD */
-void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32& start){
+void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, const Uint32& start){
     if(have_spread){
         if(SDL_GetTicks() - start > 30000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -177,7 +162,7 @@ void set_time_for_bullet_spread(TankObject& mainTank, bool& have_spread, Uint32&
 }
 
 /* STRAIGHT BEAM */
-void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, Uint32& start){
+void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, const Uint32& start){
     if(have_straight_beam){
         if(SDL_GetTicks() - start > 30000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -187,7 +172,7 @@ void set_time_for_straight_beam(TankObject& mainTank, bool& have_straight_beam, 
 }
 
 /* TRAP */
-void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, Uint32& start){
+void set_time_for_trap(TankObject& mainTank, bool& have_zic_zac, const Uint32& start){
     if(have_zic_zac){
         if(SDL_GetTicks() - start > 20000){
             mainTank.set_bullet_style(TankObject::NORMAL);
@@ -206,7 +191,7 @@ void init_booster_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, c
     else if(set_for_ == ENEMY) b.push_back(booster);
 }
 
-void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_booster, Uint32& start){
+void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_booster, const Uint32& start){
     if(have_booster){
         if(SDL_GetTicks() - start < 10000){
             mainTank.set_tank_speed(DEFAULT_SPEED * 2 + 2);
@@ -229,22 +214,6 @@ void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_bo
                 x_ = posTank.x + posTank.w;
                 y_ = posTank.y + (posTank.h - 88) / 2;
             }
-            // else if(deg == 45){
-            //     x_ = posTank.x + posTank.w - (30 / 2) + cos(deg * M_PI / 180.0) * posTank.h / 2 - 100;
-            //     y_ = posTank.y + posTank.h + sin(deg * M_PI / 180.0) * posTank.h / 2 - 30;
-            // }
-            // else if(deg == 135){
-            //     x_ = posTank.x + posTank.w + cos(deg * M_PI / 180.0) * posTank.h / 2 - 70;
-            //     y_ = posTank.y + posTank.h + sin(deg * M_PI / 180.0) * posTank.h / 2 - 120;                
-            // }
-            // else if(deg == -135){
-            //     x_ = posTank.x + posTank.w / 2 - 30 / 2;
-            //     y_ = posTank.y + posTank.h;
-            // }
-            // else if(deg == -45){
-            //     x_ = posTank.x + cos(deg * M_PI / 180.0) * posTank.h / 2 - 70;
-            //     y_ = posTank.y + sin(deg * M_PI / 180.0) * posTank.h / 2 - 120;
-            // }
 
             for(int i = 0; i < a.size(); i++){
                 a[i]->setPos(x_, y_);
@@ -281,7 +250,7 @@ void init_stun(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const Tank
     }
 }
 
-void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, Uint32& start){
+void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, const Uint32& start){
     if(have_stun){
         if(SDL_GetTicks() - start < 5000){
             for(int i = 0; i < a.size(); i++){
@@ -294,6 +263,22 @@ void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& hav
             for(int i = 0; i < a.size(); i++) delete a[i];
             a.clear();
             have_stun = false;
+        }
+    }
+}
+
+/* SPEED UP BULLET*/
+extern bool have_speed_up_bullet;
+extern Uint32 start_speed_up_bullet;
+
+void handle_speed_up_bullet(TankObject& mainTank, bool& have_speed_up_bullet){
+    if(have_speed_up_bullet){
+        if(SDL_GetTicks() - start_speed_up_bullet < 10000){
+            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK + 50);
+        }
+        else{
+            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
+            have_speed_up_bullet = false;
         }
     }
 }

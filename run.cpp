@@ -6,11 +6,12 @@
 #include "FontText.h"
 #include "AdditionalTools.h"
 #include "HandleSkill.h"
+#include "HandleGiftItem.h"
+#include "SoundEffects.h"
 
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
-bool loadSoundEffects();
 
 SDL_Texture* SDLCommonFunc::loadImage( string path);
 
@@ -34,9 +35,6 @@ int SDLCommonFunc::showMenu();
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
 
-/* HANDLE GIFT ITEM */
-void push_back_gift_item(ThreatsObject* p_threat);
-void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned int& currentGold);
 
 /* INIT THREATS */
 void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet);
@@ -65,47 +63,8 @@ FontText rocketText;
 BaseObject gold;
 FontText goldText;
 BaseObject goldIcon;
-vector<Tools*> gifts_list;
 
 BaseObject warningNoti;
-
-static Uint32 delay;
-
-vector<Tools*> static_skills_a;
-vector<Tools*> static_skills_b;
-
-static bool have_magnet = false;
-static Uint32 start_skill = 0;
-
-vector<Tools*> teleport_a;
-vector<Tools*> teleport_b;
-static bool have_tele = false;
-static Uint32 start = 0;
-
-static bool have_4_bullet = false;
-static Uint32 start_4_bullet;
-
-static bool have_super_bullet = false;
-static Uint32 start_super_bullet;
-
-static bool have_bullet_spread = false;
-static Uint32 start_bullet_spread;
-
-static bool have_straight_beam = false;
-static Uint32 start_straight_beam;
-
-static bool have_trap = false;
-static Uint32 start_trap;
-
-vector<Tools*> booster_a;
-vector<Tools*> booster_b;
-static bool have_booster = false;
-static Uint32 start_booster;
-
-vector<Tools*> stun_a;
-vector<Tools*> stun_b;
-static bool have_stun = false;
-static Uint32 start_stun;
 
 int main(int argc, char* args[]){
     initSDL();
@@ -131,7 +90,6 @@ int main(int argc, char* args[]){
     bkg1.y = 0;
     bkg1.w = SCREEN_WIDTH;
     bkg1.h = SCREEN_HEIGHT;
-
 
     //BaseObject layoutBox;
     layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
@@ -243,6 +201,7 @@ int main(int argc, char* args[]){
 
 
         /* LOAD BACKGROUND */
+        static int idx1 = 0;
         bkg.x -= 1;
         bkg1.x = bkg.x + SCREEN_WIDTH;
         SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
@@ -332,47 +291,7 @@ int main(int argc, char* args[]){
                     p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
                 }
 
-                /* ------------------CHECK COLLISION-------------------*/
-                
-                //CHECK COLLISION: TANK OBJECT -> THREAT OBJECT + RENDER HEAL BAR OF BOSS
-                // bool check_col_of_shield = handle_shield1(static_skills_a, mainTank, p_threat, NULL, object::ENEMY);
-                // if(check_col_of_shield) p_threat->resetThreat();
-
-                bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
-                if(isCol){
-                    //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
-                    int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
-                    int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
-                    explode.setPos(x_pos, y_pos);
-
-                    int x1_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
-                    int y1_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
-                    explode1.setPos(x1_pos, y1_pos);
-
-                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                        explode.setFrame(ex);
-                        explode1.setFrame(ex);
-
-                        explode.renderCopy2();
-                        explode1.renderCopy2();
-                        SDL_RenderPresent(gRenderer);
-                    }
-
-                    // Play sound effect of event
-                    Mix_PlayChannel(-1, gExpSound[1], 0);
-                    Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
-
-                    p_threat->resetThreat();
-
-                    currentHeart -= 1;
-                    gNameBulletOfMainTank = nameBulletTank1[0];
-                    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
-                    mainTank.setBulletType(TankObject::SPHERE1);
-                    mainTank.setRocketType(TankObject::ROCKET);
-                    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
-                    mainTank.set_bullet_style(TankObject::NORMAL); 
-                    gNameRocket = nameRocket[0];
-                }
+                /* ------------------CHECK COLLISION-------------------*/   
 
                 /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> bull_list = mainTank.getBulletList();
@@ -423,7 +342,7 @@ int main(int argc, char* args[]){
                     }
                 }
 
-                if(currentKilled % 2 != 0) rocketAdded = false;
+                if(currentKilled % 5 != 0) rocketAdded = false;
 
                 /* CHECK COLLISON: ROCKET OF TANK OBJECT -> THREAT OBJECT */
                 vector<BulletObject*> rocket_list = mainTank.getRocketList();
@@ -473,62 +392,88 @@ int main(int argc, char* args[]){
                     }
                 }
 
-                /* RUN + HANDLE GOLD */
-                run_gift_item(gifts_list, p_threat, currentGold);
+                // RUN SHIELD
+                handle_shield_skill(static_skills_a, mainTank, have_shield, start_shield);
 
-                /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
-                vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
-                for(int k = 0; k < bull_listThreats.size(); k++){
-                    BulletObject* aBulletOfThreat = bull_listThreats.at(k);
+                if(!have_shield){
+                    /* CHECK COLLISON: TANK OBEJCT -> THREATS OBJECT */
+                    if(!have_shield){
+                        bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
+                        if(isCol){
+                            //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
+                            int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                            int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
+                            explode.setPos(x_pos, y_pos);
 
-                    // for(int idx = static_skills_a.size() - 1; idx >= 0; idx--){
-                    //     Tools* skill = static_skills_a.at(idx);
-                    //     skill->setDegrees(mainTank.getDegrees());
-                    //     run_shield_skill(skill, mainTank, p_threat, object::PLAYER);
-                    //     bool check_col = SDLCommonFunc::CheckCollision(skill->getPos(), aBulletOfThreat->getPos(), 5);
-                    //     if(check_col){
-                    //         cout << "no";
-                    //         p_threat->resetBullet(aBulletOfThreat);
-                    //         //skill->set_shield_frame(skill->get_shield_frame() + 1);
-                    //         // if(skill->get_shield_frame() == 3){
-                    //                 if(static_skills_a[idx] != nullptr) delete static_skills_a[idx];
-                    //                 static_skills_a.clear();
-                    //         // }
-                    //     }
-                    // }
+                            int x1_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                            int y1_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                            explode1.setPos(x1_pos, y1_pos);
 
-                    //shield_vs_bullet(static_skills_a, mainTank, p_threat, aBulletOfThreat, cur_enemy);
-
-                    //if(static_skills_a.size() !=0) continue;
-
-                    if(aBulletOfThreat != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 10);
-                        if(checkColl){
-                            //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
                             for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
-                                int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
-                                explode.setPos(x_pos, y_pos);
-
                                 explode.setFrame(ex);
+                                explode1.setFrame(ex);
 
                                 explode.renderCopy2();
-
+                                explode1.renderCopy2();
                                 SDL_RenderPresent(gRenderer);
                             }
+
+                            // Play sound effect of event
                             Mix_PlayChannel(-1, gExpSound[1], 0);
-                            p_threat->removeBullet(k);
-                            currentHeart -= 1;   
+                            Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
+
+                            p_threat->resetThreat();
+
+                            currentHeart -= 1;
                             gNameBulletOfMainTank = nameBulletTank1[0];
                             mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
                             mainTank.setBulletType(TankObject::SPHERE1);
                             mainTank.setRocketType(TankObject::ROCKET);
                             mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
                             mainTank.set_bullet_style(TankObject::NORMAL); 
-                            gNameRocket = nameRocket[0];                                                
-                        }
+                            gNameRocket = nameRocket[0];
+                        }                    
                     }
+
+                    /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
+                    vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
+                    for(int k = 0; k < bull_listThreats.size(); k++){
+                        BulletObject* aBulletOfThreat = bull_listThreats.at(k);
+
+                        if(static_skills_a.size() !=0) continue;
+
+                        if(aBulletOfThreat != NULL){
+                            bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 10);
+                            if(checkColl){
+                                //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
+                                for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                    int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                                    int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
+                                    explode.setPos(x_pos, y_pos);
+
+                                    explode.setFrame(ex);
+
+                                    explode.renderCopy2();
+
+                                    SDL_RenderPresent(gRenderer);
+                                }
+                                Mix_PlayChannel(-1, gExpSound[1], 0);
+                                p_threat->removeBullet(k);
+                                currentHeart -= 1;   
+                                gNameBulletOfMainTank = nameBulletTank1[0];
+                                mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
+                                mainTank.setBulletType(TankObject::SPHERE1);
+                                mainTank.setRocketType(TankObject::ROCKET);
+                                mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
+                                mainTank.set_bullet_style(TankObject::NORMAL); 
+                                gNameRocket = nameRocket[0];                                                
+                            }
+                        }
+                    }                
                 }
+
+                /* RUN + HANDLE GOLD */
+                run_gift_item(gifts_list,mainTank, p_threat, p_threats, currentGold, gNameBulletOfMainTank, gNameRocket);
             }
             explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
 
@@ -544,11 +489,11 @@ int main(int argc, char* args[]){
             }
         }
 
-
         // RUN PREVENT SKILL
         implement_magnet_skill(gifts_list, mainTank, have_magnet, start_skill);
         // RUN TELEPORT SKILL
         run_teleport_for_player(teleport_a, mainTank, have_tele);
+        run_animation_for_teleport(teleport_a, mainTank, run_animation);
         // RUN 4 BULLET
         set_time_for_4_bullet(mainTank, have_4_bullet, start_4_bullet);
         // RUN SUPER BULLET
@@ -561,6 +506,8 @@ int main(int argc, char* args[]){
         set_time_for_trap(mainTank, have_trap, start_trap);
         // RUN BOOSTER
         handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
+        // RUN SPEED BULLET
+        handle_speed_up_bullet(mainTank, have_speed_up_bullet);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){
@@ -685,16 +632,10 @@ void initSDL(){
         }
 
         //Initialize SDL_mixer
-        if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
-        {
-            cout << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError();
-        }
-
+        Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 );
+        
         //Initialize SDL_ttf
-        if( TTF_Init() == -1 )
-        {
-            printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
-        }
+        TTF_Init();
     }
 
     gFont = TTF_OpenFont("images/Fonts/OpenSans-Bold.ttf", 28);
@@ -808,72 +749,6 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
     }
 }
 
-bool SDLCommonFunc::loadSoundEffects(){
-    bool check = true;
-
-    gBulletSound[0] = Mix_LoadWAV("images/SoundEffects/roundabout.wav");
-    Mix_VolumeChunk(gBulletSound[0], 70);
-
-    gBulletSound[1] = Mix_LoadWAV(gNameBulletSoundOfTank);
-
-    gBulletSound[2] = Mix_LoadWAV("images/SoundEffects/new_1.wav");
-
-    gBulletSound[3] = Mix_LoadWAV("images/SoundEffects/phitieu.wav");
-    Mix_VolumeChunk(gBulletSound[3], 128);
-
-    gBulletSound[4] = Mix_LoadWAV("images/SoundEffects/tia.wav");
-    Mix_VolumeChunk(gBulletSound[4], 20);
-
-    gExpSound[0] = Mix_LoadWAV(gNameExplodeSoundOfThreat);
-    Mix_VolumeChunk(gExpSound[0], 128);
-
-    gExpSound[1] = Mix_LoadWAV(gNameExplodeSoundOfTank);
-    Mix_VolumeChunk(gExpSound[1], 120);
-
-    gameOver = Mix_LoadWAV(gGameOveMusic);
-
-    battleMusic = Mix_LoadMUS(gBattleMusic);
-
-    getGold = Mix_LoadWAV(gGetGoldSound);
-
-    Mix_VolumeChunk(getGold, 50);
-
-    breakGold = Mix_LoadWAV(gBreakGoldSound);
-
-    Mix_VolumeChunk(breakGold, 110);
-
-    menuButton = Mix_LoadWAV("images/SoundEffects/menu.wav");
-    Mix_VolumeChunk(menuButton, 128);
-
-    buttonAction = Mix_LoadWAV("images/SoundEffects/start.wav");
-    Mix_VolumeChunk(buttonAction, 128);
-
-    menuMusic = Mix_LoadMUS("images/SoundEffects/menuMusic.wav");
-
-    warningBoss = Mix_LoadWAV("images/SoundEffects/warning_boss.wav");
-    Mix_VolumeChunk(warningBoss, 30);
-
-    bossDie = Mix_LoadWAV(gNameBossDie);
-    Mix_VolumeChunk(bossDie, 110);
-
-    bossBattle = Mix_LoadMUS(gBossMusic);
-
-    haveShield = Mix_LoadWAV("images/SoundEffects/shield.wav");
-    Mix_VolumeChunk(haveShield, 100);
-
-    haveTele = Mix_LoadWAV("iamges/SoundEffects/tele1.wav");
-    finishTele = Mix_LoadWAV("iamges/SoundEffects/tele2.wav");
-    bulletUpgrade = Mix_LoadWAV("images/SoundEffects/bullet_upgrade.wav");
-    defaultSkill = Mix_LoadWAV("images/SoundEffects/default.wav");
-    treasureSound = Mix_LoadWAV("images/SoundEffects/treasure.wav");
-    boosterSound = Mix_LoadWAV("images/SoundEffects/booster.wav");
-    stunSound = Mix_LoadWAV("images/SoundEffects/stun.wav");
-
-    Mix_VolumeMusic(45);
-
-    return check;
-}
-
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound) {
     static Uint32 lastBlinkTime = 0;
     static bool transparent = false;
@@ -950,19 +825,6 @@ void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, con
     }
     if(idx == 0 && num_threats == p_threats.size()){
         p_threats.clear();
-    }
-}
-
-void push_back_gift_item(ThreatsObject* p_threat){
-    int ran = rand() % 2 + 1;
-    if(ran == 1){
-        Tools* a_gift_item = new Tools();
-        a_gift_item->set_explode_gift();
-        if(a_gift_item != NULL){
-            a_gift_item->setPos(p_threat->getPos().x, p_threat->getPos().y);
-            bool check = a_gift_item->get_gift();
-            gifts_list.push_back(a_gift_item);
-        }
     }
 }
 
@@ -1096,22 +958,27 @@ void SDLCommonFunc::Clear()
         stunSound = NULL;
     }
 
+    if(breakShield != NULL){
+        Mix_FreeChunk(breakShield);
+        breakShield = NULL;
+    }
+
 }
 
 int SDLCommonFunc::showMenu(){
     SDL_Texture* gMenu[4];
 
-    gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu0.jpg");
-    gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
-    gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
+    gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
+    gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
+    gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu3.jpg");
     gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
 
     const int MenuItems = 3;
     SDL_Rect posItem[MenuItems];
 
-    posItem[0] = {590, 390, 290, 40};
-    posItem[1] = {590, 460, 290, 40};
-    posItem[2] = {590, 530, 290, 40};
+    posItem[0] = {105, 660, 355, 85};
+    posItem[1] = {575, 660, 355, 85};
+    posItem[2] = {1045, 660, 355, 85};
 
     bool selected[MenuItems] = {0, 0, 0};
 
@@ -1189,7 +1056,7 @@ int SDLCommonFunc::showMenu(){
                                         }
                                     }
                                 }
-                                SDL_Delay(1000);
+                                SDL_Delay(800);
                                 return i;
                             }
                         }
@@ -1209,179 +1076,4 @@ int SDLCommonFunc::showMenu(){
     }
 
     return 1;
-}
-
-void run_gift_item(vector<Tools*>& gifts_list, ThreatsObject* p_threat, unsigned int& currentGold){
-    for (int a = 0; a < gifts_list.size();) {
-        gifts_list[a]->renderCopy(gifts_list[a]->getPos(), gifts_list[a]->getDegrees());
-        if(gifts_list[a]->timer() > TIME_TO_EXPLODE_GOLD || SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), p_threat->getPos(), 5)) {
-            int x_pos = gifts_list[a]->getPos().x + gifts_list[a]->getPos().w / 2 - EXP_GOLD_WIDTH / 2;
-            int y_pos = gifts_list[a]->getPos().y + gifts_list[a]->getPos().h / 2 - EXP_GOLD_HEIGHT / 2;
-            int w_pos = EXP_GOLD_WIDTH;
-            int h_pos = EXP_GOLD_HEIGHT;
-            gifts_list[a]->setPos(x_pos, y_pos);
-            gifts_list[a]->setPos2(w_pos, h_pos);            
-            for(int ex = 0; ex < EXPLODE_GOLD_ANIMATION_FRAMES; ex++){
-                gifts_list[a]->setFrame(ex);
-                gifts_list[a]->renderCopy2();
-            }
-            Mix_PlayChannel(-1, breakGold, 0);
-            delete gifts_list[a];
-            gifts_list.erase(gifts_list.begin() + a);
-        }
-        else {
-            bool checkGetGold = SDLCommonFunc::CheckCollision(gifts_list[a]->getPos(), mainTank.getPos(), 0);
-            if(checkGetGold){
-                if(gifts_list[a]->get_skill() == Tools::GOLD_1){
-                    Mix_PlayChannel(-1, getGold, 0);
-                    currentGold += gifts_list[a]->getGoldValue();
-                }
-                else if(gifts_list[a]->get_skill() == Tools::GOLD_2){
-                    Mix_PlayChannel(-1, getGold, 0);
-                    currentGold += gifts_list[a]->getGoldValue();
-                }
-                else if(gifts_list[a]->get_skill() == Tools::SHIELD){
-                    if(static_skills_a.empty() == 0){
-                        Mix_PlayChannel(-1, haveShield, 0);
-                        for(int i = 0; i < static_skills_a.size(); i++){
-                            delete static_skills_a[i];
-                        }
-                        static_skills_a.clear();                        
-                    }
-                    init_shield_skill(static_skills_a, static_skills_b, object::PLAYER);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::MAGNET){
-                    if(have_magnet == false){
-                        Mix_PlayChannel(-1, getGold, 0);
-                        start_skill = SDL_GetTicks();
-                        have_magnet = true;
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::TELEPORT){
-                    if(have_tele == false) {
-                        Mix_PlayChannel(-1, haveTele, 0);
-                        init_teleport(teleport_a, teleport_b, object::PLAYER, mainTank, p_threat);
-                        have_tele = true;
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::X2GOLD){
-                    Mix_PlayChannel(-1, getGold, 0);
-                    currentGold = currentGold * 2;
-                }
-                else if(gifts_list[a]->get_skill() == Tools::ADD_ROCKET){
-                    Mix_PlayChannel(-1, getGold, 0);
-                    unsigned int num = rand() % 3 + 3;
-                    mainTank.setRocket(mainTank.getRocket() + num);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::FOUR_DIRECTIONS_BULLET){
-                    if(have_4_bullet == false){
-                        Mix_PlayChannel(-1, bulletUpgrade, 0);
-                        mainTank.set_bullet_style(TankObject::FOUR_DIRECTIONS_BULLET);
-                        have_4_bullet = true;
-                        start_4_bullet = SDL_GetTicks();                        
-                    }
-
-                }
-                else if(gifts_list[a]->get_skill() == Tools::SUPER_BULLET){
-                    if(have_super_bullet  == false){
-                        Mix_PlayChannel(-1, bulletUpgrade, 0);
-                        mainTank.set_bullet_style(TankObject::SUPER_BULLET);
-                        have_super_bullet = true;
-                        start_super_bullet = SDL_GetTicks();                        
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::BULLET_SPREAD){
-                    if(!have_bullet_spread){
-                        Mix_PlayChannel(-1, bulletUpgrade, 0);
-                        mainTank.set_bullet_style(TankObject::BULLET_SPREAD);
-                        have_bullet_spread = true;
-                        start_bullet_spread = SDL_GetTicks();                        
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::STRAIGHT_BEAM){
-                    if(!have_straight_beam){
-                        Mix_PlayChannel(-1, bulletUpgrade, 0);
-                        mainTank.set_bullet_style(TankObject::STRAIGHT_BEAM);
-                        have_straight_beam = true;
-                        start_straight_beam = SDL_GetTicks();                        
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::NEW_BULLET_1){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[1];
-                    mainTank.setBulletType(TankObject::NEW_1);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::TRAP_BULLET){
-                    if(!have_trap){
-                        Mix_PlayChannel(-1, bulletUpgrade, 0);
-                        mainTank.set_bullet_style(TankObject::TRAP);
-                        have_trap = true;
-                        start_trap = SDL_GetTicks();
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::ROUNDABOUT){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[2];
-                    mainTank.setBulletType(TankObject::ROUNDABOUT);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::DEFAULT){
-                    Mix_PlayChannel(-1, defaultSkill, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[0];
-                    gNameRocket = nameRocket[0];
-                    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
-                    mainTank.setBulletType(TankObject::SPHERE1);
-                    mainTank.setRocketType(TankObject::ROCKET);
-                    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
-                    mainTank.set_bullet_style(TankObject::NORMAL);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::TREASURE){
-                    Mix_PlayChannel(-1, treasureSound, 0);
-                    currentGold += rand() % 21 + 30;
-                }
-                else if(gifts_list[a]->get_skill() == Tools::BOOSTER){
-                    if(have_booster == false){
-                        Mix_PlayChannel(-1, boosterSound, 0);
-                        start_booster = SDL_GetTicks();
-                        have_booster = true;
-                        init_booster_skill(booster_a, booster_b, object::PLAYER, mainTank, p_threat);
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::HEART){
-                    Mix_PlayChannel(-1, getGold, 0);
-                    currentHeart += 1;
-                }
-                else if(gifts_list[a]->get_skill() == Tools::STUN){
-                    if(have_stun == false){
-                        Mix_PlayChannel(-1, stunSound, 0);
-                        start_stun = SDL_GetTicks();
-                        have_stun = true;
-                        init_stun(stun_a, stun_b, object::PLAYER, mainTank, p_threats);
-                    }
-                }
-                else if(gifts_list[a]->get_skill() == Tools::TIA_BULLET){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[3];
-                    mainTank.setBulletType(TankObject::TIA_BULLET);                   
-                }
-                else if(gifts_list[a]->get_skill() == Tools::ROCKET_2){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameRocket = nameRocket[1];
-                    mainTank.setRocketType(TankObject::ROCKET_2);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::PHI_TIEU){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[4];
-                    mainTank.setBulletType(TankObject::PHI_TIEU);
-                }
-                else if(gifts_list[a]->get_skill() == Tools::SUPER_LASER){
-                    Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[5];
-                    mainTank.setBulletType(TankObject::SUPER_LASER);                    
-                }
-                delete gifts_list[a];
-                gifts_list.erase(gifts_list.begin() + a);
-            }
-            else ++a;
-        }
-    }
 }

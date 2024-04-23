@@ -12,6 +12,8 @@ TankObject::TankObject(){
     degrees = 0;
     flipType = SDL_FLIP_NONE;
 
+    speed_bullet = SPEED_BULLET_MAIN_TANK;
+
     currentRocket = 0;
 }
 unsigned int TankObject::tank_speed = DEFAULT_SPEED;
@@ -128,7 +130,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 Mix_PlayChannel(-1, gBulletSound[2], 0);
             }
             else if(bulletType == TankObject::ROUNDABOUT){
-                width_bullet = WIDTH_ROUNDABOUT;    height_bullet = HEIGHT_ROUNDABOUT;   speed_bullet = SPEED_BULLET_MAIN_TANK - 1;
+                width_bullet = WIDTH_ROUNDABOUT;    height_bullet = HEIGHT_ROUNDABOUT;   speed_bullet = SPEED_BULLET_MAIN_TANK + 1;
                 Mix_PlayChannel(-1, gBulletSound[0], 0);
             }
             else if(bulletType == TankObject::TIA_BULLET){
@@ -136,11 +138,11 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 Mix_PlayChannel(-1, gBulletSound[4], 0);
             }
             else if(bulletType == TankObject::PHI_TIEU){
-                width_bullet = 30;    height_bullet = 30;   speed_bullet = SPEED_BULLET_MAIN_TANK + 6;
+                width_bullet = 30;    height_bullet = 30;   speed_bullet = SPEED_BULLET_MAIN_TANK + 5;
                 Mix_PlayChannel(-1, gBulletSound[3], 0);
             }
             else if(bulletType == TankObject::SUPER_LASER){
-                width_bullet = 30;    height_bullet = 60;   speed_bullet = SPEED_BULLET_MAIN_TANK + 8;
+                width_bullet = 30;    height_bullet = 60;   speed_bullet = SPEED_BULLET_MAIN_TANK + 7;
                 Mix_PlayChannel(-1, gBulletSound[3], 0);                
             }
             if(bullet_style == TankObject::NORMAL){
@@ -355,7 +357,7 @@ void TankObject::four_directions_bullet(string gNameBulletOfMainTank) {
 
         int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
         int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y ); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -390,7 +392,7 @@ void TankObject::super_bullet(string gNameBulletOfMainTank) {
 
         int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
         int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -428,7 +430,7 @@ void TankObject::bullet_spread(string gNameBulletOfMainTank){
 
         int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
         int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
-        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -470,7 +472,7 @@ void TankObject::straight_beam(string gNameBulletOfMainTank) {
             bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
             bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2 + (i - 2) * spacing + spacing / 2;    
         }
-        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y); 
 
         bulletOfTankList.push_back(new_bullet);
     }
@@ -512,7 +514,7 @@ void TankObject::trap(string gNameBulletOfMainTank) {
             bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
             bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2 + (i - 1) * spacing + spacing / 2;    
         }
-        new_bullet->setPos(bullet_start_x, bullet_start_y + new_bullet->getPos().h / 2); 
+        new_bullet->setPos(bullet_start_x, bullet_start_y); 
 
         bulletOfTankList.push_back(new_bullet);
     }
