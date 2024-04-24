@@ -42,7 +42,7 @@ Tools::Tools(){
     gift_items[16] = "images/Utils/gift/booster.png";
     item_width[16] = 65;   item_height[16] = 55;
     gift_items[17] = "images/Utils/gift/hp.png";
-    item_width[17] = 55;   item_height[17] = 55;    
+    item_width[17] = 65;   item_height[17] = 65;    
     gift_items[18] = "images/Utils/gift/stunned.png";
     item_width[18] = 63;   item_height[18] = 53;
     gift_items[19] = "images/Utils/gift/tia.png";

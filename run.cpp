@@ -558,37 +558,37 @@ int main(int argc, char* args[]){
         blinkImage(warningNoti.getTexture(), warningNoti.getPos(), timeStart, boss_alive, warningBoss);
 
         timeGame.setText(current_time);
-        timeGame.setPos(75, 20);
-        timeGame.setPos2(60, 50);
+        timeGame.setPos(75, 25);
+        timeGame.setPos2(60, 45);
         timeGame.free();
         timeGame.createGameText(gFont);
 
 
         string heartToString = to_string(currentHeart);
         heartNumber.setText(heartToString);
-        heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT - 2);
-        heartNumber.setPos2(22, 22);
+        heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT + 3);
+        heartNumber.setPos2(20, 20);
         heartNumber.free();
         heartNumber.createGameText(gFont);
 
         string killedToString = to_string(currentKilled);
         Killed.setText(killedToString);
-        Killed.setPos(1388, 20);
-        Killed.setPos2(45, 45);
+        Killed.setPos(1390, 25);
+        Killed.setPos2(40, 40);
         Killed.free();
         Killed.createGameText(gFont);
 
         string rocketToString = to_string(mainTank.getRocket());
         rocketText.setText(rocketToString);
-        rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT - 2);
-        rocketText.setPos2(22, 22);
+        rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT + 3);
+        rocketText.setPos2(20, 20);
         rocketText.free();
         rocketText.createGameText(gFont);
 
         string goldToString = to_string(currentGold);
         goldText.setText(goldToString);
-        goldText.setPos(1388, 100);
-        goldText.setPos2(45, 45);
+        goldText.setPos(1390, 105);
+        goldText.setPos2(40, 40);
         goldText.free();
         goldText.createGameText(gFont);
 
@@ -683,7 +683,7 @@ void initSDL(){
         TTF_Init();
     }
 
-    gFont = TTF_OpenFont("images/Fonts/OpenSans-Bold.ttf", 28);
+    gFont = TTF_OpenFont("images/Fonts/Terminal.ttf", 25);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear" );
     SDL_RenderSetLogicalSize(gRenderer, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -1029,26 +1029,40 @@ void SDLCommonFunc::Clear()
 
 int SDLCommonFunc::showMenu(){
     SDL_Texture* gMenu[4];
+    SDL_Texture* setGameController[3];
 
     gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
     gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
     gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu3.jpg");
     gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
 
+    setGameController[0] = SDLCommonFunc::loadImage("images/Backgrounds/c0.png");
+    setGameController[1] = SDLCommonFunc::loadImage("images/Backgrounds/c1.png");
+    setGameController[2] = SDLCommonFunc::loadImage("images/Backgrounds/c2.png");
+
     const int MenuItems = 3;
+    const int NumController = 2;
     SDL_Rect posItem[MenuItems];
+    SDL_Rect posSetGameController[NumController];
 
     posItem[0] = {105, 660, 355, 85};
     posItem[1] = {575, 660, 355, 85};
     posItem[2] = {1045, 660, 355, 85};
 
+    posSetGameController[0] = {60, 570, 470, 120};
+    posSetGameController[1] = {900, 570, 490, 120};
+
     bool selected[MenuItems] = {0, 0, 0};
+    bool selected2[NumController] = {0, 0};
 
     SDL_Event m_event;
     int x_m = 0;
     int y_m =  0;
     int lastMenuIndex = -1;
     int menuIndex;
+
+    int controllerIndex;
+    int lastControllerIndex = -1;
 
     if( Mix_PlayingMusic() == 0 )
     {
@@ -1108,6 +1122,82 @@ int SDLCommonFunc::showMenu(){
                             if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
                                 Mix_PlayChannel(-1, buttonAction, 0);
                                 if(i != 2){
+                                    SDL_RenderCopy(gRenderer, setGameController[0], NULL, NULL);
+                                    SDL_RenderPresent(gRenderer);
+
+                                    bool controllerSelected = false;
+                                    while(!controllerSelected) {
+                                        controllerIndex = -1;
+                                        while(SDL_PollEvent(&m_event)){
+                                            switch(m_event.type){
+                                                case SDL_QUIT:
+                                                    {
+                                                        if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
+                                                            Mix_PauseMusic();
+                                                            Mix_FreeMusic(menuMusic);
+                                                            menuMusic = NULL;
+                                                            for(int i = 0; i < 4; i++){
+                                                                SDL_DestroyTexture(gMenu[i]);
+                                                                gMenu[i] = NULL;
+                                                            }
+                                                        }
+                                                        return 1;
+                                                    }
+                                                case SDL_MOUSEMOTION:
+                                                    {
+                                                        x_m = m_event.button.x;
+                                                        y_m = m_event.button.y;
+
+                                                        for(int i = 0; i < NumController; i++){
+                                                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posSetGameController[i])){
+                                                                controllerIndex = i;
+                                                                break;
+                                                            }
+                                                        }
+
+                                                        if (controllerIndex != -1) {
+                                                            SDL_RenderCopy(gRenderer, setGameController[controllerIndex + 1], NULL, NULL);
+                                                            if(lastControllerIndex != controllerIndex)
+                                                                Mix_PlayChannel(-1, menuButton, 0);
+                                                        } else {
+                                                            SDL_RenderCopy(gRenderer, setGameController[0], NULL, NULL);
+                                                        }
+                                                        SDL_RenderPresent(gRenderer);
+                                                        lastControllerIndex = controllerIndex;
+                                                    }
+                                                    break;
+                                                case SDL_MOUSEBUTTONDOWN:
+                                                    {
+                                                        x_m = m_event.button.x;
+                                                        y_m = m_event.button.y;
+
+                                                        for(int i = 0; i < NumController; i++){
+                                                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posSetGameController[i])){
+                                                                Mix_PlayChannel(-1, buttonAction, 0);
+                                                                if(i == 0){
+                                                                    SDL_RenderCopy(gRenderer, setGameController[1], NULL, NULL);
+                                                                    SDL_RenderPresent(gRenderer);
+                                                                    SDL_Delay(100);
+                                                                    currentMethod = ControllerMethod::KEYBOARD;
+                                                                }
+                                                                else if(i == 1){
+                                                                    SDL_RenderCopy(gRenderer, setGameController[2], NULL, NULL);
+                                                                    SDL_RenderPresent(gRenderer);
+                                                                    SDL_Delay(100);
+                                                                    currentMethod = ControllerMethod::JOYSTICK;
+                                                                }
+                                                                controllerSelected = true;
+                                                            }
+                                                        }
+
+                                                    }
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                            if(controllerSelected)  break;
+                                        }
+                                    }
                                     if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
                                         Mix_PauseMusic();
                                         Mix_FreeMusic(menuMusic);
@@ -1118,8 +1208,7 @@ int SDLCommonFunc::showMenu(){
                                         }
                                     }
                                 }
-                                currentMethod = ControllerMethod::KEYBOARD;
-                                SDL_Delay(800);
+                                SDL_Delay(500); 
                                 return i;
                             }
                         }
@@ -1137,6 +1226,7 @@ int SDLCommonFunc::showMenu(){
         SDL_DestroyTexture(gMenu[i]);
         gMenu[i] = NULL;
     }
+
 
     return 1;
 }
