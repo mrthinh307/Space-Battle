@@ -40,6 +40,15 @@ bool SDLCommonFunc::loadSoundEffects(){
     gBulletSound[4] = Mix_LoadWAV("images/SoundEffects/tia.wav");
     Mix_VolumeChunk(gBulletSound[4], 20);
 
+    gBulletSound[5] = Mix_LoadWAV("images/SoundEffects/speedbullet.wav");
+    Mix_VolumeChunk(gBulletSound[5], 128);
+
+    gBulletSound[6] = Mix_LoadWAV("images/SoundEffects/superlaser.wav");
+    Mix_VolumeChunk(gBulletSound[6], 120);
+
+    haveTele = Mix_LoadWAV("images/SoundEffects/tele1.wav");
+    finishTele = Mix_LoadWAV("images/SoundEffects/tele2.wav");
+
     gExpSound[0] = Mix_LoadWAV(gNameExplodeSoundOfThreat);
     Mix_VolumeChunk(gExpSound[0], 128);
 
@@ -79,8 +88,6 @@ bool SDLCommonFunc::loadSoundEffects(){
     breakShield = Mix_LoadWAV("images/SoundEffects/break_shield.wav");
     Mix_VolumeChunk(breakShield, 120);
 
-    haveTele = Mix_LoadWAV("iamges/SoundEffects/tele1.wav");
-    finishTele = Mix_LoadWAV("iamges/SoundEffects/tele2.wav");
     bulletUpgrade = Mix_LoadWAV("images/SoundEffects/bullet_upgrade.wav");
     defaultSkill = Mix_LoadWAV("images/SoundEffects/default.wav");
     treasureSound = Mix_LoadWAV("images/SoundEffects/treasure.wav");

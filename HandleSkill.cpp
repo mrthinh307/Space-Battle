@@ -266,19 +266,3 @@ void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& hav
         }
     }
 }
-
-/* SPEED UP BULLET*/
-extern bool have_speed_up_bullet;
-extern Uint32 start_speed_up_bullet;
-
-void handle_speed_up_bullet(TankObject& mainTank, bool& have_speed_up_bullet){
-    if(have_speed_up_bullet){
-        if(SDL_GetTicks() - start_speed_up_bullet < 10000){
-            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK + 50);
-        }
-        else{
-            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
-            have_speed_up_bullet = false;
-        }
-    }
-}

@@ -223,6 +223,10 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 width_bullet = 30;    height_bullet = 60;   speed_bullet = SPEED_BULLET_MAIN_TANK + 7;
                 Mix_PlayChannel(-1, gBulletSound[3], 0);                
             }
+            else if(bulletType == TankObject::SPEED_BULLET){
+                width_bullet = 60;    height_bullet = 60;   speed_bullet = SPEED_BULLET_MAIN_TANK + 3;
+                Mix_PlayChannel(-1, gBulletSound[5], 0);
+            }
             if(bullet_style == TankObject::NORMAL){
                 BulletObject* bullet = new BulletObject();
                 bullet->loadIMG(gNameBulletOfMainTank); 

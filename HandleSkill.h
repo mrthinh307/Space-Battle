@@ -49,6 +49,4 @@ void handle_booster_skill(vector<Tools*>&a, TankObject& mainTank, bool& have_boo
 void init_stun(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, vector<ThreatsObject*> p_threats);
 void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, const Uint32& start);
 
-// SPEED UP BULLET
-void handle_speed_up_bullet(TankObject& mainTank, bool& have_speed_up_bullet);
 #endif

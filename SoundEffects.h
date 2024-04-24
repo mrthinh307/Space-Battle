@@ -5,7 +5,7 @@
 #include "BaseObject.h"
 
 // SoundEffects.h
-extern Mix_Chunk* gBulletSound[5];
+extern Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
 extern Mix_Chunk* gExpSound[2];
 extern Mix_Chunk* gRocketSound;
 extern Mix_Chunk* gameOver;

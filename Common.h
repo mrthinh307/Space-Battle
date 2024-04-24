@@ -32,7 +32,7 @@ const int ROCKET_HEIGHT = 63;
 static int NUM_THREATS = 5;  
 
 const int NUMBER_OF_EXPLODE_SOUND = 2;
-const int NUMBER_OF_BULLET_SOUND = 5;
+const int NUMBER_OF_BULLET_SOUND = 7;
 
 static SDL_Window* gWindow;
 static SDL_Surface* gScreenSurface;
@@ -48,8 +48,9 @@ static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
 static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};
 static char gNameBoss1[] = {"images/ThreatsObject/boss1/image1.png"};
 
-static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png", "images/Bullets/roundabout.png",
-                                     "images/Bullets/tia.png", "images/Bullets/phitieu.png", "images/Bullets/superlaser.png"};
+static char nameBulletTank1[][100] = {"images/Bullets/tank1.png", "images/Bullets/tank1.3.png", "images/Bullets/slash2.png",
+                                     "images/Bullets/tia.png", "images/Bullets/phitieu.png", "images/Bullets/superlaser.png",
+                                     "images/Bullets/speedupbullet.png"};
 static string gNameBulletOfMainTank = nameBulletTank1[0];
 static char gNameBulletOfThreatsObject[] = {"images/Bullets/enemy1.png"};
 

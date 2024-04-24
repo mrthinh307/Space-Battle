@@ -37,7 +37,8 @@ public:
         ROUNDABOUT = 2,
         TIA_BULLET = 3,
         PHI_TIEU = 4,
-        SUPER_LASER = 5
+        SUPER_LASER = 5,
+        SPEED_BULLET = 6
     };
 
     enum RocketType {

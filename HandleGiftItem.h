@@ -56,10 +56,6 @@ extern Uint32 start_stun;
 
 extern vector<Tools*> gifts_list;
 
-extern bool have_speed_up_bullet;
-extern Uint32 start_speed_up_bullet;
-
-
 void run_gift_item(vector<Tools*>& gifts_list, TankObject& mainTank, ThreatsObject* p_threat, vector<ThreatsObject*> p_threats, unsigned int& currentGold, string& gNameBulletOfMainTank, string& gNameRocket);
 void push_back_gift_item(ThreatsObject* p_threat);
 

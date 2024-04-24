@@ -513,8 +513,6 @@ int main(int argc, char* args[]){
         set_time_for_trap(mainTank, have_trap, start_trap);
         // RUN BOOSTER
         handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
-        // RUN SPEED BULLET
-        handle_speed_up_bullet(mainTank, have_speed_up_bullet);
 
         // Resume music when get over Turn boss 
         if(boss_alive == false && done == false){

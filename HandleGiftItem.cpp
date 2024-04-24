@@ -45,9 +45,6 @@ vector<Tools*> stun_b;
 bool have_stun = false;
 Uint32 start_stun;
 
-bool have_speed_up_bullet = false;
-Uint32 start_speed_up_bullet;
-
 extern Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
 extern Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
 extern Mix_Chunk* gRocketSound;
@@ -239,10 +236,8 @@ void run_gift_item(vector<Tools*>& gifts_list, TankObject& mainTank, ThreatsObje
                 }
                 else if(gifts_list[a]->get_skill() == Tools::SPEED_UP_BULLET){
                     Mix_PlayChannel(-1, bulletUpgrade, 0);
-                    if(!have_speed_up_bullet){
-                        have_speed_up_bullet = true;
-                        start_speed_up_bullet = SDL_GetTicks();
-                    }
+                    gNameBulletOfMainTank = nameBulletTank1[6];
+                    mainTank.setBulletType(TankObject::SPEED_BULLET);
                 }
                 else if(gifts_list[a]->get_skill() == Tools::GOLD_5){
                     Mix_PlayChannel(-1, getGold, 0);
