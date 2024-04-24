@@ -424,6 +424,8 @@ int main(int argc, char* args[]){
 
                             p_threat->resetThreat();
 
+                            SDL_GameControllerRumble(gController, 32767, 32767, 500);
+
                             currentHeart -= 1;
                             gNameBulletOfMainTank = nameBulletTank1[0];
                             mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
@@ -457,9 +459,12 @@ int main(int argc, char* args[]){
 
                                     SDL_RenderPresent(gRenderer);
                                 }
+                                SDL_GameControllerRumble(gController, 32767, 32767, 500);
                                 Mix_PlayChannel(-1, gExpSound[1], 0);
+
                                 p_threat->removeBullet(k);
                                 currentHeart -= 1;   
+                                
                                 gNameBulletOfMainTank = nameBulletTank1[0];
                                 mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
                                 mainTank.setBulletType(TankObject::SPHERE1);
@@ -479,6 +484,8 @@ int main(int argc, char* args[]){
 
             if(currentHeart == 0){
                 Mix_PauseMusic();
+                SDL_GameControllerRumble(gController, 0, 0, 0);
+                SDL_GameControllerRumble(gController, 32767, 32767, 1000);
                 Mix_PlayChannel(-1, gameOver, 0);
                 if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
                     clearThreats(p_threats, p_threats.size() - 1, 0);
@@ -601,8 +608,40 @@ void initSDL(){
         logSDLError(cout, "SDL_Init", true);
     }
 
-    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 ){
+    if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0 ){
         logSDLError(cout, "SDL_Init", true);
+    }
+    else{
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf( "Warning: Linear texture filtering not enabled!" );
+		}
+
+		//Check for joysticks
+		if( SDL_NumJoysticks() < 1 )
+		{
+			printf( "Warning: No joysticks connected!\n" );
+		}
+		else
+		{
+			//Load joystick
+			gGameController = SDL_JoystickOpen( 0 );
+			if( gGameController == NULL )
+			{
+				printf( "Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError() );
+			}
+            gController = SDL_GameControllerOpen(0);
+			if( gController == NULL )
+			{
+				printf( "Warning: Unable to open controller! SDL Error: %s\n", SDL_GetError() );
+			}
+            if (SDL_GameControllerHasRumble(gController)) {
+                printf("Controller supports rumble.\n");
+            } else {
+                printf("Controller does not support rumble.\n");
+            }
+        }
     }
 
     gWindow = SDL_CreateWindow(WINDOW_TITLE.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -732,6 +771,18 @@ void quitSDL(){
     }
     p_threats.clear();
 
+    SDL_JoystickClose( gGameController );
+    gGameController = NULL;
+
+    SDL_GameControllerClose(gController);
+    SDL_GameControllerRumble(gController, 0, 0, 0);
+    gController = NULL;
+
+    if(gFont != NULL){
+        TTF_CloseFont(gFont);
+        gFont = NULL;
+    }
+
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
@@ -739,6 +790,7 @@ void quitSDL(){
     IMG_Quit();
     SDL_Quit();
     Mix_Quit();
+    TTF_Quit();
 }
 
 void logSDLError(ostream& os,const string& msg, bool fatal ){

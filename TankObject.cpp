@@ -116,11 +116,89 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 break;
         }
     }
-    if(e.type == SDL_MOUSEBUTTONDOWN){
-
-        if(e.button.button == SDL_BUTTON_LEFT){
+    if(e.type == SDL_JOYAXISMOTION){
+        //Motion on controller 0
+        if( e.jaxis.which == 0 )
+        {                        
+            switch(e.jaxis.axis) {
+                case 0: // X axis motion
+                    //Left of dead zone
+                    if( e.jaxis.value < -JOYSTICK_DEAD_ZONE )
+                    {
+                        x_val = -1;
+                        if (y_val == -1) {
+                            degrees = -45; 
+                        } else if (y_val == 1) {
+                            degrees = -135; 
+                        } else {
+                            degrees = -90; 
+                        }
+                    }
+                    //Right of dead zone
+                    else if( e.jaxis.value > JOYSTICK_DEAD_ZONE )
+                    {
+                        x_val =  1;
+                        if (y_val == -1) {
+                            degrees = 45; 
+                        } else if (y_val == 1) {
+                            degrees = 135; 
+                        } else {
+                            degrees = 90; 
+                        }
+                    }
+                    else
+                    {
+                        x_val = 0;
+                        if (y_val == 1) {
+                            degrees = 180; 
+                        } else if (y_val == -1) {
+                            degrees = 0; 
+                        }
+                    }
+                    break;
+                case 1: // Y axis motion
+                    //Below of dead zone
+                    if( e.jaxis.value < -JOYSTICK_DEAD_ZONE )
+                    {
+                        y_val = -1;
+                        if (x_val == 1) {
+                            degrees = 45; 
+                        } else if (x_val == -1) {
+                            degrees = -45; 
+                        } else {
+                            degrees = 0; 
+                        }
+                    }
+                    //Above of dead zone
+                    else if( e.jaxis.value > JOYSTICK_DEAD_ZONE )
+                    {
+                        y_val =  1;
+                        if (x_val == 1) {
+                            degrees = 135; 
+                        } else if (x_val == -1) {
+                            degrees = -135;
+                        } else {
+                            degrees = 180;
+                        }
+                    }
+                    else
+                    {
+                        y_val = 0;
+                        if (x_val == 1) {
+                            degrees = 90; 
+                        } else if (x_val == -1) {
+                            degrees = -90; 
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    if(e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_CONTROLLERBUTTONDOWN){
+        if(e.button.button == SDL_BUTTON_LEFT || e.cbutton.button == SDL_CONTROLLER_BUTTON_A){
             
-
             if(bulletType == TankObject::SPHERE1){
                 width_bullet = WIDTH_SPHERE;   height_bullet = HEIGHT_SPHERE;  speed_bullet = SPEED_BULLET_MAIN_TANK;
                 Mix_PlayChannel(-1, gBulletSound[1], 0);
@@ -176,7 +254,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
             }
         }
 
-        else if(e.button.button == SDL_BUTTON_RIGHT){
+        else if(e.button.button == SDL_BUTTON_RIGHT|| e.cbutton.button == SDL_CONTROLLER_BUTTON_B){
             if (!rocketOfTankList.empty()) {
                 return; 
             }

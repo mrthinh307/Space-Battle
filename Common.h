@@ -38,6 +38,8 @@ static SDL_Window* gWindow;
 static SDL_Surface* gScreenSurface;
 static SDL_Renderer* gRenderer;
 static SDL_Texture* gBackground;
+static SDL_Joystick* gGameController;
+static SDL_GameController *gController;
 
 static TTF_Font* gFont = NULL;
 

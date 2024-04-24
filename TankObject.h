@@ -6,6 +6,8 @@
 #include "BulletObject.h"
 #include "SoundEffects.h"
 
+const int JOYSTICK_DEAD_ZONE = 8000;
+
 #define WIDTH_TANK_OBJECT 70
 #define HEIGHT_TANK_OBJECT 67
 
