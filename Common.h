@@ -70,12 +70,22 @@ static char gGetGoldSound[] = {"images/SoundEffects/getGold.wav"};
 static char gBreakGoldSound[] = {"images/SoundEffects/breakglass.wav"};
 static char gBossMusic[] = {"images/SoundEffects/boss_bg.wav"};
 
-static bool done = false; // check resume music after finish boss's time
+static bool battle_music = false; // check resume music after finish boss's time
+
+const int TIME_TO_ADD_ENEMY = 32678;
+const int TIME_TO_RESET_BOSS = 63123;
 
 enum enemy{
     MINI_THREATS,
     BOSS
 };
+
+enum ControllerMethod{
+    KEYBOARD = 0,
+    JOYSTICK = 1
+};
+
+static int currentMethod;
 
 static enemy cur_enemy = MINI_THREATS;
 

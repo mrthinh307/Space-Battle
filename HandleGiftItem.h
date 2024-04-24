@@ -54,6 +54,9 @@ extern vector<Tools*> stun_b;
 extern bool have_stun;
 extern Uint32 start_stun;
 
+extern bool have_default;
+extern Uint32 start_default;
+
 extern vector<Tools*> gifts_list;
 
 void run_gift_item(vector<Tools*>& gifts_list, TankObject& mainTank, ThreatsObject* p_threat, vector<ThreatsObject*> p_threats, unsigned int& currentGold, string& gNameBulletOfMainTank, string& gNameRocket);

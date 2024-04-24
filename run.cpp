@@ -33,15 +33,14 @@ void SDLCommonFunc::Clear();
 
 int SDLCommonFunc::showMenu();
 
-void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound);
-
+void blinkImage(SDL_Texture* texture, const SDL_Rect& position,const Uint32& timeStart, const bool& boss_alive, Mix_Chunk* sound);
 
 /* INIT THREATS */
 void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet);
 void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const int& idx);
 
 TankObject mainTank;
-static vector<ThreatsObject*> p_threats;
+vector<ThreatsObject*> p_threats;
 
 BaseObject layoutBox;
 BaseObject heart;
@@ -167,6 +166,11 @@ int main(int argc, char* args[]){
 
     bool rocketAdded = false;
 
+    static bool boss_alive = false;
+
+    Uint32 lastEnemyAddedTime = SDL_GetTicks();
+    Uint32 lastBossAddedTime = SDL_GetTicks();
+
     int MENU = SDLCommonFunc::showMenu();
     if(MENU == 1) quit = true;
 
@@ -186,7 +190,7 @@ int main(int argc, char* args[]){
             if(e.type == SDL_QUIT){
                 quit = true;
             }
-            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank, gNameRocket);
+            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank, gNameRocket, currentMethod);
         }
 
         /* HANDLE MOVE:  ĐỒNG TIỀN */
@@ -241,11 +245,8 @@ int main(int argc, char* args[]){
             mainTank.run_trap(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         /* RUN BOSS LEVEL 1*/
-        static bool add = false;
         static int idx_Boss_1 = -1;
-        bool boss_alive;
-        if(SDL_GetTicks() - timeStart >= 5000 && add == false){
-            NUM_THREATS++;
+        if(boss_alive == false && SDL_GetTicks() - lastBossAddedTime >= TIME_TO_RESET_BOSS){
             boss_alive = true;
             initializeThreats(p_threats, 1, gNameBoss1, 1);
             idx_Boss_1 = p_threats.size() - 1;
@@ -253,8 +254,7 @@ int main(int argc, char* args[]){
             p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
             p_threats[idx_Boss_1]->set_heal_bar();
             p_threats[idx_Boss_1]->set_heal_bar_texture(SDLCommonFunc::loadImage("images/ThreatsObject/heal_bar.png"));
-            add = true;
-            done = false;
+            battle_music = false;
             // Pause music
             if(Mix_PlayingMusic() != 0){
                 Mix_PauseMusic();
@@ -262,6 +262,14 @@ int main(int argc, char* args[]){
             if(bossBattle != NULL){
                 Mix_PlayMusic(bossBattle, -1);
             }
+        }
+
+        if(SDL_GetTicks() - lastEnemyAddedTime >= TIME_TO_ADD_ENEMY && boss_alive == false){
+            initializeThreats(p_threats, 1, gNameThreatsObject, 0);
+            for(int i = p_threats.size() - 1; i >= p_threats.size() - 1; i--){
+                p_threats[i]->Set_sprite_clips_1();
+            }
+            lastEnemyAddedTime = SDL_GetTicks();
         }
 
         /* IMPLEMENT THREATS OBJECT & HANDLE EXPLODE */
@@ -513,14 +521,16 @@ int main(int argc, char* args[]){
         set_time_for_trap(mainTank, have_trap, start_trap);
         // RUN BOOSTER
         handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
+        // RUN DEFAULT
+        run_default_skill(mainTank, have_default, start_default, gNameBulletOfMainTank, gNameRocket);
 
         // Resume music when get over Turn boss 
-        if(boss_alive == false && done == false){
+        if(boss_alive == false && battle_music == false){
             if(Mix_PlayingMusic() != 0){
                 Mix_PauseMusic();
             }
             if(battleMusic != NULL) Mix_PlayMusic(battleMusic, -1);
-            done = true;
+            battle_music = true;
         }
 
         /* HANDLE TIME*/
@@ -545,9 +555,7 @@ int main(int argc, char* args[]){
         current_time = str_minute + secondString;
 
         /* WARNING BOSS */
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 01", current_time, warningBoss);
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), "00 : 02", current_time, warningBoss);
-
+        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), timeStart, boss_alive, warningBoss);
 
         timeGame.setText(current_time);
         timeGame.setPos(75, 20);
@@ -799,7 +807,7 @@ void logSDLError(ostream& os,const string& msg, bool fatal ){
     }
 }
 
-void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& target_time, const string& current_time, Mix_Chunk* sound) {
+void blinkImage(SDL_Texture* texture, const SDL_Rect& position,const Uint32& timeStart, const bool& boss_alive, Mix_Chunk* sound) {
     static Uint32 lastBlinkTime = 0;
     static bool transparent = false;
 
@@ -810,7 +818,8 @@ void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& ta
         lastBlinkTime = currentTime;
     }
 
-    if (current_time == target_time && !transparent) {
+    static int idx_mintue = 1;
+    if (boss_alive == false && !transparent && (SDL_GetTicks() - timeStart) >= 54678 * idx_mintue && (SDL_GetTicks() - timeStart) <= 56800 * idx_mintue ) {
         if (transparent) {
             SDL_SetTextureAlphaMod(texture, 180);
         } else {
@@ -820,6 +829,9 @@ void blinkImage(SDL_Texture* texture, const SDL_Rect& position, const string& ta
         SDL_RenderCopy(gRenderer, texture, NULL, &position);
         Mix_PlayChannel(-1, sound, 0);
     }
+
+    if (boss_alive == false && (SDL_GetTicks() - timeStart) > 56800 * idx_mintue)
+        idx_mintue++;
 }
 
 void initializeThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, const string& path, const int& type_bullet) {
@@ -1106,6 +1118,7 @@ int SDLCommonFunc::showMenu(){
                                         }
                                     }
                                 }
+                                currentMethod = ControllerMethod::KEYBOARD;
                                 SDL_Delay(800);
                                 return i;
                             }

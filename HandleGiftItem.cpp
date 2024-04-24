@@ -45,6 +45,9 @@ vector<Tools*> stun_b;
 bool have_stun = false;
 Uint32 start_stun;
 
+bool have_default = false;
+Uint32 start_default;
+
 extern Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND];
 extern Mix_Chunk* gExpSound[NUMBER_OF_EXPLODE_SOUND];
 extern Mix_Chunk* gRocketSound;
@@ -182,13 +185,10 @@ void run_gift_item(vector<Tools*>& gifts_list, TankObject& mainTank, ThreatsObje
                 }
                 else if(gifts_list[a]->get_skill() == Tools::DEFAULT){
                     Mix_PlayChannel(-1, defaultSkill, 0);
-                    gNameBulletOfMainTank = nameBulletTank1[0];
-                    gNameRocket = nameRocket[0];
-                    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
-                    mainTank.setBulletType(TankObject::SPHERE1);
-                    mainTank.setRocketType(TankObject::ROCKET);
-                    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
-                    mainTank.set_bullet_style(TankObject::NORMAL);
+                    if(!have_default){
+                        have_default = true;
+                        start_default = SDL_GetTicks();
+                    }
                 }
                 else if(gifts_list[a]->get_skill() == Tools::TREASURE){
                     Mix_PlayChannel(-1, treasureSound, 0);

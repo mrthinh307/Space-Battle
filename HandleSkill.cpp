@@ -4,6 +4,8 @@
 extern Mix_Chunk* haveShield;
 extern Mix_Chunk* breakShield;
 
+extern bool have_default;
+
 void init_shield_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
     Tools* shield = new Tools();
     shield->loadIMG("images/Skills/Shield/Shield1.png");
@@ -15,7 +17,7 @@ void init_shield_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, co
 
 void handle_shield_skill(vector<Tools*>& a,const TankObject& mainTank, bool& have_shield,const Uint32& start){
     if(have_shield){
-        if(SDL_GetTicks() - start < 10000){
+        if(SDL_GetTicks() - start < 10000 && !have_default){
             SDL_Rect posTank = mainTank.getPos();
             int x_ = posTank.x + (posTank.w - 100) / 2;
             int y_ = posTank.y + (posTank.h - 131) / 2;
@@ -37,7 +39,7 @@ void handle_shield_skill(vector<Tools*>& a,const TankObject& mainTank, bool& hav
 /* MAGNET */
 void implement_magnet_skill(vector<Tools*>& gift_list, const TankObject& mainTank, bool& have_magnet, const Uint32& start_skill){
     if(have_magnet){
-        if(SDL_GetTicks() - start_skill <= 10000){
+        if(SDL_GetTicks() - start_skill <= 10000 && !have_default){
             for(int i = 0; i < gift_list.size(); i++){
                 gift_list[i]->set_magnet(true);
             }
@@ -193,7 +195,7 @@ void init_booster_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, c
 
 void handle_booster_skill(vector<Tools*>& a, TankObject& mainTank, bool& have_booster, const Uint32& start){
     if(have_booster){
-        if(SDL_GetTicks() - start < 10000){
+        if(SDL_GetTicks() - start < 10000 && !have_default){
             mainTank.set_tank_speed(DEFAULT_SPEED * 2 + 2);
             SDL_Rect posTank = mainTank.getPos();
             double deg = mainTank.getDegrees();
@@ -252,7 +254,7 @@ void init_stun(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const Tank
 
 void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& have_stun, const Uint32& start){
     if(have_stun){
-        if(SDL_GetTicks() - start < 5000){
+        if(SDL_GetTicks() - start < 5000 && !have_default){
             for(int i = 0; i < a.size(); i++){
                 SDL_Rect pos = p_threats[i]->getPos();
                 a[i]->setPos(pos.x + (pos.w - 150) / 2, pos.y + (pos.h - 109) / 2);
@@ -263,6 +265,24 @@ void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& hav
             for(int i = 0; i < a.size(); i++) delete a[i];
             a.clear();
             have_stun = false;
+        }
+    }
+}
+
+/* DEFAULT */
+void run_default_skill(TankObject& mainTank, bool& have_default, const Uint32& start, string &gNameBulletOfMainTank, string &gNameRocket){
+    if(have_default){
+        if(SDL_GetTicks() - start > 10000){
+            have_default = false;
+        }
+        else{
+            gNameBulletOfMainTank = nameBulletTank1[0];
+            gNameRocket = nameRocket[0];
+            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
+            mainTank.setBulletType(TankObject::SPHERE1);
+            mainTank.setRocketType(TankObject::ROCKET);
+            mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
+            mainTank.set_bullet_style(TankObject::NORMAL);
         }
     }
 }

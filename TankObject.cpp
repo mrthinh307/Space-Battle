@@ -45,8 +45,9 @@ TankObject::~TankObject() {
     rocketOfTankList.clear();
 }
 
-void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank, string gNameRocket) {
-    if (e.type == SDL_KEYDOWN) {
+
+void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_OF_BULLET_SOUND], const string& gNameBulletOfMainTank, const string& gNameRocket, const int& currentMethod) {
+    if (e.type == SDL_KEYDOWN && currentMethod == ControllerMethod::KEYBOARD) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
                 y_val = -1;
@@ -91,7 +92,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
             default:
                 break;
         }
-    }else if (e.type == SDL_KEYUP) {
+    }else if (e.type == SDL_KEYUP && currentMethod == ControllerMethod::KEYBOARD) {
         switch (e.key.keysym.sym) {
             case SDLK_w:
             case SDLK_s:
@@ -116,13 +117,11 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 break;
         }
     }
-    if(e.type == SDL_JOYAXISMOTION){
-        //Motion on controller 0
+    if(e.type == SDL_JOYAXISMOTION && currentMethod == ControllerMethod::JOYSTICK){
         if( e.jaxis.which == 0 )
         {                        
             switch(e.jaxis.axis) {
                 case 0: // X axis motion
-                    //Left of dead zone
                     if( e.jaxis.value < -JOYSTICK_DEAD_ZONE )
                     {
                         x_val = -1;
@@ -197,8 +196,8 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
         }
     }
     if(e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_CONTROLLERBUTTONDOWN){
-        if(e.button.button == SDL_BUTTON_LEFT || e.cbutton.button == SDL_CONTROLLER_BUTTON_A){
-            
+        if((currentMethod ==  ControllerMethod::KEYBOARD) ? e.button.button == SDL_BUTTON_LEFT : e.cbutton.button == SDL_CONTROLLER_BUTTON_A){
+        
             if(bulletType == TankObject::SPHERE1){
                 width_bullet = WIDTH_SPHERE;   height_bullet = HEIGHT_SPHERE;  speed_bullet = SPEED_BULLET_MAIN_TANK;
                 Mix_PlayChannel(-1, gBulletSound[1], 0);
@@ -258,7 +257,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
             }
         }
 
-        else if(e.button.button == SDL_BUTTON_RIGHT|| e.cbutton.button == SDL_CONTROLLER_BUTTON_B){
+        else if((currentMethod == ControllerMethod::KEYBOARD) ? e.button.button == SDL_BUTTON_RIGHT : e.cbutton.button == SDL_CONTROLLER_BUTTON_B){
             if (!rocketOfTankList.empty()) {
                 return; 
             }
@@ -278,7 +277,6 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
                 width_rocket = 100; height_rocket = 98; speed_rocket = SPEED_ROCKET_MAIN_TANK + 2;
             }
 
-
             BulletObject* rocket = new BulletObject();
             rocket->loadIMG(gNameRocket);
             rocket->setWidthHeight(width_rocket, height_rocket);
@@ -295,8 +293,7 @@ void TankObject::handleInputAction(SDL_Event e, Mix_Chunk* gBulletSound[NUMBER_O
 
             rocketOfTankList.push_back(rocket);
         }
-    }
-    
+    } 
 }
 
 void TankObject::handleMove() {

@@ -42,7 +42,7 @@ Tools::Tools(){
     gift_items[16] = "images/Utils/gift/booster.png";
     item_width[16] = 65;   item_height[16] = 55;
     gift_items[17] = "images/Utils/gift/hp.png";
-    item_width[17] = 70;   item_height[17] = 70;    
+    item_width[17] = 55;   item_height[17] = 55;    
     gift_items[18] = "images/Utils/gift/stunned.png";
     item_width[18] = 63;   item_height[18] = 53;
     gift_items[19] = "images/Utils/gift/tia.png";
@@ -56,9 +56,9 @@ Tools::Tools(){
     gift_items[23] = "images/Utils/gift/speedupbullet.png";
     item_width[23] = 60;   item_height[23] = 60;
     gift_items[24] = "images/Utils/5gold.png";
-    item_width[24] = 80;   item_height[24] = 48;
+    item_width[24] = 60;   item_height[24] = 45;
     gift_items[25] = "images/Utils/8gold.png";
-    item_width[25] = 100;   item_height[25] = 60;
+    item_width[25] = 70;   item_height[25] = 50;
 
     value = 0;
 
@@ -109,17 +109,17 @@ bool Tools::get_gift() {
         pos.w = item_width[24];
         pos.h = item_height[24];
         set_skill(Tools::GOLD_5);
-        return loadIMG(gift_items[23]);
+        return loadIMG(gift_items[24]);
     }
     else if(randomNumber <= 4){
         value = 8;
         pos.w = item_width[25];
         pos.h = item_height[25];
         set_skill(Tools::GOLD_8);
-        return loadIMG(gift_items[24]);
+        return loadIMG(gift_items[25]);
     } 
     else{
-        int random_skill = 13;//rand() % 22 + 2;
+        int random_skill = rand() % 22 + 2;
         
         value = 0;
         pos.w = item_width[random_skill];

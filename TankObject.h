@@ -14,7 +14,7 @@ const int JOYSTICK_DEAD_ZONE = 8000;
 #define SPEED_BULLET_MAIN_TANK 9.0
 #define SPEED_ROCKET_MAIN_TANK 10.0
 
-static unsigned int DEFAULT_SPEED = 5;
+static unsigned int DEFAULT_SPEED = 6;
 
 #define TANK_1_FRAME 5
 
@@ -58,7 +58,7 @@ public:
     void set_bullet_style(const int& s) {bullet_style = s; }
     int get_bullet_style() const { return bullet_style; }
 
-    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND], string gNameBulletOfMainTank, string gNameRocket);
+    void handleInputAction(SDL_Event e, Mix_Chunk* bulletSound[NUMBER_OF_BULLET_SOUND],  const string& gNameBulletOfMainTank, const string& gNameRocket, const int& currentMethod);
     void handleMove();
 
     double getDegrees() const {return degrees; }
