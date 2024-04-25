@@ -52,4 +52,6 @@ void handle_stun(vector<Tools*>& a, vector<ThreatsObject*>& p_threats, bool& hav
 // DEFAULT
 void run_default_skill(TankObject& mainTank, bool& have_default, const Uint32& start, string &gNameBulletOfMainTank, string &gNameRocket);
 
+// DELETE ALL SKILLS
+void delete_all_skills(TankObject& mainTank);
 #endif

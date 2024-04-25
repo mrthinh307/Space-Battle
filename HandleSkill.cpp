@@ -1,10 +1,92 @@
 #include "HandleSkill.h"
 
 /* SHIELD */
-extern Mix_Chunk* haveShield;
-extern Mix_Chunk* breakShield;
+extern unsigned int currentGold;
+extern unsigned int currentHeart;
+extern unsigned int currentKilled;
+
+extern vector<Tools*> static_skills_a;
+extern vector<Tools*> static_skills_b;
+extern bool have_shield;
+extern Uint32 start_shield;
+
+extern bool have_magnet;
+extern Uint32 start_skill;
+
+extern vector<Tools*> teleport_a;
+extern vector<Tools*> teleport_b;
+extern bool have_tele;
+extern bool run_animation;
+extern Uint32 start_tele;
+
+extern bool have_4_bullet;
+extern Uint32 start_4_bullet;
+
+extern bool have_super_bullet;
+extern Uint32 start_super_bullet;
+
+extern bool have_bullet_spread;
+extern Uint32 start_bullet_spread;
+
+extern bool have_straight_beam;
+extern Uint32 start_straight_beam;
+
+extern bool have_trap;
+extern Uint32 start_trap;
+
+extern vector<Tools*> booster_a;
+extern vector<Tools*> booster_b;
+extern bool have_booster;
+extern Uint32 start_booster;
+
+extern vector<Tools*> stun_a;
+extern vector<Tools*> stun_b;
+extern bool have_stun;
+extern Uint32 start_stun;
 
 extern bool have_default;
+extern Uint32 start_default;
+
+extern vector<Tools*> gifts_list;
+
+void delete_all_skills(TankObject& mainTank){
+    for(int i = 0; i < static_skills_a.size(); i++) delete static_skills_a[i];
+    static_skills_a.clear();
+    have_shield = false;
+
+    for(int i = 0; i < gifts_list.size(); i++){
+        if(gifts_list[i] != NULL){
+            gifts_list[i]->set_magnet(false);               
+        }
+    }
+    have_magnet = false;
+
+    for(int i = 0; i < teleport_a.size(); i++) delete teleport_a[i];
+    teleport_a.clear();
+    run_animation = false;
+
+    for(int i = 0; i < booster_a.size(); i++) delete booster_a[i];
+    booster_a.clear();
+    mainTank.set_tank_speed(DEFAULT_SPEED);
+    have_booster = false;
+
+    for(int i = 0; i < stun_a.size(); i++) delete stun_a[i];
+    stun_a.clear();
+    have_stun = false;
+
+    have_default = false;
+
+    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
+    mainTank.setBulletType(TankObject::SPHERE1);
+    mainTank.setRocketType(TankObject::ROCKET);
+    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
+    mainTank.set_bullet_style(TankObject::NORMAL);
+    mainTank.setRocket(0);
+    mainTank.setDegrees(0);
+    mainTank.setPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    mainTank.removeAllBullets();
+
+}
 
 void init_shield_skill(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
     Tools* shield = new Tools();
@@ -56,11 +138,6 @@ void implement_magnet_skill(vector<Tools*>& gift_list, const TankObject& mainTan
 }
 
 /* TELEPORT */
-extern Mix_Chunk* haveTele;
-extern Mix_Chunk* finishTele;
-extern bool have_tele;
-extern bool run_animation;
-extern Uint32 start_tele;
 
 void init_teleport(vector<Tools*>& a, vector<Tools*>& b, object set_for_, const TankObject& mainTank, ThreatsObject* p_threat){
     Tools* tele = new Tools();

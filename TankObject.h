@@ -84,6 +84,8 @@ public:
     void runRocket();
     void removeRocket(const int& idx);
 
+    void removeAllBullets();
+
     void setRocket(const unsigned int& c) { currentRocket = c; }
     unsigned int getRocket() { return currentRocket; }
     

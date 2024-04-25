@@ -8,10 +8,41 @@
 #include "HandleSkill.h"
 #include "HandleGiftItem.h"
 #include "SoundEffects.h"
+#include "Menu.h"
 
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
+
+void quitSDL2(){
+    // Giải phóng các biến khác
+    SDL_DestroyRenderer(gRenderer);
+    SDL_DestroyWindow(gWindow);
+
+    if(gFont != NULL){
+        TTF_CloseFont(gFont);
+        gFont = NULL;
+    }
+
+    if(menuButton != NULL){
+        Mix_FreeChunk(menuButton);
+        menuButton = NULL;
+    }
+
+    if(buttonAction != NULL){
+        Mix_FreeChunk(buttonAction);
+        buttonAction = NULL;
+    }
+    if(menuMusic != NULL){
+        Mix_FreeMusic(menuMusic);
+        menuMusic = NULL;
+    }
+
+    IMG_Quit();
+    SDL_Quit();
+    Mix_Quit();
+    TTF_Quit();
+}
 
 SDL_Texture* SDLCommonFunc::loadImage( string path);
 
@@ -28,10 +59,6 @@ void SDLCommonFunc::render_for_sprite(SDL_Texture* mTexture, int x, int y, SDL_R
     //Render to screen
     SDL_RenderCopyEx( gRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
-
-void SDLCommonFunc::Clear();
-
-int SDLCommonFunc::showMenu();
 
 void blinkImage(SDL_Texture* texture, const SDL_Rect& position,const Uint32& timeStart, const bool& boss_alive, Mix_Chunk* sound);
 
@@ -69,88 +96,7 @@ int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
 
-    /* INIT TIME START GAME*/
-    string str_minute = "00 : ";
-
-    /* INIT SOUND EFFECTS */
-    bool checkLoadSoundEffect = SDLCommonFunc::loadSoundEffects();
-    if(!checkLoadSoundEffect) return 0;
-
-    /* CREATE BACKGROUND */
-    gBackground = SDLCommonFunc::loadImage(gNameBackground);
-    SDL_Rect bkg;
-    bkg.x = 0;
-    bkg.y = 0;
-    bkg.w = SCREEN_WIDTH;
-    bkg.h = SCREEN_HEIGHT;
-
-    SDL_Rect bkg1;
-    bkg1.x = 0;
-    bkg1.y = 0;
-    bkg1.w = SCREEN_WIDTH;
-    bkg1.h = SCREEN_HEIGHT;
-
-    //BaseObject layoutBox;
-    layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
-    layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
-    bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
-
-    //BaseObject heart;
-    heart.setPos(10, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
-    heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
-    bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");
-    //FontText heartNumber;
-    heartNumber.setColor(RED_COLOR);
-
-    //BaseObject killEnemy;
-    killEnemy.setPos(1320, 20);
-    killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
-    bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");
-    //FontText Killed;
-    Killed.setColor(CYAN_COLOR);
-    //BaseObject killIcon;
-    killIcon.setPos(1440, 28);
-    killIcon.setPos2(33, 28);
-    bool ret21 = killIcon.loadIMG("images/Backgrounds/killicon.png");
-
-    //BaseObject rocket;
-    rocket.setPos(90, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
-    rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
-    bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
-    //FontText rocketText;
-    rocketText.setColor(GREEN_COLOR);
-
-    gold.setPos(1320, 100);
-    gold.setPos2(50, 50);
-    bool ret4 = gold.loadIMG("images/Backgrounds/gold.png");
-    goldText.setColor(YELLOW_COLOR);
-    goldIcon.setPos(1440, 108);
-    goldIcon.setPos2(30, 34);
-    bool ret41 = goldIcon.loadIMG("images/Backgrounds/goldicon.png");
-
-    timer.setPos(10, 20);
-    timer.setPos2(50, 50);
-    bool ret51 = timer.loadIMG("images/Backgrounds/timer.png");
-    timeGame.setColor(WHITE_COLOR);
-
-    warningNoti.setPos((SCREEN_WIDTH - 1000) / 2, (SCREEN_HEIGHT - 177) / 2);
-    warningNoti.setPos2(1000, 177);
-    bool ret6 = warningNoti.loadIMG("images/Backgrounds/warningboss.png");
-
-
-    /* CREATE MAIN TANK - TANK OBJECT */
-    bool check = mainTank.loadIMG(gNameMainTank);
-    mainTank.Set_sprite_clips();
-
-    /* INIT EXPLODE OBJECT */
-    explode.setTexture();
-    explode1.setTexture();
-
-    /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
-    initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject, 0);
-    for(int i = 0; i < p_threats.size(); i++){
-        p_threats[i]->Set_sprite_clips_1();
-    }
+    loadMusicForMenu();
 
     /*-----------------------RUN GAME---------------------------*/
 
@@ -160,452 +106,609 @@ int main(int argc, char* args[]){
 
     Uint32 frameStart;
     int frameTime;
+    Uint32 timeStart;
 
     bool quit = false;
+    bool exit = false;
     SDL_Event e;
 
     bool rocketAdded = false;
 
     static bool boss_alive = false;
 
-    Uint32 lastEnemyAddedTime = SDL_GetTicks();
-    Uint32 lastBossAddedTime = SDL_GetTicks();
+    Uint32 lastEnemyAddedTime;
+    Uint32 lastBossAddedTime;
 
-    int MENU = SDLCommonFunc::showMenu();
-    if(MENU == 1) quit = true;
+    int NUMBER_OF_TURNS_PLAYED = 0;
 
-    Uint32 timeStart = SDL_GetTicks();
+    while(!exit){
 
-    while(!quit){
-        frameStart = SDL_GetTicks();
+        if(quit == true) quit = false;
 
-        static string current_time;
-
-        /* PLAY BATTLE MUSIC */
-        if(Mix_PlayingMusic() == 0){
-            Mix_PlayMusic(battleMusic, -1);
+        int MENU = SDLCommonFunc::showMenu(gRenderer);
+        if(MENU == 1){
+            quit = true;
+            exit = true;
+            clearThreats(p_threats, p_threats.size() -1, 0);
+            SDLCommonFunc::Clear();
+            quitSDL();
+            quitSDL2();
+            return 0;
         }
 
-        while(SDL_PollEvent(&e)){
-            if(e.type == SDL_QUIT){
-                quit = true;
-            }
-            mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank, gNameRocket, currentMethod);
+        if(MENU == 0 && NUMBER_OF_TURNS_PLAYED > 0) {
+            delete_all_skills(mainTank);  
+            clearThreats(p_threats, p_threats.size() -1, 0);
+            SDLCommonFunc::Clear();
+            quitSDL();
         }
 
-        /* HANDLE MOVE:  ĐỒNG TIỀN */
-        for(int i = 0; i < gifts_list.size(); i++){
-            gifts_list[i]->set_deg_for_item(mainTank.getPos(), i);
-            gifts_list[i]->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-        }
+        /* INIT SOUND EFFECTS */
+        bool checkLoadSoundEffect = SDLCommonFunc::loadSoundEffects();
+        if(!checkLoadSoundEffect) return 0;
 
-        /* CLEAR SCREEN */
-        SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
-        SDL_RenderClear( gRenderer );
+        /* INIT TIME START GAME*/
+        string str_minute = "00 : ";
+
+        /* CREATE BACKGROUND */
+        gBackground = SDLCommonFunc::loadImage(gNameBackground);
+        SDL_Rect bkg;
+        bkg.x = 0;
+        bkg.y = 0;
+        bkg.w = SCREEN_WIDTH;
+        bkg.h = SCREEN_HEIGHT;
+
+        SDL_Rect bkg1;
+        bkg1.x = 0;
+        bkg1.y = 0;
+        bkg1.w = SCREEN_WIDTH;
+        bkg1.h = SCREEN_HEIGHT;
+
+        //BaseObject layoutBox;
+        layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
+        layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
+        bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
+
+        //BaseObject heart;
+        heart.setPos(10, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
+        heart.setPos2(HEART_WIDTH, HEART_HEIGHT);
+        bool ret1 = heart.loadIMG("images/Backgrounds/heart.png");
+        //FontText heartNumber;
+        heartNumber.setColor(RED_COLOR);
+
+        //BaseObject killEnemy;
+        killEnemy.setPos(1320, 20);
+        killEnemy.setPos2(KILL_ENEMY_WIDTH, KILL_ENEMY_HEIGHT);
+        bool ret2 = killEnemy.loadIMG("images/Backgrounds/killenemy.png");
+        //FontText Killed;
+        Killed.setColor(CYAN_COLOR);
+        //BaseObject killIcon;
+        killIcon.setPos(1440, 28);
+        killIcon.setPos2(33, 28);
+        bool ret21 = killIcon.loadIMG("images/Backgrounds/killicon.png");
+
+        //BaseObject rocket;
+        rocket.setPos(90, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 80);
+        rocket.setPos2(HEART_WIDTH, HEART_HEIGHT);
+        bool ret3 = rocket.loadIMG("images/Backgrounds/rocket.png");
+        //FontText rocketText;
+        rocketText.setColor(GREEN_COLOR);
+
+        gold.setPos(1320, 100);
+        gold.setPos2(50, 50);
+        bool ret4 = gold.loadIMG("images/Backgrounds/gold.png");
+        goldText.setColor(YELLOW_COLOR);
+        goldIcon.setPos(1440, 108);
+        goldIcon.setPos2(30, 34);
+        bool ret41 = goldIcon.loadIMG("images/Backgrounds/goldicon.png");
+
+        timer.setPos(10, 20);
+        timer.setPos2(50, 50);
+        bool ret51 = timer.loadIMG("images/Backgrounds/timer.png");
+        timeGame.setColor(WHITE_COLOR);
+
+        warningNoti.setPos((SCREEN_WIDTH - 1000) / 2, (SCREEN_HEIGHT - 177) / 2);
+        warningNoti.setPos2(1000, 177);
+        bool ret6 = warningNoti.loadIMG("images/Backgrounds/warningboss.png");
 
 
-        /* LOAD BACKGROUND */
-        static int idx1 = 0;
-        bkg.x -= 1;
-        bkg1.x = bkg.x + SCREEN_WIDTH;
-        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
-        SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
-        if(bkg.x < -SCREEN_WIDTH){
-            bkg.x = 0;
-        }
+        /* CREATE MAIN TANK - TANK OBJECT */
+        bool check = mainTank.loadIMG(gNameMainTank);
+        mainTank.Set_sprite_clips();
 
-        layoutBox.renderCopy(layoutBox.getPos());
-        heart.renderCopy(heart.getPos());
-        killEnemy.renderCopy(killEnemy.getPos());
-        killIcon.renderCopy(killIcon.getPos());
-        rocket.renderCopy(rocket.getPos());
-        gold.renderCopy(gold.getPos());
-        goldIcon.renderCopy(goldIcon.getPos());
-        timer.renderCopy(timer.getPos());
+        /* INIT EXPLODE OBJECT */
+        explode.setTexture();
+        explode1.setTexture();
 
-        /* LOAD TANK OBJECT */
-        SDL_Rect posTank = mainTank.getPos();
-        double flipTank = mainTank.getDegrees();
-        SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
-        mainTank.runMainTank();
-        mainTank.handleMove();
-        // Run bullets of tank object
-        mainTank.runRocket();
-        if(mainTank.get_bullet_style() == TankObject::NORMAL)
-            mainTank.runBullet();
-        else if(mainTank.get_bullet_style() == TankObject::FOUR_DIRECTIONS_BULLET)
-            mainTank.run_four_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
-        else if(mainTank.get_bullet_style() == TankObject::SUPER_BULLET)
-            mainTank.run_super_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
-        else if(mainTank.get_bullet_style() == TankObject::BULLET_SPREAD)
-            mainTank.run_bullet_spread(SCREEN_WIDTH, SCREEN_HEIGHT);
-        else if(mainTank.get_bullet_style() == TankObject::STRAIGHT_BEAM)
-            mainTank.run_straight_beam(SCREEN_WIDTH, SCREEN_HEIGHT);
-        else if(mainTank.get_bullet_style() == TankObject::TRAP)
-            mainTank.run_trap(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        /* RUN BOSS LEVEL 1*/
-        static int idx_Boss_1 = -1;
-        if(boss_alive == false && SDL_GetTicks() - lastBossAddedTime >= TIME_TO_RESET_BOSS){
-            boss_alive = true;
-            initializeThreats(p_threats, 1, gNameBoss1, 1);
-            idx_Boss_1 = p_threats.size() - 1;
-            p_threats[idx_Boss_1]->Set_sprite_clips();
-            p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
-            p_threats[idx_Boss_1]->set_heal_bar();
-            p_threats[idx_Boss_1]->set_heal_bar_texture(SDLCommonFunc::loadImage("images/ThreatsObject/heal_bar.png"));
-            battle_music = false;
-            // Pause music
-            if(Mix_PlayingMusic() != 0){
-                Mix_PauseMusic();
-            }
-            if(bossBattle != NULL){
-                Mix_PlayMusic(bossBattle, -1);
-            }
-        }
-
-        if(SDL_GetTicks() - lastEnemyAddedTime >= TIME_TO_ADD_ENEMY && boss_alive == false){
-            initializeThreats(p_threats, 1, gNameThreatsObject, 0);
-            for(int i = p_threats.size() - 1; i >= p_threats.size() - 1; i--){
-                p_threats[i]->Set_sprite_clips_1();
-            }
-            lastEnemyAddedTime = SDL_GetTicks();
-        }
-
-        /* IMPLEMENT THREATS OBJECT & HANDLE EXPLODE */
+        /* INIT THREATS OBJECT + BULLET OF THREATS OBJECT */
+        initializeThreats(p_threats, NUM_THREATS, gNameThreatsObject, 0);
         for(int i = 0; i < p_threats.size(); i++){
-            ThreatsObject* p_threat = p_threats.at(i);
-            if(p_threat != NULL){
-                SDL_Rect posThreat = p_threat->getPos();
-                p_threat->setDegrees(mainTank.getPos(), i);
-                double degThreat = p_threat->getDegrees();
+            p_threats[i]->Set_sprite_clips_1();
+        }
+ 
+        gNameBulletOfMainTank = nameBulletTank1[0];
+        gNameRocket = nameRocket[0];
 
-                if(i == idx_Boss_1){
-                    p_threat->runBoss();
-                    explode1.setPos2(480, 480);
-                    p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
-                    cur_enemy = BOSS;
+        timeStart = SDL_GetTicks();
+
+        currentGold = 0;
+        currentHeart = 3;
+        currentKilled = 0;
+
+        lastEnemyAddedTime = SDL_GetTicks();
+        lastBossAddedTime = SDL_GetTicks();  
+
+        while(!quit){
+
+            NUMBER_OF_TURNS_PLAYED++;
+
+            frameStart = SDL_GetTicks();
+
+            static string current_time;
+
+            /* PLAY BATTLE MUSIC */
+            if(Mix_PlayingMusic() == 0){
+                Mix_PlayMusic(battleMusic, -1);
+            }
+
+            while(SDL_PollEvent(&e)){
+                if(e.type == SDL_QUIT){
+                    quit = true;
+                    exit = true;
                 }
-                else{
-                    p_threat->runThreats();
-                    p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
-                    cur_enemy = MINI_THREATS;
-                }
-
-                if(have_stun){
-                    handle_stun(stun_a, p_threats, have_stun, start_stun);
-                }
-                else{
-                    p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
-                }
-
-                /* ------------------CHECK COLLISION-------------------*/   
-
-                /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
-                vector<BulletObject*> bull_list = mainTank.getBulletList();
-                for(int j = 0; j < bull_list.size(); j++){
-                    BulletObject* aBullet = bull_list.at(j);
-                    if(aBullet != NULL){
-                        bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
-                        int x, y;
-                        if(checkColl ){
-                            unsigned int currentRocket = mainTank.getRocket();
-                            int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
-                            int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
-                            explode1.setPos(x_pos, y_pos);
-
-                            if(p_threat->get_heal_bar_texture() == NULL){
-
-                                currentKilled++;
-                                
-                                if(currentKilled != 0 && currentKilled % 5 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
-
-                                push_back_gift_item(p_threat);
-
-                                //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
-                                for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                    explode1.setFrame(ex);
-                                    explode1.renderCopy2();
+                else if(e.type == SDL_KEYDOWN){
+                    switch (e.key.keysym.sym)
+                    {
+                        case SDLK_ESCAPE:
+                        {
+                            Mix_HaltChannel(-1);
+                            Mix_HaltMusic();
+                            switch(SDLCommonFunc::handleSettingMenu(gRenderer)){
+                                case 0:
+                                {
+                                    quit = true; 
+                                    SDLCommonFunc::Clear();
                                 }
-                                Mix_PlayChannel(-1,gExpSound[0], 0);
-                                p_threat->resetThreat();
+                                    break;
+                                case 1:
+                                {
+                                    //RESUME GAME
+                                }
+                                    break;
+                                case 2:
+                                {
+                                    quit = true;
+                                    exit = true;
+                                }
+                                    break;
                             }
-                            else{
-                                p_threat->set_num_blood(p_threat->get_num_blood() + 1);
-                                if(p_threat->get_num_blood() == 15){
-                                    boss_alive = false;
+                            Mix_ResumeMusic();
+                            Mix_Resume(-1);                            
+                        }
+                            break;
+                    }
+                }
+                mainTank.handleInputAction(e, gBulletSound, gNameBulletOfMainTank, gNameRocket, currentMethod);
+            }
+
+            /* HANDLE MOVE:  ĐỒNG TIỀN */
+            for(int i = 0; i < gifts_list.size(); i++){
+                gifts_list[i]->set_deg_for_item(mainTank.getPos(), i);
+                gifts_list[i]->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+            }
+
+            /* CLEAR SCREEN */
+            SDL_SetRenderDrawColor( gRenderer, 255, 255, 255, 255);
+            SDL_RenderClear( gRenderer );
+
+
+            /* LOAD BACKGROUND */
+            static int idx1 = 0;
+            bkg.x -= 1;
+            bkg1.x = bkg.x + SCREEN_WIDTH;
+            SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg);
+            SDL_RenderCopy(gRenderer, gBackground, NULL, &bkg1);
+            if(bkg.x < -SCREEN_WIDTH){
+                bkg.x = 0;
+            }
+
+            layoutBox.renderCopy(layoutBox.getPos());
+            heart.renderCopy(heart.getPos());
+            killEnemy.renderCopy(killEnemy.getPos());
+            killIcon.renderCopy(killIcon.getPos());
+            rocket.renderCopy(rocket.getPos());
+            gold.renderCopy(gold.getPos());
+            goldIcon.renderCopy(goldIcon.getPos());
+            timer.renderCopy(timer.getPos());
+
+            /* LOAD TANK OBJECT */
+            SDL_Rect posTank = mainTank.getPos();
+            double flipTank = mainTank.getDegrees();
+            SDL_RendererFlip typeFlipOfTank = mainTank.getFlipType();
+            mainTank.runMainTank();
+            mainTank.handleMove();
+            // Run bullets of tank object
+            mainTank.runRocket();
+            if(mainTank.get_bullet_style() == TankObject::NORMAL)
+                mainTank.runBullet();
+            else if(mainTank.get_bullet_style() == TankObject::FOUR_DIRECTIONS_BULLET)
+                mainTank.run_four_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+            else if(mainTank.get_bullet_style() == TankObject::SUPER_BULLET)
+                mainTank.run_super_bullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+            else if(mainTank.get_bullet_style() == TankObject::BULLET_SPREAD)
+                mainTank.run_bullet_spread(SCREEN_WIDTH, SCREEN_HEIGHT);
+            else if(mainTank.get_bullet_style() == TankObject::STRAIGHT_BEAM)
+                mainTank.run_straight_beam(SCREEN_WIDTH, SCREEN_HEIGHT);
+            else if(mainTank.get_bullet_style() == TankObject::TRAP)
+                mainTank.run_trap(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+            /* RUN BOSS LEVEL 1*/
+            static int idx_Boss_1 = -1;
+            if(boss_alive == false && SDL_GetTicks() - lastBossAddedTime >= TIME_TO_RESET_BOSS){
+                boss_alive = true;
+                initializeThreats(p_threats, 1, gNameBoss1, 1);
+                idx_Boss_1 = p_threats.size() - 1;
+                p_threats[idx_Boss_1]->Set_sprite_clips();
+                p_threats[idx_Boss_1]->setPos2(BOSS_WIDTH, BOSS_HEIGHT);
+                p_threats[idx_Boss_1]->set_heal_bar();
+                p_threats[idx_Boss_1]->set_heal_bar_texture(SDLCommonFunc::loadImage("images/ThreatsObject/heal_bar.png"));
+                battle_music = false;
+                // Pause music
+                if(Mix_PlayingMusic() != 0){
+                    Mix_PauseMusic();
+                }
+                if(bossBattle != NULL){
+                    Mix_PlayMusic(bossBattle, -1);
+                }
+                lastBossAddedTime = SDL_GetTicks();
+            }
+
+            if(SDL_GetTicks() - lastEnemyAddedTime >= TIME_TO_ADD_ENEMY && boss_alive == false){
+                initializeThreats(p_threats, 1, gNameThreatsObject, 0);
+                for(int i = p_threats.size() - 1; i >= p_threats.size() - 1; i--){
+                    p_threats[i]->Set_sprite_clips_1();
+                }
+                lastEnemyAddedTime = SDL_GetTicks();
+            }
+
+            /* IMPLEMENT THREATS OBJECT & HANDLE EXPLODE */
+            for(int i = 0; i < p_threats.size(); i++){
+                ThreatsObject* p_threat = p_threats.at(i);
+                if(p_threat != NULL){
+                    SDL_Rect posThreat = p_threat->getPos();
+                    p_threat->setDegrees(mainTank.getPos(), i);
+                    double degThreat = p_threat->getDegrees();
+
+                    if(i == idx_Boss_1){
+                        p_threat->runBoss();
+                        explode1.setPos2(480, 480);
+                        p_threat->run_bullet_boss(SCREEN_WIDTH, SCREEN_HEIGHT);
+                        cur_enemy = BOSS;
+                    }
+                    else{
+                        p_threat->runThreats();
+                        p_threat->runBullet(SCREEN_WIDTH, SCREEN_HEIGHT);
+                        cur_enemy = MINI_THREATS;
+                    }
+
+                    if(have_stun){
+                        handle_stun(stun_a, p_threats, have_stun, start_stun);
+                    }
+                    else{
+                        p_threat->handleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+                    }
+
+                    /* ------------------CHECK COLLISION-------------------*/   
+
+                    /* CHECK COLLISON: BULLET OF TANK OBJECT -> THREAT OBJECT */
+                    vector<BulletObject*> bull_list = mainTank.getBulletList();
+                    for(int j = 0; j < bull_list.size(); j++){
+                        BulletObject* aBullet = bull_list.at(j);
+                        if(aBullet != NULL){
+                            bool checkColl = SDLCommonFunc::CheckCollision(aBullet->getPos(), p_threat->getPos(), 0);
+                            int x, y;
+                            if(checkColl ){
+                                unsigned int currentRocket = mainTank.getRocket();
+                                int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                                int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                                explode1.setPos(x_pos, y_pos);
+
+                                if(p_threat->get_heal_bar_texture() == NULL){
+
                                     currentKilled++;
+                                    
+                                    if(currentKilled != 0 && currentKilled % 5 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
+
+                                    push_back_gift_item(p_threat);
+
+                                    //Handle EXPLOSION between BULLET OF TANK OBJECT -> THREAT OBJECT
                                     for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                         explode1.setFrame(ex);
                                         explode1.renderCopy2();
                                     }
-                                    mainTank.setRocket(++currentRocket);
-                                    Mix_PlayChannel(-1, bossDie, 0);
-                                    clearThreats(p_threats, idx_Boss_1, idx_Boss_1);
+                                    Mix_PlayChannel(-1,gExpSound[0], 0);
+                                    p_threat->resetThreat();
                                 }
-                            }
-                            mainTank.removeBullet(j);
-
-                        }
-                    }
-                }
-
-                if(currentKilled % 5 != 0) rocketAdded = false;
-
-                /* CHECK COLLISON: ROCKET OF TANK OBJECT -> THREAT OBJECT */
-                vector<BulletObject*> rocket_list = mainTank.getRocketList();
-                for(int r = 0; r < rocket_list.size(); r++){
-                    BulletObject* aRocket = rocket_list.at(r);
-                    if(aRocket != NULL){
-                        int x, y;
-                        bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
-                        if(checkColl){
-                            unsigned int currentRocket = mainTank.getRocket();
-                            int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
-                            int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
-                            explode1.setPos(x_pos, y_pos);
-
-                            if(p_threat->get_heal_bar_texture() == NULL){
-
-                                currentKilled++;
-                                
-                                if(currentKilled != 0 && currentKilled % 5 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
-
-                                push_back_gift_item(p_threat);
-
-                                //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
-                                for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                    explode1.setFrame(ex);
-                                    explode1.renderCopy2();
-                                }
-                                Mix_PlayChannel(-1,gExpSound[0], 0);
-                                p_threat->resetThreat();
-                            }
-                            else{
-                                p_threat->set_num_blood(p_threat->get_num_blood() + 2);
-                                if((p_threat->get_num_blood() == 15 || p_threat->get_num_blood() == 16)){
-                                    boss_alive = false;
-                                    currentKilled++;
-                                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                        explode1.setFrame(ex);
-                                        explode1.renderCopy2();
+                                else{
+                                    p_threat->set_num_blood(p_threat->get_num_blood() + 1);
+                                    if(p_threat->get_num_blood() == 15){
+                                        boss_alive = false;
+                                        currentKilled++;
+                                        for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                            explode1.setFrame(ex);
+                                            explode1.renderCopy2();
+                                        }
+                                        mainTank.setRocket(++currentRocket);
+                                        Mix_PlayChannel(-1, bossDie, 0);
+                                        clearThreats(p_threats, idx_Boss_1, idx_Boss_1);
+                                        lastEnemyAddedTime = SDL_GetTicks();
                                     }
-                                    mainTank.setRocket(++currentRocket);
-                                    Mix_PlayChannel(-1, bossDie, 0);
-                                    clearThreats(p_threats, idx_Boss_1, idx_Boss_1);
                                 }
-                                mainTank.removeRocket(r);
+                                mainTank.removeBullet(j);
+
                             }
                         }
                     }
-                }
 
-                // RUN SHIELD
-                handle_shield_skill(static_skills_a, mainTank, have_shield, start_shield);
+                    if(currentKilled % 5 != 0) rocketAdded = false;
 
-                if(!have_shield){
-                    /* CHECK COLLISON: TANK OBEJCT -> THREATS OBJECT */
-                    if(!have_shield){
-                        bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
-                        if(isCol){
-                            //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
-                            int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
-                            int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
-                            explode.setPos(x_pos, y_pos);
-
-                            int x1_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
-                            int y1_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
-                            explode1.setPos(x1_pos, y1_pos);
-
-                            for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                explode.setFrame(ex);
-                                explode1.setFrame(ex);
-
-                                explode.renderCopy2();
-                                explode1.renderCopy2();
-                                SDL_RenderPresent(gRenderer);
-                            }
-
-                            // Play sound effect of event
-                            Mix_PlayChannel(-1, gExpSound[1], 0);
-                            Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
-
-                            p_threat->resetThreat();
-
-                            SDL_GameControllerRumble(gController, 32767, 32767, 500);
-
-                            currentHeart -= 1;
-                            gNameBulletOfMainTank = nameBulletTank1[0];
-                            mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
-                            mainTank.setBulletType(TankObject::SPHERE1);
-                            mainTank.setRocketType(TankObject::ROCKET);
-                            mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
-                            mainTank.set_bullet_style(TankObject::NORMAL); 
-                            gNameRocket = nameRocket[0];
-                        }                    
-                    }
-
-                    /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
-                    vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
-                    for(int k = 0; k < bull_listThreats.size(); k++){
-                        BulletObject* aBulletOfThreat = bull_listThreats.at(k);
-
-                        if(static_skills_a.size() !=0) continue;
-
-                        if(aBulletOfThreat != NULL){
-                            bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 10);
+                    /* CHECK COLLISON: ROCKET OF TANK OBJECT -> THREAT OBJECT */
+                    vector<BulletObject*> rocket_list = mainTank.getRocketList();
+                    for(int r = 0; r < rocket_list.size(); r++){
+                        BulletObject* aRocket = rocket_list.at(r);
+                        if(aRocket != NULL){
+                            int x, y;
+                            bool checkColl = SDLCommonFunc::CheckCollision(aRocket->getPos(), p_threat->getPos(), 0);
                             if(checkColl){
-                                //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
-                                for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
-                                    int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
-                                    int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
-                                    explode.setPos(x_pos, y_pos);
+                                unsigned int currentRocket = mainTank.getRocket();
+                                int x_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                                int y_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                                explode1.setPos(x_pos, y_pos);
 
+                                if(p_threat->get_heal_bar_texture() == NULL){
+
+                                    currentKilled++;
+                                    
+                                    if(currentKilled != 0 && currentKilled % 5 == 0 && !rocketAdded) mainTank.setRocket(++currentRocket);
+
+                                    push_back_gift_item(p_threat);
+
+                                    //Handle EXPLOSION between ROCKET OF TANK OBJECT -> THREAT OBJECT
+                                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                        explode1.setFrame(ex);
+                                        explode1.renderCopy2();
+                                    }
+                                    Mix_PlayChannel(-1,gExpSound[0], 0);
+                                    p_threat->resetThreat();
+                                }
+                                else{
+                                    p_threat->set_num_blood(p_threat->get_num_blood() + 2);
+                                    if((p_threat->get_num_blood() == 15 || p_threat->get_num_blood() == 16)){
+                                        boss_alive = false;
+                                        currentKilled++;
+                                        for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                            explode1.setFrame(ex);
+                                            explode1.renderCopy2();
+                                        }
+                                        mainTank.setRocket(++currentRocket);
+                                        Mix_PlayChannel(-1, bossDie, 0);
+                                        clearThreats(p_threats, idx_Boss_1, idx_Boss_1);
+                                        lastEnemyAddedTime = SDL_GetTicks();
+                                    }
+                                    mainTank.removeRocket(r);
+                                }
+                            }
+                        }
+                    }
+
+                    // RUN SHIELD
+                    handle_shield_skill(static_skills_a, mainTank, have_shield, start_shield);
+
+                    if(!have_shield){
+                        /* CHECK COLLISON: TANK OBEJCT -> THREATS OBJECT */
+                        if(!have_shield){
+                            bool isCol = SDLCommonFunc::CheckCollision(mainTank.getPos(), p_threat->getPos(), 0);
+                            if(isCol){
+                                //Handle EXPLOSION between TANK OBJECT -> THREAT OBJECT
+                                int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                                int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
+                                explode.setPos(x_pos, y_pos);
+
+                                int x1_pos = p_threat->getPos().x + p_threat->getPos().w / 2 - explode1.getPos().w / 2;
+                                int y1_pos = p_threat->getPos().y + p_threat->getPos().h / 2 - explode1.getPos().h / 2;
+                                explode1.setPos(x1_pos, y1_pos);
+
+                                for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
                                     explode.setFrame(ex);
+                                    explode1.setFrame(ex);
 
                                     explode.renderCopy2();
-
+                                    explode1.renderCopy2();
                                     SDL_RenderPresent(gRenderer);
                                 }
-                                SDL_GameControllerRumble(gController, 32767, 32767, 500);
-                                Mix_PlayChannel(-1, gExpSound[1], 0);
 
-                                p_threat->removeBullet(k);
-                                currentHeart -= 1;   
-                                
+                                // Play sound effect of event
+                                Mix_PlayChannel(-1, gExpSound[1], 0);
+                                Mix_PlayChannel(-1, (i != idx_Boss_1) ? gExpSound[0] : bossDie, 0);
+
+                                p_threat->resetThreat();
+
+                                SDL_GameControllerRumble(gController, 32767, 32767, 500);
+
+                                currentHeart -= 1;
                                 gNameBulletOfMainTank = nameBulletTank1[0];
                                 mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
                                 mainTank.setBulletType(TankObject::SPHERE1);
                                 mainTank.setRocketType(TankObject::ROCKET);
                                 mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
                                 mainTank.set_bullet_style(TankObject::NORMAL); 
-                                gNameRocket = nameRocket[0];                                                
-                            }
+                                gNameRocket = nameRocket[0];
+                            }                    
                         }
-                    }                
+
+                        /* CHECK COLLISON: TANK OBJECT -> BULLET OF THREAT OBJECT */
+                        vector<BulletObject*> bull_listThreats = p_threat->getBulletList();
+                        for(int k = 0; k < bull_listThreats.size(); k++){
+                            BulletObject* aBulletOfThreat = bull_listThreats.at(k);
+
+                            if(static_skills_a.size() !=0) continue;
+
+                            if(aBulletOfThreat != NULL){
+                                bool checkColl = SDLCommonFunc::CheckCollision(aBulletOfThreat->getPos(), mainTank.getPos(), 10);
+                                if(checkColl){
+                                    //Handle EXPLOSION between TANK OBJECT -> BULLET OF THREAT
+                                    for(int ex = 0; ex < EXPLODE_ANIMATION_FRAMES; ex++){
+                                        int x_pos = mainTank.getPos().x + WIDTH_TANK_OBJECT / 2 - explode.getPos().w / 2;
+                                        int y_pos = mainTank.getPos().y + HEIGHT_TANK_OBJECT / 2 - explode.getPos().h / 2;
+                                        explode.setPos(x_pos, y_pos);
+
+                                        explode.setFrame(ex);
+
+                                        explode.renderCopy2();
+
+                                        SDL_RenderPresent(gRenderer);
+                                    }
+                                    SDL_GameControllerRumble(gController, 32767, 32767, 500);
+                                    Mix_PlayChannel(-1, gExpSound[1], 0);
+
+                                    p_threat->removeBullet(k);
+                                    currentHeart -= 1;   
+                                    
+                                    gNameBulletOfMainTank = nameBulletTank1[0];
+                                    mainTank.set_speed_bullet(SPEED_BULLET_MAIN_TANK);
+                                    mainTank.setBulletType(TankObject::SPHERE1);
+                                    mainTank.setRocketType(TankObject::ROCKET);
+                                    mainTank.set_speed_rocket(SPEED_ROCKET_MAIN_TANK);
+                                    mainTank.set_bullet_style(TankObject::NORMAL); 
+                                    gNameRocket = nameRocket[0];                                                
+                                }
+                            }
+                        }                
+                    }
+
+                    /* RUN + HANDLE GOLD */
+                    run_gift_item(gifts_list,mainTank, p_threat, p_threats, currentGold, gNameBulletOfMainTank, gNameRocket);
                 }
+                explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
 
-                /* RUN + HANDLE GOLD */
-                run_gift_item(gifts_list,mainTank, p_threat, p_threats, currentGold, gNameBulletOfMainTank, gNameRocket);
-            }
-            explode1.setPos2(EXP_WIDTH, EXP_HEIGHT);
-
-            if(currentHeart == 0){
-                Mix_PauseMusic();
-                SDL_GameControllerRumble(gController, 0, 0, 0);
-                SDL_GameControllerRumble(gController, 32767, 32767, 1000);
-                Mix_PlayChannel(-1, gameOver, 0);
-                if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
-                    clearThreats(p_threats, p_threats.size() - 1, 0);
-                    SDLCommonFunc::Clear();
-                    quitSDL();
-                    return 0;
+                if(currentHeart == 0){
+                    Mix_PauseMusic();
+                    SDL_GameControllerRumble(gController, 0, 0, 0);
+                    SDL_GameControllerRumble(gController, 32767, 32767, 1000);
+                    Mix_PlayChannel(-1, gameOver, 0);
+                    if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+                        clearThreats(p_threats, p_threats.size() - 1, 0);
+                        SDLCommonFunc::Clear();
+                        quitSDL();
+                        quitSDL2();
+                        return 0;
+                    }
                 }
             }
-        }
 
-        // RUN PREVENT SKILL
-        implement_magnet_skill(gifts_list, mainTank, have_magnet, start_skill);
-        // RUN TELEPORT SKILL
-        run_teleport_for_player(teleport_a, mainTank, have_tele);
-        run_animation_for_teleport(teleport_a, mainTank, run_animation);
-        // RUN 4 BULLET
-        set_time_for_4_bullet(mainTank, have_4_bullet, start_4_bullet);
-        // RUN SUPER BULLET
-        set_time_for_super_bullet(mainTank, have_super_bullet, start_super_bullet);
-        // RUN BULLET SPREAD
-        set_time_for_bullet_spread(mainTank, have_bullet_spread, start_bullet_spread);
-        // RUN STRAIGHT BREAM
-        set_time_for_straight_beam(mainTank, have_straight_beam, start_straight_beam);
-        // RUN TRAP BULLET
-        set_time_for_trap(mainTank, have_trap, start_trap);
-        // RUN BOOSTER
-        handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
-        // RUN DEFAULT
-        run_default_skill(mainTank, have_default, start_default, gNameBulletOfMainTank, gNameRocket);
+            // RUN PREVENT SKILL
+            implement_magnet_skill(gifts_list, mainTank, have_magnet, start_skill);
+            // RUN TELEPORT SKILL
+            run_teleport_for_player(teleport_a, mainTank, have_tele);
+            run_animation_for_teleport(teleport_a, mainTank, run_animation);
+            // RUN 4 BULLET
+            set_time_for_4_bullet(mainTank, have_4_bullet, start_4_bullet);
+            // RUN SUPER BULLET
+            set_time_for_super_bullet(mainTank, have_super_bullet, start_super_bullet);
+            // RUN BULLET SPREAD
+            set_time_for_bullet_spread(mainTank, have_bullet_spread, start_bullet_spread);
+            // RUN STRAIGHT BREAM
+            set_time_for_straight_beam(mainTank, have_straight_beam, start_straight_beam);
+            // RUN TRAP BULLET
+            set_time_for_trap(mainTank, have_trap, start_trap);
+            // RUN BOOSTER
+            handle_booster_skill(booster_a, mainTank, have_booster, start_booster);
+            // RUN DEFAULT
+            run_default_skill(mainTank, have_default, start_default, gNameBulletOfMainTank, gNameRocket);
 
-        // Resume music when get over Turn boss 
-        if(boss_alive == false && battle_music == false){
-            if(Mix_PlayingMusic() != 0){
-                Mix_PauseMusic();
+            // Resume music when get over Turn boss 
+            if(boss_alive == false && battle_music == false){
+                if(Mix_PlayingMusic() != 0){
+                    Mix_PauseMusic();
+                }
+                if(battleMusic != NULL) Mix_PlayMusic(battleMusic, -1);
+                battle_music = true;
             }
-            if(battleMusic != NULL) Mix_PlayMusic(battleMusic, -1);
-            battle_music = true;
-        }
 
-        /* HANDLE TIME*/
-        static int minute = 0;
-        Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000;
-        static Uint32 lastTimeValue = 0;
+            /* HANDLE TIME*/
+            static int minute = 0;
+            Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000;
+            static Uint32 lastTimeValue = 0;
 
-        if(timeValue % 60 == 0 && lastTimeValue % 60 == 59){
-            minute++;
-        }
+            if(timeValue % 60 == 0 && lastTimeValue % 60 == 59){
+                minute++;
+            }
 
-        lastTimeValue = timeValue;
+            lastTimeValue = timeValue;
 
-        if(minute < 10) str_minute = "0" + to_string(minute) + " : ";
-        else str_minute = to_string(minute) + " : ";
+            if(minute < 10) str_minute = "0" + to_string(minute) + " : ";
+            else str_minute = to_string(minute) + " : ";
 
-        string secondString = to_string(timeValue % 60);
-        if (secondString.length() < 2) {
-            secondString = "0" + secondString;
-        }
+            string secondString = to_string(timeValue % 60);
+            if (secondString.length() < 2) {
+                secondString = "0" + secondString;
+            }
 
-        current_time = str_minute + secondString;
+            current_time = str_minute + secondString;
 
-        /* WARNING BOSS */
-        blinkImage(warningNoti.getTexture(), warningNoti.getPos(), timeStart, boss_alive, warningBoss);
+            /* WARNING BOSS */
+            blinkImage(warningNoti.getTexture(), warningNoti.getPos(), timeStart, boss_alive, warningBoss);
 
-        timeGame.setText(current_time);
-        timeGame.setPos(75, 25);
-        timeGame.setPos2(60, 45);
-        timeGame.free();
-        timeGame.createGameText(gFont);
+            timeGame.setText(current_time);
+            timeGame.setPos(75, 25);
+            timeGame.setPos2(60, 45);
+            timeGame.free();
+            timeGame.createGameText(gFont);
 
 
-        string heartToString = to_string(currentHeart);
-        heartNumber.setText(heartToString);
-        heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT + 3);
-        heartNumber.setPos2(20, 20);
-        heartNumber.free();
-        heartNumber.createGameText(gFont);
+            string heartToString = to_string(currentHeart);
+            heartNumber.setText(heartToString);
+            heartNumber.setPos(45, SCREEN_HEIGHT - HEART_HEIGHT + 3);
+            heartNumber.setPos2(20, 20);
+            heartNumber.free();
+            heartNumber.createGameText(gFont);
 
-        string killedToString = to_string(currentKilled);
-        Killed.setText(killedToString);
-        Killed.setPos(1390, 25);
-        Killed.setPos2(40, 40);
-        Killed.free();
-        Killed.createGameText(gFont);
+            string killedToString = to_string(currentKilled);
+            Killed.setText(killedToString);
+            Killed.setPos(1390, 25);
+            Killed.setPos2(40, 40);
+            Killed.free();
+            Killed.createGameText(gFont);
 
-        string rocketToString = to_string(mainTank.getRocket());
-        rocketText.setText(rocketToString);
-        rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT + 3);
-        rocketText.setPos2(20, 20);
-        rocketText.free();
-        rocketText.createGameText(gFont);
+            string rocketToString = to_string(mainTank.getRocket());
+            rocketText.setText(rocketToString);
+            rocketText.setPos(123, SCREEN_HEIGHT - HEART_HEIGHT + 3);
+            rocketText.setPos2(20, 20);
+            rocketText.free();
+            rocketText.createGameText(gFont);
 
-        string goldToString = to_string(currentGold);
-        goldText.setText(goldToString);
-        goldText.setPos(1390, 105);
-        goldText.setPos2(40, 40);
-        goldText.free();
-        goldText.createGameText(gFont);
+            string goldToString = to_string(currentGold);
+            goldText.setText(goldToString);
+            goldText.setPos(1390, 105);
+            goldText.setPos2(40, 40);
+            goldText.free();
+            goldText.createGameText(gFont);
 
-        SDL_RenderPresent(gRenderer);
+            SDL_RenderPresent(gRenderer);
 
-        // SET FPS
-        frameTime = SDL_GetTicks() - frameStart;
-        if(frameDelay > frameTime){
-            SDL_Delay(frameDelay - frameTime);
+            // SET FPS
+            frameTime = SDL_GetTicks() - frameStart;
+            if(frameDelay > frameTime){
+                SDL_Delay(frameDelay - frameTime);
+            }
         }
     }
 
     // CLEAR THREAT TEXTURE
     clearThreats(p_threats, p_threats.size() -1, 0);
-
     SDLCommonFunc::Clear();
     quitSDL();
+    quitSDL2();
     return 0;
 }
 
@@ -690,6 +793,12 @@ void initSDL(){
 }
 
 void quitSDL(){
+
+    //Free loaded image
+    if(gBackground != NULL)
+        SDL_DestroyTexture( gBackground );
+    gBackground = NULL;
+
     mainTank.free();
 
     // Giải phóng biến Killed
@@ -784,19 +893,6 @@ void quitSDL(){
     SDL_GameControllerRumble(gController, 0, 0, 0);
     gController = NULL;
 
-    if(gFont != NULL){
-        TTF_CloseFont(gFont);
-        gFont = NULL;
-    }
-
-    // Giải phóng các biến khác
-    SDL_DestroyRenderer(gRenderer);
-    SDL_DestroyWindow(gWindow);
-
-    IMG_Quit();
-    SDL_Quit();
-    Mix_Quit();
-    TTF_Quit();
 }
 
 void logSDLError(ostream& os,const string& msg, bool fatal ){
@@ -892,341 +988,16 @@ void clearThreats(vector<ThreatsObject*>& p_threats, const int& num_threats, con
 
 SDL_Texture* SDLCommonFunc::loadImage( string path){
     SDL_Texture* newTexture = NULL;
-
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
-
-    if(loadedSurface == nullptr){
-        cout << "Unable to load image " << path << " SDL Error: " << SDL_GetError() << endl;
-    }
-    else{
-        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-        SDL_FreeSurface(loadedSurface);
-    }
+    newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+    SDL_FreeSurface(loadedSurface);
     return newTexture;
 }
 
 SDL_Texture* SDLCommonFunc::loadText(string textureText, SDL_Color textColor, TTF_Font* gFont){
     SDL_Texture* newTexture = NULL;
-
     SDL_Surface* loadedSurface =TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
-
     newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
-
     SDL_FreeSurface(loadedSurface);
-
     return newTexture;
-}
-
-void SDLCommonFunc::Clear()
-{
-    //Free loaded image
-    SDL_DestroyTexture( gBackground );
-    gBackground = NULL;
-
-    //Free the sound effects
-    for(int i = 0; i < NUMBER_OF_BULLET_SOUND; i++){
-        Mix_FreeChunk(gBulletSound[i]);
-        gBulletSound[i] = NULL;
-    }
-
-    for(int i = 0; i < NUMBER_OF_EXPLODE_SOUND; i++){
-        Mix_FreeChunk(gExpSound[i]);
-        gExpSound[i] = NULL;
-    }
-
-    if(gameOver != NULL){
-        Mix_FreeChunk(gameOver);
-        gameOver = NULL;
-    }
-
-    if(gRocketSound != NULL){
-        Mix_FreeChunk(gRocketSound);
-        gRocketSound = NULL;
-    }
-
-    if(battleMusic != NULL){
-        //Free music
-        Mix_FreeMusic(battleMusic);
-        battleMusic = NULL;
-    }
-
-    if(menuButton != NULL){
-        Mix_FreeChunk(menuButton);
-        menuButton = NULL;
-    }
-
-    if(buttonAction != NULL){
-        Mix_FreeChunk(buttonAction);
-        buttonAction = NULL;
-    }
-
-    if(warningBoss != NULL){
-        Mix_FreeChunk(warningBoss);
-        warningBoss = NULL;
-    }
-
-    if(menuMusic != NULL){
-        Mix_FreeMusic(menuMusic);
-        menuMusic = NULL;
-    }
-
-    if(bossDie != NULL){
-        Mix_FreeChunk(bossDie);
-        bossDie = NULL;
-    }
-
-    if(gRocketSound != NULL){
-        Mix_FreeChunk(gRocketSound);
-        gRocketSound = NULL;
-    }
-
-    if(haveShield != NULL){
-        Mix_FreeChunk(haveShield);
-        haveShield = NULL;
-    }
-
-    if(haveTele != NULL){
-        Mix_FreeChunk(haveTele);
-        haveTele = NULL;
-    }
-
-    if(finishTele != NULL){
-        Mix_FreeChunk(finishTele);
-        finishTele = NULL;
-    }
-
-    if(bulletUpgrade != NULL){
-        Mix_FreeChunk(bulletUpgrade);
-        bulletUpgrade = NULL;
-    }
-
-    if(defaultSkill != NULL){
-        Mix_FreeChunk(defaultSkill);
-        defaultSkill = NULL;
-    }
-
-    if(treasureSound != NULL){
-        Mix_FreeChunk(treasureSound);
-        treasureSound = NULL;
-    }
-    
-    if(boosterSound != NULL){
-        Mix_FreeChunk(boosterSound);
-        boosterSound = NULL;
-    }
-
-    if(stunSound != NULL){
-        Mix_FreeChunk(stunSound);
-        stunSound = NULL;
-    }
-
-    if(breakShield != NULL){
-        Mix_FreeChunk(breakShield);
-        breakShield = NULL;
-    }
-
-}
-
-int SDLCommonFunc::showMenu(){
-    SDL_Texture* gMenu[4];
-    SDL_Texture* setGameController[3];
-
-    gMenu[0] = SDLCommonFunc::loadImage("images/Backgrounds/menu1.jpg");
-    gMenu[1] = SDLCommonFunc::loadImage("images/Backgrounds/menu2.jpg");
-    gMenu[2] = SDLCommonFunc::loadImage("images/Backgrounds/menu3.jpg");
-    gMenu[3] = SDLCommonFunc::loadImage("images/Backgrounds/menu.jpg");
-
-    setGameController[0] = SDLCommonFunc::loadImage("images/Backgrounds/c0.png");
-    setGameController[1] = SDLCommonFunc::loadImage("images/Backgrounds/c1.png");
-    setGameController[2] = SDLCommonFunc::loadImage("images/Backgrounds/c2.png");
-
-    const int MenuItems = 3;
-    const int NumController = 2;
-    SDL_Rect posItem[MenuItems];
-    SDL_Rect posSetGameController[NumController];
-
-    posItem[0] = {105, 660, 355, 85};
-    posItem[1] = {575, 660, 355, 85};
-    posItem[2] = {1045, 660, 355, 85};
-
-    posSetGameController[0] = {60, 570, 470, 120};
-    posSetGameController[1] = {900, 570, 490, 120};
-
-    bool selected[MenuItems] = {0, 0, 0};
-    bool selected2[NumController] = {0, 0};
-
-    SDL_Event m_event;
-    int x_m = 0;
-    int y_m =  0;
-    int lastMenuIndex = -1;
-    int menuIndex;
-
-    int controllerIndex;
-    int lastControllerIndex = -1;
-
-    if( Mix_PlayingMusic() == 0 )
-    {
-        //Play the music
-        Mix_PlayMusic( menuMusic, -1 );
-    }
-
-    SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
-    SDL_RenderPresent(gRenderer);
-
-    while(true){
-        menuIndex = -1;
-        while(SDL_PollEvent(&m_event)){
-            switch(m_event.type){
-                case SDL_QUIT:
-                {
-                if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
-                        Mix_PauseMusic();
-                        Mix_FreeMusic(menuMusic);
-                        menuMusic = NULL;
-                        for(int i = 0; i < 4; i++){
-                            SDL_DestroyTexture(gMenu[i]);
-                            gMenu[i] = NULL;
-                        }
-                }
-                    return 1;
-                }
-                case SDL_MOUSEMOTION:
-                    {
-                        x_m = m_event.button.x;
-                        y_m = m_event.button.y;
-
-                        for(int i = 0; i < MenuItems; i++){
-                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
-                                menuIndex = i;
-                                break;
-                            }
-                        }
-
-                        if (menuIndex != -1) {
-                            SDL_RenderCopy(gRenderer, gMenu[menuIndex], NULL, NULL);
-                            if(lastMenuIndex != menuIndex)
-                                Mix_PlayChannel(-1, menuButton, 0);
-                        } else {
-                            SDL_RenderCopy(gRenderer, gMenu[3], NULL, NULL);
-                        }
-                        SDL_RenderPresent(gRenderer);
-                        lastMenuIndex = menuIndex;
-                    }
-                    break;
-                case SDL_MOUSEBUTTONDOWN:
-                    {
-                        x_m = m_event.button.x;
-                        y_m = m_event.button.y;
-
-                        for(int i = 0; i < MenuItems; i++){
-                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posItem[i])){
-                                Mix_PlayChannel(-1, buttonAction, 0);
-                                if(i != 2){
-                                    SDL_RenderCopy(gRenderer, setGameController[0], NULL, NULL);
-                                    SDL_RenderPresent(gRenderer);
-
-                                    bool controllerSelected = false;
-                                    while(!controllerSelected) {
-                                        controllerIndex = -1;
-                                        while(SDL_PollEvent(&m_event)){
-                                            switch(m_event.type){
-                                                case SDL_QUIT:
-                                                    {
-                                                        if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
-                                                            Mix_PauseMusic();
-                                                            Mix_FreeMusic(menuMusic);
-                                                            menuMusic = NULL;
-                                                            for(int i = 0; i < 4; i++){
-                                                                SDL_DestroyTexture(gMenu[i]);
-                                                                gMenu[i] = NULL;
-                                                            }
-                                                        }
-                                                        return 1;
-                                                    }
-                                                case SDL_MOUSEMOTION:
-                                                    {
-                                                        x_m = m_event.button.x;
-                                                        y_m = m_event.button.y;
-
-                                                        for(int i = 0; i < NumController; i++){
-                                                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posSetGameController[i])){
-                                                                controllerIndex = i;
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (controllerIndex != -1) {
-                                                            SDL_RenderCopy(gRenderer, setGameController[controllerIndex + 1], NULL, NULL);
-                                                            if(lastControllerIndex != controllerIndex)
-                                                                Mix_PlayChannel(-1, menuButton, 0);
-                                                        } else {
-                                                            SDL_RenderCopy(gRenderer, setGameController[0], NULL, NULL);
-                                                        }
-                                                        SDL_RenderPresent(gRenderer);
-                                                        lastControllerIndex = controllerIndex;
-                                                    }
-                                                    break;
-                                                case SDL_MOUSEBUTTONDOWN:
-                                                    {
-                                                        x_m = m_event.button.x;
-                                                        y_m = m_event.button.y;
-
-                                                        for(int i = 0; i < NumController; i++){
-                                                            if(SDLCommonFunc::checkFocusWidthRect(x_m, y_m, posSetGameController[i])){
-                                                                Mix_PlayChannel(-1, buttonAction, 0);
-                                                                if(i == 0){
-                                                                    SDL_RenderCopy(gRenderer, setGameController[1], NULL, NULL);
-                                                                    SDL_RenderPresent(gRenderer);
-                                                                    SDL_Delay(100);
-                                                                    currentMethod = ControllerMethod::KEYBOARD;
-                                                                }
-                                                                else if(i == 1){
-                                                                    SDL_RenderCopy(gRenderer, setGameController[2], NULL, NULL);
-                                                                    SDL_RenderPresent(gRenderer);
-                                                                    SDL_Delay(100);
-                                                                    currentMethod = ControllerMethod::JOYSTICK;
-                                                                }
-                                                                controllerSelected = true;
-                                                            }
-                                                        }
-
-                                                    }
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                            if(controllerSelected)  break;
-                                        }
-                                    }
-                                    if(Mix_PlayingMusic() == 1 && Mix_PausedMusic() != 1){
-                                        Mix_PauseMusic();
-                                        Mix_FreeMusic(menuMusic);
-                                        menuMusic = NULL;
-                                        for(int i = 0; i < 4; i++){
-                                            SDL_DestroyTexture(gMenu[i]);
-                                            gMenu[i] = NULL;
-                                        }
-                                    }
-                                }
-                                SDL_Delay(500); 
-                                return i;
-                            }
-                        }
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
-
-    // Clean up resources
-    for (int i = 0; i < 4; ++i) {
-        SDL_DestroyTexture(gMenu[i]);
-        gMenu[i] = NULL;
-    }
-
-
-    return 1;
 }

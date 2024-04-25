@@ -119,7 +119,7 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[25]);
     } 
     else{
-        int random_skill = rand() % 22 + 2;
+        int random_skill = 18;//rand() % 22 + 2;
         
         value = 0;
         pos.w = item_width[random_skill];
@@ -128,7 +128,6 @@ bool Tools::get_gift() {
         return loadIMG(gift_items[random_skill]);
     }
 }
-
 
 void Tools::handleMove(const int& x_border, const int& y_border){
     if(!magnet){

@@ -72,8 +72,8 @@ static char gBossMusic[] = {"images/SoundEffects/boss_bg.wav"};
 
 static bool battle_music = false; // check resume music after finish boss's time
 
-const int TIME_TO_ADD_ENEMY = 32678;
-const int TIME_TO_RESET_BOSS = 63123;
+const int TIME_TO_ADD_ENEMY = 30000;
+const int TIME_TO_RESET_BOSS = 60000;
 
 enum enemy{
     MINI_THREATS,
@@ -99,7 +99,8 @@ namespace SDLCommonFunc
     void render2(SDL_Texture* loadedTexture, const int& x,const int& y, SDL_Rect* clip);
     void render_for_sprite(SDL_Texture* mTexture, int x, int y, SDL_Rect* clip, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
     bool checkFocusWidthRect(const int& x,const int& y,const SDL_Rect& rect);
-    int showMenu();
+    int showMenu(SDL_Renderer* gRenderer);
+    int handleSettingMenu(SDL_Renderer* gRenderer);
     bool loadSoundEffects();
 }
 #endif // COMMON_H_INCLUDED

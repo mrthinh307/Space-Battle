@@ -23,7 +23,6 @@
  Mix_Chunk* boosterSound;
  Mix_Chunk* stunSound;
 
-
 bool SDLCommonFunc::loadSoundEffects(){
     bool check = true;
 
@@ -67,14 +66,6 @@ bool SDLCommonFunc::loadSoundEffects(){
 
     Mix_VolumeChunk(breakGold, 110);
 
-    menuButton = Mix_LoadWAV("images/SoundEffects/menu.wav");
-    Mix_VolumeChunk(menuButton, 128);
-
-    buttonAction = Mix_LoadWAV("images/SoundEffects/start.wav");
-    Mix_VolumeChunk(buttonAction, 128);
-
-    menuMusic = Mix_LoadMUS("images/SoundEffects/menuMusic.wav");
-
     warningBoss = Mix_LoadWAV("images/SoundEffects/warning_boss.wav");
     Mix_VolumeChunk(warningBoss, 30);
 
@@ -94,7 +85,108 @@ bool SDLCommonFunc::loadSoundEffects(){
     boosterSound = Mix_LoadWAV("images/SoundEffects/booster.wav");
     stunSound = Mix_LoadWAV("images/SoundEffects/stun.wav");
 
-    Mix_VolumeMusic(45);
+    Mix_VolumeMusic(50);
 
     return check;
+}
+
+void loadMusicForMenu(){
+    menuButton = Mix_LoadWAV("images/SoundEffects/menu.wav");
+    Mix_VolumeChunk(menuButton, 128);
+
+    buttonAction = Mix_LoadWAV("images/SoundEffects/start.wav");
+    Mix_VolumeChunk(buttonAction, 128);
+
+    menuMusic = Mix_LoadMUS("images/SoundEffects/menuMusic.wav");
+    Mix_VolumeMusic(50);
+}
+
+void SDLCommonFunc::Clear()
+{
+    //Free the sound effects
+    for(int i = 0; i < NUMBER_OF_BULLET_SOUND; i++){
+        Mix_FreeChunk(gBulletSound[i]);
+        gBulletSound[i] = NULL;
+    }
+
+    for(int i = 0; i < NUMBER_OF_EXPLODE_SOUND; i++){
+        Mix_FreeChunk(gExpSound[i]);
+        gExpSound[i] = NULL;
+    }
+
+    if(gameOver != NULL){
+        Mix_FreeChunk(gameOver);
+        gameOver = NULL;
+    }
+
+    if(gRocketSound != NULL){
+        Mix_FreeChunk(gRocketSound);
+        gRocketSound = NULL;
+    }
+
+    if(battleMusic != NULL){
+        Mix_FreeMusic(battleMusic);
+        battleMusic = NULL;
+    }
+
+    if(warningBoss != NULL){
+        Mix_FreeChunk(warningBoss);
+        warningBoss = NULL;
+    }
+
+    if(bossDie != NULL){
+        Mix_FreeChunk(bossDie);
+        bossDie = NULL;
+    }
+
+    if(gRocketSound != NULL){
+        Mix_FreeChunk(gRocketSound);
+        gRocketSound = NULL;
+    }
+
+    if(haveShield != NULL){
+        Mix_FreeChunk(haveShield);
+        haveShield = NULL;
+    }
+
+    if(haveTele != NULL){
+        Mix_FreeChunk(haveTele);
+        haveTele = NULL;
+    }
+
+    if(finishTele != NULL){
+        Mix_FreeChunk(finishTele);
+        finishTele = NULL;
+    }
+
+    if(bulletUpgrade != NULL){
+        Mix_FreeChunk(bulletUpgrade);
+        bulletUpgrade = NULL;
+    }
+
+    if(defaultSkill != NULL){
+        Mix_FreeChunk(defaultSkill);
+        defaultSkill = NULL;
+    }
+
+    if(treasureSound != NULL){
+        Mix_FreeChunk(treasureSound);
+        treasureSound = NULL;
+    }
+    
+    if(boosterSound != NULL){
+        Mix_FreeChunk(boosterSound);
+        boosterSound = NULL;
+    }
+
+    if(stunSound != NULL){
+        Mix_FreeChunk(stunSound);
+        stunSound = NULL;
+    }
+
+    if(breakShield != NULL){
+        Mix_FreeChunk(breakShield);
+        breakShield = NULL;
+    }
+
 }

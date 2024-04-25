@@ -29,5 +29,8 @@ extern Mix_Chunk* boosterSound;
 extern Mix_Chunk* stunSound;
 
 bool SDLCommonFunc::loadSoundEffects();
+void loadMusicForMenu();
+
+void SDLCommonFunc::Clear();
 
 #endif // SOUNDEFFECTS_H

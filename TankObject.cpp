@@ -41,7 +41,6 @@ TankObject::~TankObject() {
             p_rocket = NULL;
         }
     }
-
     rocketOfTankList.clear();
 }
 
@@ -383,6 +382,29 @@ void TankObject::removeRocket(const int& idx){
     }
 }
 
+void TankObject::removeAllBullets(){
+    for (int i = 0; i < bulletOfTankList.size(); ++i) {
+        BulletObject* p_bullet = bulletOfTankList.at(i);
+        if(p_bullet != NULL){
+            delete p_bullet;
+            p_bullet = NULL;            
+        }
+    }
+    bulletOfTankList.clear();
+
+    for (int i = 0; i < rocketOfTankList.size(); ++i) {
+        BulletObject* p_rocket = rocketOfTankList.at(i);
+        if (p_rocket != nullptr) {
+            if(gRocketSound != NULL){
+                Mix_FreeChunk(gRocketSound);
+                gRocketSound = NULL;
+            }
+            delete p_rocket;
+            p_rocket = NULL;
+        }
+    }
+    rocketOfTankList.clear();
+}
 int TankObject::frame = 0;
 
 void TankObject::Set_sprite_clips(){
@@ -431,8 +453,6 @@ void TankObject::four_directions_bullet(string gNameBulletOfMainTank) {
         new_bullet->setWidthHeight(width_bullet, height_bullet);
         new_bullet->setDegrees((i*90)%360);
         new_bullet->setx_val(speed_bullet);
-
-        //Mix_PlayChannel(-1,gBulletSound[1], 0);
 
         int bullet_start_x = pos.x + pos.w / 2 - new_bullet->getPos().w / 2;
         int bullet_start_y = pos.y + pos.h / 2 - new_bullet->getPos().h / 2;
