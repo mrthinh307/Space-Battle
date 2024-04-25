@@ -26,7 +26,6 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - [D. Components In Game](#d-components-in-game)
 - [E. Way To Play](#e-way-to-play)
 - [F. Supplemt](#f-supplemt)
-- [See Also](#see-also)
 - [Soure code & Reference source](#soure-code--reference-source)
 - [Development & Conclusion](#development--conclusion)
 
@@ -178,12 +177,9 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 
 # F. Supplement
 
-// TO WRITE
+## See Also
 
----
-
-### See Also
-#### *Các kỹ thuật sử dụng*
+### *Các kỹ thuật sử dụng*
 - Thư viện SDL2.0.
 
 - Sử dụng nhiều class, vector, tách file, kế thừa....
@@ -208,9 +204,9 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 - Hình ảnh: Tìm kiếm trên Google kết hợp tự design.
 - Âm thanh: Tra trên Google
 
-### Development & Conclusion
+# Development & Conclusion
 
-#### Hướng phát triển:
+## Hướng phát triển:
 
 - Không chỉ người chơi mà kẻ địch cũng có thể ăn những skill rơi ra, phù hợp với đối tượng kẻ địch mà update tính năng skill đó lên kẻ địch làm trò chơi trở nên thú vị hơn.
 
@@ -224,7 +220,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 
 - Update thêm những skills mới.
 
-#### Sau khoảng hơn 1 tháng làm bài tập lớn:
+## Sau khoảng hơn 1 tháng làm bài tập lớn:
 
 - Em thấy mình đã cải thiện được rất nhiều kỹ năng trong việc tư duy thuật toán và viết code, khả năng lên ý tưởng, xây dựng kế hoạch và thực hiện từng bước một.
 
