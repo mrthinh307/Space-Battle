@@ -13,7 +13,6 @@
 void logSDLError(ostream& os, const string& msg, bool fatal = false);
 void initSDL();
 void quitSDL();
-
 void quitSDL2(){
     // Giải phóng các biến khác
     SDL_DestroyRenderer(gRenderer);
@@ -92,6 +91,12 @@ BaseObject goldIcon;
 
 BaseObject warningNoti;
 
+FontText timeEndGame;
+FontText killedEndGame;
+FontText goldEndGame;
+FontText recordText;
+FontText kinhnghiem;
+
 int main(int argc, char* args[]){
     initSDL();
     srand(time(NULL));
@@ -134,6 +139,16 @@ int main(int argc, char* args[]){
             quitSDL();
             quitSDL2();
             return 0;
+        }
+        if(MENU == 2){
+            bool ac = Achievement(gRenderer, gFont, recordText, kinhnghiem);
+            if(ac == true){
+                clearThreats(p_threats, p_threats.size() -1, 0);
+                SDLCommonFunc::Clear();
+                quitSDL();
+                continue;
+            }
+            //quit = true;
         }
 
         if(MENU == 0 && NUMBER_OF_TURNS_PLAYED > 0) {
@@ -213,6 +228,12 @@ int main(int argc, char* args[]){
 
 
         /* CREATE MAIN TANK - TANK OBJECT */
+        unsigned int goldRecord;
+        ifstream file("save_record.txt");
+        file >> goldRecord;
+        file.close();
+        gNameMainTank = nameTank[goldRecord / 500];
+        if(goldRecord / 500 >= 4) gNameMainTank = nameTank[4];
         bool check = mainTank.loadIMG(gNameMainTank);
         mainTank.Set_sprite_clips();
 
@@ -344,6 +365,7 @@ int main(int argc, char* args[]){
 
             /* RUN BOSS LEVEL 1*/
             static int idx_Boss_1 = -1;
+
             if(boss_alive == false && SDL_GetTicks() - lastBossAddedTime >= TIME_TO_RESET_BOSS){
                 boss_alive = true;
                 initializeThreats(p_threats, 1, gNameBoss1, 1);
@@ -596,14 +618,20 @@ int main(int argc, char* args[]){
                     SDL_GameControllerRumble(gController, 0, 0, 0);
                     SDL_GameControllerRumble(gController, 32767, 32767, 1000);
                     Mix_PlayChannel(-1, gameOver, 0);
-                    if(MessageBox(NULL, "Game Over", "Info", MB_OK) == IDOK){
+                    SDL_Delay(200);
+                    int idx = showEndGame(gRenderer, gFont, timeEndGame, current_time, killedEndGame, goldEndGame);
+                    if(idx == 0){
                         clearThreats(p_threats, p_threats.size() - 1, 0);
                         SDLCommonFunc::Clear();
                         quitSDL();
                         quitSDL2();
                         return 0;
                     }
+                    else if(idx == 1){
+                        quit = true;
+                    }
                 }
+                if(quit == true) break;
             }
 
             // RUN PREVENT SKILL
@@ -664,7 +692,6 @@ int main(int argc, char* args[]){
             timeGame.setPos2(60, 45);
             timeGame.free();
             timeGame.createGameText(gFont);
-
 
             string heartToString = to_string(currentHeart);
             heartNumber.setText(heartToString);

@@ -94,7 +94,6 @@ void BulletObject::run_boss_bullet(){
     }
 }
 
-
 void BulletObject::set_rocket_2(){
     for(int i = 0; i < 5; i++){
         rocket_tex_2[i].x = 100 * i;

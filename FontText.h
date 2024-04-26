@@ -29,4 +29,5 @@ private:
     string text;
     SDL_Color textColor;
 };
+
 #endif

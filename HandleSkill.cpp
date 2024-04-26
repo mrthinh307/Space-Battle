@@ -1,6 +1,7 @@
 #include "HandleSkill.h"
 
 /* SHIELD */
+
 extern unsigned int currentGold;
 extern unsigned int currentHeart;
 extern unsigned int currentKilled;

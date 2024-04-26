@@ -44,7 +44,9 @@ static SDL_GameController *gController;
 static TTF_Font* gFont = NULL;
 
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
-static char gNameMainTank[] = {"images/TankObject/tank1/image1.png"};
+static char nameTank[][100] = {"images/TankObject/tank1/image1.png", "images/TankObject/tank1/image2.png", "images/TankObject/tank1/image3.png",
+                                 "images/TankObject/tank1/image4.png", "images/TankObject/tank1/image5.png"  };
+static string gNameMainTank = nameTank[0];
 static char gNameThreatsObject[] = {"images/ThreatsObject/minithreats.png"};
 static char gNameBoss1[] = {"images/ThreatsObject/boss1/image1.png"};
 
@@ -85,8 +87,6 @@ enum ControllerMethod{
     JOYSTICK = 1
 };
 
-static int currentMethod;
-
 static enemy cur_enemy = MINI_THREATS;
 
 namespace SDLCommonFunc
@@ -103,4 +103,5 @@ namespace SDLCommonFunc
     int handleSettingMenu(SDL_Renderer* gRenderer);
     bool loadSoundEffects();
 }
+
 #endif // COMMON_H_INCLUDED

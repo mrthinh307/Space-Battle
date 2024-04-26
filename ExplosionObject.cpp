@@ -15,7 +15,6 @@ ExplosionObject::~ExplosionObject(){
     clearTexture();
 }
 
-
 void ExplosionObject::setTexture(){
     expTexture[0] = SDLCommonFunc::loadImage("images/P103578/314093101.png");
     expTexture[1] = SDLCommonFunc::loadImage("images/P103578/314093102.png");

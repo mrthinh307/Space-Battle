@@ -22,7 +22,7 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
     * [1. Method 1: No code included.](#a-cách-1-không-bao-gồm-code)
     * [2. Method 2: Include code and compilable.](#b-cách-2-bao-gồm-code-và-có-thể-biên-dịch)
 - [B. Instrucsion and Start Game](#b-instrucsion-and-start-game)
-- [C. Select Level](#c-select-level)
+- [C. End Game](#c-end-game)
 - [D. Components In Game](#d-components-in-game)
 - [E. Way To Play](#e-way-to-play)
 - [F. Supplemt](#f-supplemt)
@@ -62,7 +62,8 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 - Trò chơi cung cấp cho người chơi 2 sự lựa chọn trong chức năng điều khiển cho phi cơ gồm:
     + **Bàn phím và Chuột**.
-    + **Tay cầm (XBox, PS4, PS5...)** ( dưới đây là hướng dẫn nút điều khiển cho tay cầm thuộc họ **XBox**, các loại tay cầm khác điều khiển tương tự) .
+    + **Tay cầm (XBox, PS4, PS5...)** ( dưới đây là hướng dẫn nút điều khiển cho tay cầm thuộc họ **XBox**, các loại tay cầm khác điều khiển tương tự) . Đối với các tay cầm có hỗ trợ tính năng rung, mình cùng đã cài đặt để khi **va chạm** với kẻ địch hiệu ứng **rung tay cầm** trong 500ms. 
+    ![image](./images/Readme/rumble.png)
 
 ### *Control + Shoot ( Điều khiển và Bắn đạn)* 
 
@@ -92,10 +93,17 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 - Khi người chơi nhấn vào nút **EXIT** - cửa sổ trò chơi được đóng lại và trò chơi kết thúc.
 
-# C. Select Level
-
-- Người chơi điền số kẻ địch ban đầu mà mình muốn đối đầu. Tùy theo độ khó mà người chơi muốn trải nghiệm.
-
+**3. ACHIEVEMENT** - Chức năng sao lưu
+- Chức năng này lưu lại kỉ lục về số kẻ địch mà người chơi hạ gục được trong một lần chơi.
+- Chức năng **LEVEL** biểu tượng cho kinh nghiệm trò chơi mà người chơi tích lũy được. Sẽ tăng cấp khi số Vàng người chơi tích lũy qua các lần chơi đạt đế 500.
+- Chức năng update **nâng cấp hoàn toàn ngoại hình** Phi cơ khi nâng cấp Level. Tất cả các phi cơ đều có các **hoạt ảnh** ánh sáng óng ánh sinh động
+![image](./images/Readme/achieve.png)
+# C. End Game
+- Ghi lại thành tựu sau một ván chơi mà người chơi đạt được: 
++ Số kẻ địch mà người chơi hạ gục.
++ Số lượng vàng thu thập được.
++ Thời gian sinh tồn.
+![image](./images/Readme/endgame.png)
 
 # D. Components In Game
 
@@ -132,7 +140,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 ![image](./images/Readme/struct.png)
 </div>
 
-- Nếu như bạn đang thắc mắc những biểu tượng màu sắc xuất hiện trong cửa số trên là gì? Thì đó chính là tính năng giúp người chơi cảm thấy thỏa mãn với bộ hơn 20 skills (có phát triển thêm trong tương lai) cho nhân vật chính, tất cả các skill đều kèm theo hiệu ứng hình ảnh cùng âm thanh phù hợp để người chơi có thể cảm nhận chân thực.
+- Nếu như bạn đang thắc mắc những biểu tượng màu sắc xuất hiện trong cửa số trên là gì? Thì đó chính là tính năng giúp người chơi cảm thấy thỏa mãn với bộ hơn 20 skills (có phát triển thêm trong tương lai) cho nhân vật chính, tất cả các skill đều kèm theo hiệu ứng hình ảnh cùng âm thanh phù hợp.
 
 ![image](./images/Readme/ex.png)
 - example : Skill làm trói làm choáng kẻ địch
@@ -161,7 +169,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 | <img src="images/Utils/gift/new1.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.      
 | <img src="images/Utils/gift/new2.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
 | <img src="images/Utils/gift/phitieu.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
-| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket được cộng thêm.  
+| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket (Utils) được cộng thêm.  
 | <img src="images/Utils/gift/preventenemy.png" width=50>  | Magnet	 | Thỏi nam châm trong không gian sẽ  hút tất các các skill tồn tại trên màn hình trò chơi(30s).  
 | <img src="images/Utils/gift/rocket2.png" width=50>  | Upgrade Rocket	 | Chiêu thức Rocket(Util) của phi cơ được nâng cấp lên dạng mới nhanh hơn, sát thương diện rộng hơn.                                                            |
 | <img src="images/Utils/gift/shield.png" width=50>  | Shield	 | Trói buộc kẻ địch, gây choáng và không thể di chuyển(5s).                                                            |
@@ -212,8 +220,6 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 
 - Cập nhật tính năng bảng xếp hạng, sau mỗi lần chơi người chơi sẽ được nhập tên để lưu lại kết quả chơi của mình.
 
-- Phát triển nốt tính năng còn lại trên thanh MENU ghi lại kỉ lục và tăng cấp độ LEVEL khi thu thập đủ số Ruby, lên Level mới người chơi sẽ được trải nghiệm Phi cơ mới.
-
 - Phát triển tính năng Multiplayer:
     + 2 PLAYERS VERSUS ENEMY( Đua nhau về số kẻ địch hạ gục or Thời gian sinh tồn (Có xử lý va chạm giữa 2 players)/ Cùng phe(không xử lý va chạm))
     + SOLO BETWEEN 2 PLAYERS(Thiết lập thanh blood_bar như boss, xử lý va chạm như, ăn skill và chiến đấu lẫn nhau.)
@@ -232,7 +238,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 
 - Học cách thực hiện nhiệm vụ cá nhân một cách hiệu quả.
 
-- Hoàn thànhmột chương trình hoàn chỉnh do chính bản thân tạo ra.
+- Hoàn thành một chương trình trò chơi hoàn chỉnh do chính bản thân tạo ra.
 
 <div style="text-align: center;">
 

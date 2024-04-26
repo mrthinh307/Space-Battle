@@ -54,4 +54,5 @@ void run_default_skill(TankObject& mainTank, bool& have_default, const Uint32& s
 
 // DELETE ALL SKILLS
 void delete_all_skills(TankObject& mainTank);
+
 #endif
