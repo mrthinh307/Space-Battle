@@ -97,7 +97,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 **3. ACHIEVEMENT** - Chức năng sao lưu
 - Chức năng này lưu lại kỉ lục về số kẻ địch mà người chơi hạ gục được trong một lần chơi.
-- Chức năng **LEVEL** biểu tượng cho kinh nghiệm trò chơi mà người chơi tích lũy được. Sẽ tăng cấp khi số Vàng người chơi tích lũy qua các lần chơi đạt đế 500.
+- Chức năng **LEVEL** biểu tượng cho kinh nghiệm trò chơi mà người chơi tích lũy được. Sẽ tăng cấp khi số Vàng người chơi tích lũy qua các lần chơi đạt đến 500.
 - Chức năng update **nâng cấp hoàn toàn ngoại hình** Phi cơ khi nâng cấp Level. Tất cả các phi cơ đều có các **hoạt ảnh** ánh sáng óng ánh sinh động
 ![image](./images/Readme/achieve.png)
 # C. End Game
