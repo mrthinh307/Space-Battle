@@ -15,7 +15,8 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - Game có đầy đủ các chức năng hỗ trợ người chơi trong việc thoát game, bắt đầu lại trò chơi. mô tả cách chơi, ngoài sử dụng bàn phím và chuột đơn thuần còn có thể sử dụng Tay cầm để trải nghiệm trò chơi, sử dụng phím ESC để dừng game...
 
 - Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
-- Video demo game: [Link demo game](https://drive.google.com/file/d/1JqfGpaN37DE4ZQH6IUEX3TpSMtRSy4UD/view?usp=drive_link)
+- Video demo game & giải thích tổng quát source code: [Link demo game](https://drive.google.com/file/d/1JqfGpaN37DE4ZQH6IUEX3TpSMtRSy4UD/view?usp=drive_link)
+- (Bổ sung) Video trải nghiệm game 2: [Link bổ sung](https://www.youtube.com/watch?v=IFASkP6tGvw)
 
 - Thử nghiệm game: 
 
