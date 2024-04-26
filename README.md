@@ -76,7 +76,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 |  Shoot  | Mouse    | Gamepads | 
 |---------|----------|----------|
 | Normal  |LeftMouse |    (A)   |
-| Util    |RightMouse|    (B)   |
+| Ulti    |RightMouse|    (B)   |
 
 - Người chơi chọn chức năng điều khiển nào thì nhấn chuột vào **thanh mô tả** của chức năng đó:
 
@@ -113,7 +113,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 - ***Killed enemy icon*** (Số lượng kẻ địch bị tiêu diệt) ![image](./images/Readme/killenemy.png): Ghi lại số lượng kẻ địch đã bị người chơi tiêu diệt
 
-- ***Util***(Rocket) ![image](./images/Backgrounds/rocket.png): số lượng Rocket người chơi có( tăng thêm 1 sau mỗi 5 kẻ địch bị tiêu diệt). Khác với đạn thường Rocket có khả năng xuyên thấu kẻ địch, ngoại trừ **Boss** nhưng cũng có sát thương lên Boss cao hơn.
+- ***Ulti***(Rocket) ![image](./images/Backgrounds/rocket.png): số lượng Rocket người chơi có( tăng thêm 1 sau mỗi 5 kẻ địch bị tiêu diệt). Khác với đạn thường Rocket có khả năng xuyên thấu kẻ địch, ngoại trừ **Boss** nhưng cũng có sát thương lên Boss cao hơn.
 
 - ***Heart***(Mạng): ![image](./images//Backgrounds/heart.png): số lượng mạng của phi cơ ( -1 <=> va chạm với kẻ địch).
 
@@ -161,7 +161,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 | <img src="images/Utils/gift/new1.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.      
 | <img src="images/Utils/gift/new2.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
 | <img src="images/Utils/gift/phitieu.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
-| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket (Utils) được cộng thêm.  
+| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket được cộng thêm.  
 | <img src="images/Utils/gift/preventenemy.png" width=50>  | Magnet	 | Thỏi nam châm trong không gian sẽ  hút tất các các skill tồn tại trên màn hình trò chơi(30s).  
 | <img src="images/Utils/gift/rocket2.png" width=50>  | Upgrade Rocket	 | Chiêu thức Rocket(Util) của phi cơ được nâng cấp lên dạng mới nhanh hơn, sát thương diện rộng hơn.                                                            |
 | <img src="images/Utils/gift/shield.png" width=50>  | Shield	 | Trói buộc kẻ địch, gây choáng và không thể di chuyển(5s).                                                            |
