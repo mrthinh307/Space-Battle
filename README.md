@@ -166,11 +166,11 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 | <img src="images/Utils/gift/booster.png" width=50>    | Booster	   | Tăng gấp đôi tốc độ cho phi cơ (10s).                                                                                              |
 | <img src="images/Utils/gift/dan4phia.png" width=50>          | Wall-nut	    | Đạn bắn ra từ 4 phía của phi cơ mỗi viên lệch nhau 90 độ (30s).                                                    |
 | <img src="images/Utils/gift/danloang.png" width=50>        | Đạn Loang 	    | Đạn bắn ra theo 3 đường xiên hướng từ đầu của phi cơ đi ra(30s). |
-| <img src="images/Utils/gift/default.png" width=50> | Default Mode  | Đưa phi cơ về chế độ mặc định, xóa mọi skills hiện có(10s).                                                               |
+| <img src="images/Utils/gift/default.png" width=50> | Default Mode  | Đưa phi cơ về chế độ mặc định, xóa mọi skills hiện có, vô hiệu hóa khả năng kích hoạt các skill mới trong (10s).                                                               |
 | <img src="images/Utils/gift/hp.png" width=50>  | HP	 | Ngay lập tức cộng một mạng sống cho phi cơ.      
 | <img src="images/Utils/gift/new1.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.      
-| <img src="images/Utils/gift/new2.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
-| <img src="images/Utils/gift/phitieu.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
+| <img src="images/Utils/gift/new2.png" width=50>  | Đạn hình xuyến	 | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
+| <img src="images/Utils/gift/phitieu.png" width=50>  | Phi tiêu | Đạn của phi cơ được nâng cấp / chuyển đổi sang dạng mới.  
 | <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket (Utils) được cộng thêm.  
 | <img src="images/Utils/gift/preventenemy.png" width=50>  | Magnet	 | Thỏi nam châm trong không gian sẽ  hút tất các các skill tồn tại trên màn hình trò chơi(30s).  
 | <img src="images/Utils/gift/rocket2.png" width=50>  | Upgrade Rocket	 | Chiêu thức Rocket(Util) của phi cơ được nâng cấp lên dạng mới nhanh hơn, sát thương diện rộng hơn.                                                            |
