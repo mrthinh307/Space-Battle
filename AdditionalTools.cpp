@@ -104,14 +104,14 @@ bool Tools::get_gift() {
         set_skill(Tools::GOLD_2);
         return loadIMG(gift_items[1]);
     }
-    else if(randomNumber <= 15){
+    else if(randomNumber <= 13){
         value = 5;
         pos.w = item_width[24];
         pos.h = item_height[24];
         set_skill(Tools::GOLD_5);
         return loadIMG(gift_items[24]);
     }
-    else if(randomNumber <= 30){
+    else if(randomNumber <= 15){
         value = 8;
         pos.w = item_width[25];
         pos.h = item_height[25];

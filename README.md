@@ -15,8 +15,8 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - Game có đầy đủ các chức năng hỗ trợ người chơi trong việc thoát game, bắt đầu lại trò chơi. mô tả cách chơi, ngoài sử dụng bàn phím và chuột đơn thuần còn có thể sử dụng Tay cầm để trải nghiệm trò chơi, sử dụng phím ESC để dừng game...
 
 - Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
-- Video demo cách chơi & giải thích tổng quát source code: [Link demo game](https://drive.google.com/file/d/1JqfGpaN37DE4ZQH6IUEX3TpSMtRSy4UD/view?usp=drive_link)
-- (Bổ sung) Video trải nghiệm game (do phần trải nghiệm game ở video trên có phần giật lag): [Link bổ sung](https://www.youtube.com/watch?v=IFASkP6tGvw)
+- Video demo cách chơi & giải thích tổng quát source code: [Link demo game](https://www.youtube.com/watch?v=98tJ5wg-Tzo)
+- (Bổ sung) Video trải nghiệm game (do phần trải nghiệm game ở video trên có phần giật lag): [Link bổ sung](https://www.youtube.com/watch?v=Ts4eY-ijtz0)
 
 - Thử nghiệm game: 
 
@@ -26,7 +26,7 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - [B. Instrucsion and Start Game](#b-instrucsion-and-start-game)
 - [C. End Game](#c-end-game)
 - [D. Components In Game](#d-components-in-game)
-- [E. Way To Play](#e-way-to-play)
+- [E. Skill Items In Game](#e-skill-items-in-game)
 - [F. Supplemt](#f-supplemt)
 - [Soure code & Reference source](#soure-code--reference-source)
 - [Development & Conclusion](#development--conclusion)
@@ -113,7 +113,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
      : là đối tượng người chơi điều khiển 
 
 -    Mini Enemy ![image](./images/Readme/minienemy.png)
-     : là đối tượng kẻ địch con, sẽ tăng thêm 1 đối tượng sau 30s đầu tiên của game, và sau lần xuất hiện đầu tiên của Boss sẽ là 60s cho mỗi lần tăng thêm.
+     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 30s đầu tiên của game, và sau lần xuất hiện đầu tiên của Boss sẽ là 60s cho mỗi lần tăng thêm**.
 
 -   ***Boss*** ![image](./images/Readme/boss.png): là đối tượng kẻ địch mạnh. Sẽ xuất hiện lại sau mỗi 60s.
 
@@ -151,7 +151,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 </div>
 
 
-# E. Way To Play
+# E. Skill Items In Game
 
 Tấn công kẻ địch bằng đạn hoặc sử dụng các skill, không cho kẻ địch hay đạn của kẻ địch chạm vào phi cơ. Nếu chạm vào số mạng sống sẽ giảm đi 1 (góc trái bên dưới cửa sổ trò chơi). Mặc định ban đầu khi bắt đầu trò chơi người chơi sở hữu 3 mạng. <br/>
 
