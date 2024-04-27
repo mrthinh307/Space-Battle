@@ -116,7 +116,7 @@ bool Tools::get_gift() {
         pos.w = item_width[25];
         pos.h = item_height[25];
         set_skill(Tools::GOLD_8);
-        return loadIMG(gift_items[25]);
+        return loadIMG(gift_items[25]);//.
     } 
     else{
         int random_skill = rand() % 22 + 2;
