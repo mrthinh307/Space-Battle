@@ -126,6 +126,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 - ***Ulti***(Rocket) ![image](./images/Backgrounds/rocket.png): số lượng Rocket người chơi có( tăng thêm 1 sau mỗi 5 kẻ địch bị tiêu diệt). Khác với đạn thường Rocket có khả năng xuyên thấu kẻ địch, ngoại trừ **Boss** nhưng cũng có sát thương lên Boss cao hơn.
 
 - ***Heart***(Mạng): ![image](./images//Backgrounds/heart.png): số lượng mạng của phi cơ ( -1 <=> va chạm với kẻ địch / trúng đạn kẻ địch).
+- ***Controller Method***(Phương thức điều khiển): Cho người chơi nhận biết đang sử dụng cách thức điều khiển nào! Biểu tượng hình Bàn phím ![image](images/Readme/keyboard.png) <=> Phương thức: **Chuột và bàn phím**, biểu tượng hình tay cầm ![image](images/Readme/gamepad.png) <=> Phương thức: **Tay cầm**.
 
 - ***Pause Button*** (Nút dừng game): Nếu muốn tạm dừng trò chơi hoặc chơi lại khi đang trong trò chơi, người chơi có thể ấn nút **ESC**, cửa sổ game sẽ hiện lên trang Setting:
 
@@ -139,12 +140,12 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 <div style="text-align: center;">
 
-![image](./images/Readme/struct.png)
+![image](./images/Readme/coban.png)
 </div>
 
 - Nếu như bạn đang thắc mắc những biểu tượng màu sắc xuất hiện ở giữa màn hinhg game ở trên là gì? Thì đó chính là tính năng giúp người chơi trải nghiệm thoải mái với bộ hơn 20 skills (có phát triển thêm trong tương lai) cho nhân vật chính, tất cả các skills đều kèm theo hiệu ứng hình ảnh cùng âm thanh phù hợp.
 
-![image](./images/Readme/ex.png)
+![image](./images/Readme/expng.png)
 - example : Skill làm trói làm choáng kẻ địch
 
 </div>
@@ -234,7 +235,8 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 
 - Em thấy mình đã cải thiện được rất nhiều kỹ năng trong việc tư duy thuật toán và viết code, khả năng lên ý tưởng, xây dựng kế hoạch và thực hiện từng bước một.
 
-- Học được cách setup môi trường, sử dụng thư viện ngoài. Quản lý bộ nhớ với các biến địa chỉ, con trỏ, việc cấp phát động... 
+- Học được cách setup môi trường, sử dụng thư viện ngoài. Quản lý bộ nhớ với các biến địa chỉ, con trỏ, việc cấp phát động... 
+
 
 - Vận dụng các kiến thức các môn đại cượng vào chương trình.
 

@@ -56,7 +56,7 @@ Tools::Tools(){
     gift_items[23] = "images/Utils/gift/speedupbullet.png";
     item_width[23] = 60;   item_height[23] = 60;
     gift_items[24] = "images/Utils/5gold.png";
-    item_width[24] = 60;   item_height[24] = 45;
+    item_width[24] = 65;   item_height[24] = 53;
     gift_items[25] = "images/Utils/8gold.png";
     item_width[25] = 70;   item_height[25] = 50;
 
@@ -90,28 +90,28 @@ Tools::~Tools(){
 bool Tools::get_gift() {
     int randomNumber = rand() % 100 + 1;
 
-    if (randomNumber <= 1) {
+    if (randomNumber <= 5) {
         value = 1;
         pos.w = item_width[0];
         pos.h = item_height[0];
         set_skill(Tools::GOLD_1);
         return loadIMG(gift_items[0]);
     }
-    else if(randomNumber <= 2) {
+    else if(randomNumber <= 10) {
         value = 3;
         pos.w = item_width[1];
         pos.h = item_height[1];
         set_skill(Tools::GOLD_2);
         return loadIMG(gift_items[1]);
     }
-    else if(randomNumber <= 3){
+    else if(randomNumber <= 15){
         value = 5;
         pos.w = item_width[24];
         pos.h = item_height[24];
         set_skill(Tools::GOLD_5);
         return loadIMG(gift_items[24]);
     }
-    else if(randomNumber <= 4){
+    else if(randomNumber <= 30){
         value = 8;
         pos.w = item_width[25];
         pos.h = item_height[25];

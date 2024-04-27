@@ -79,6 +79,8 @@ BaseObject killEnemy;
 FontText Killed;
 BaseObject killIcon;
 
+BaseObject methodIcon;
+
 ExplosionObject explode;
 ExplosionObject explode1;
 
@@ -179,7 +181,13 @@ int main(int argc, char* args[]){
         bkg1.w = SCREEN_WIDTH;
         bkg1.h = SCREEN_HEIGHT;
 
-        //BaseObject layoutBox;
+        // Load controller icon
+        methodIcon.setPos(160, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT + 70);
+        methodIcon.setPos2(55, 55);
+        if(currentMethod == 0) methodIcon.loadIMG(gNameMethodIcon[0]);
+        else methodIcon.loadIMG(gNameMethodIcon[1]);
+
+        //BaseObject layoutBox
         layoutBox.setPos(0, SCREEN_HEIGHT - LAYOUT_BOX_HEIGHT);
         layoutBox.setPos2(LAYOUT_BOX_WIDTH, LAYOUT_BOX_HEIGHT);
         bool ret = layoutBox.loadIMG("images/Backgrounds/layoutBox.png");
@@ -341,6 +349,7 @@ int main(int argc, char* args[]){
             gold.renderCopy(gold.getPos());
             goldIcon.renderCopy(goldIcon.getPos());
             timer.renderCopy(timer.getPos());
+            methodIcon.renderCopy(methodIcon.getPos());
 
             /* LOAD TANK OBJECT */
             SDL_Rect posTank = mainTank.getPos();
@@ -860,6 +869,8 @@ void quitSDL(){
 
     // Giải phóng biến goldIcon
     goldIcon.free();
+
+    methodIcon.free();
 
     explode.clearTexture();
     explode1.clearTexture();

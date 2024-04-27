@@ -43,6 +43,8 @@ static SDL_GameController *gController;
 
 static TTF_Font* gFont = NULL;
 
+static char gNameMethodIcon[][100] = {"images/Backgrounds/keyboard.png", "images/Backgrounds/gamepad.png"};
+
 static char gNameBackground[] = {"images/Backgrounds/background.jpg"};
 static char nameTank[][100] = {"images/TankObject/tank1/image1.png", "images/TankObject/tank1/image2.png", "images/TankObject/tank1/image3.png",
                                  "images/TankObject/tank1/image4.png", "images/TankObject/tank1/image5.png"  };

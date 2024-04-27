@@ -9,8 +9,8 @@
 #define WIDTH_SPHERE 18
 #define HEIGHT_SPHERE 31
 
-#define WIDTH_NEW_1 16
-#define HEIGHT_NEW_1 25
+#define WIDTH_NEW_1 20
+#define HEIGHT_NEW_1 28
 
 #define WIDTH_ROUNDABOUT 90
 #define HEIGHT_ROUNDABOUT 90

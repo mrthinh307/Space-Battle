@@ -257,7 +257,7 @@ void run_gift_item(vector<Tools*>& gifts_list, TankObject& mainTank, ThreatsObje
 
 void push_back_gift_item(ThreatsObject* p_threat){
     int ran = rand() % 2 + 1;
-    if(ran == 1 ){
+    if(ran == 1){
         Tools* a_gift_item = new Tools();
         a_gift_item->set_explode_gift();
         if(a_gift_item != NULL){
