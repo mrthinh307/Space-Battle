@@ -16,7 +16,7 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 
 - Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
 - Video deme game & giải thích tổng quát source code (16 phút): https://www.youtube.com/watch?v=98tJ5wg-Tzo
-- (Bổ sung) Video ngắn chỉ trải nghiệm game(demo hoạt động của hầu hết các item kĩ năng) (2 phút): https://www.youtube.com/watch?v=aaLVwuvZO08
+- (Bổ sung) Video ngắn chỉ trải nghiệm game(2 phút): https://www.youtube.com/watch?v=aaLVwuvZO08
 
 - Thử nghiệm game: 
 
