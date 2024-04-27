@@ -15,8 +15,8 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - Game có đầy đủ các chức năng hỗ trợ người chơi trong việc thoát game, bắt đầu lại trò chơi. mô tả cách chơi, ngoài sử dụng bàn phím và chuột đơn thuần còn có thể sử dụng Tay cầm để trải nghiệm trò chơi, sử dụng phím ESC để dừng game...
 
 - Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
-- Video deme game & giải thích tổng quát source code (16 phút): https://drive.google.com/file/d/1ehn9K_ARDrUj8wBsJK9Gp8Tfvglh_ojI/view?usp=sharing
-- (Bổ sung) Video ngắn trải nghiệm game(2 phút): https://www.youtube.com/watch?v=aaLVwuvZO08
+- Video deme game & giải thích tổng quát source code (16 phút): https://www.youtube.com/watch?v=98tJ5wg-Tzo
+- (Bổ sung) Video ngắn chỉ trải nghiệm game(demo hoạt động của hầu hết các item kĩ năng) (2 phút): https://www.youtube.com/watch?v=aaLVwuvZO08
 
 - Thử nghiệm game: 
 
@@ -181,7 +181,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 | <img src="images/Utils/gift/treasure.png" width=50>  | Icon Ruby Nói Chung	 | Người chơi thu thập Ruby để tích lũy kinh nghiệm.                                                            |
 
 - Và một số skill thú vị khác, người chơi sẽ được trải nghiệm khi tham gia trò chơi.
-
+- Tất cả các skills được cài đặt đều bao gồm các hoạt ảnh, âm thanh sinh động.
 - Sau khi xuất hiện, các icon skill sẽ vỡ tan (mất đi) nếu sau 1 khoảng thời gian đã set mặc định hoặc khi kẻ địch va chạm.
 
 # F. Supplement
