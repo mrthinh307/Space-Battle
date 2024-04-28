@@ -150,7 +150,7 @@ int main(int argc, char* args[]){
                 quitSDL();
                 continue;
             }
-            //quit = true;
+            quit = true;
         }
 
         if(MENU == 0 && NUMBER_OF_TURNS_PLAYED > 0) {
@@ -163,9 +163,6 @@ int main(int argc, char* args[]){
         /* INIT SOUND EFFECTS */
         bool checkLoadSoundEffect = SDLCommonFunc::loadSoundEffects();
         if(!checkLoadSoundEffect) return 0;
-
-        /* INIT TIME START GAME*/
-        string str_minute = "00 : ";
 
         /* CREATE BACKGROUND */
         gBackground = SDLCommonFunc::loadImage(gNameBackground);
@@ -244,6 +241,8 @@ int main(int argc, char* args[]){
         if(goldRecord / 500 >= 4) gNameMainTank = nameTank[4];
         bool check = mainTank.loadIMG(gNameMainTank);
         mainTank.Set_sprite_clips();
+        mainTank.setXVal(0);
+        mainTank.setYVal(0);
 
         /* INIT EXPLODE OBJECT */
         explode.setTexture();
@@ -260,12 +259,19 @@ int main(int argc, char* args[]){
 
         timeStart = SDL_GetTicks();
 
+        /* INIT TIME START GAME*/
+        string str_minute = "00 : ";
+
         currentGold = 0;
         currentHeart = 3;
         currentKilled = 0;
 
         lastEnemyAddedTime = SDL_GetTicks();
-        lastBossAddedTime = SDL_GetTicks();  
+        lastBossAddedTime = SDL_GetTicks(); 
+
+        boss_alive = false;
+
+        int minute = 0;
 
         while(!quit){
 
@@ -673,7 +679,6 @@ int main(int argc, char* args[]){
             }
 
             /* HANDLE TIME*/
-            static int minute = 0;
             Uint32 timeValue = (SDL_GetTicks() - timeStart) / 1000;
             static Uint32 lastTimeValue = 0;
 

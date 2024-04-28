@@ -111,7 +111,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
      : là đối tượng người chơi điều khiển 
 
 -    Mini Enemy ![image](./images/Readme/minienemy.png)
-     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 30s đầu tiên của game, và sau lần xuất hiện đầu tiên của Boss sẽ là 60s cho mỗi lần tăng thêm**.
+     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 15s, không thêm trong thời gian boss tồn tại**.
 
 -   ***Boss*** ![image](./images/Readme/boss.png): là đối tượng kẻ địch mạnh. Sẽ xuất hiện lại sau mỗi 60s.
 

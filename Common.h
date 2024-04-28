@@ -76,7 +76,7 @@ static char gBossMusic[] = {"images/SoundEffects/boss_bg.wav"};
 
 static bool battle_music = false; // check resume music after finish boss's time
 
-const int TIME_TO_ADD_ENEMY = 30000;
+const int TIME_TO_ADD_ENEMY = 15000;
 const int TIME_TO_RESET_BOSS = 60000;
 
 enum enemy{
