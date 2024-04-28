@@ -235,7 +235,7 @@ int main(int argc, char* args[]){
         /* CREATE MAIN TANK - TANK OBJECT */
         unsigned int goldRecord;
         ifstream file("save_record.txt");
-        file >> goldRecord;
+        file >> goldRecord;//
         file.close();
         gNameMainTank = nameTank[goldRecord / 500];
         if(goldRecord / 500 >= 4) gNameMainTank = nameTank[4];
