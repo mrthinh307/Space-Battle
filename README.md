@@ -15,8 +15,8 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - Game có đầy đủ các chức năng hỗ trợ người chơi trong việc thoát game, bắt đầu lại trò chơi. mô tả cách chơi, ngoài sử dụng bàn phím và chuột đơn thuần còn có thể sử dụng Tay cầm để trải nghiệm trò chơi, sử dụng phím ESC để dừng game...
 
 - Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
-- Video demo cách chơi & giải thích tổng quát source code: [Link demo game](Video deme game & giải thích tổng quát source code (16 phút): https://www.youtube.com/watch?v=98tJ5wg-Tzo)
-- (Bổ sung) Video chỉ trải nghiệm game: [Link bổ sung](https://www.youtube.com/watch?v=Ts4eY-ijtz0)
+- Video demo cách chơi & giải thích tổng quát source code: [Link demo game](https://www.youtube.com/watch?v=98tJ5wg-Tzo)
+- (Bổ sung) Video chỉ trải nghiệm game: [Link bổ sung](https://www.youtube.com/watch?v=ivZyJ3Bxwww)
 
 - [A. Ways to download game](#a-ways-to-download-game)
     * [1. Method 1: No code included.](#a-cách-1-không-bao-gồm-code)
@@ -179,7 +179,7 @@ Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiê
 | <img src="images/Utils/gift/treasure.png" width=50>  | Icon Ruby Nói Chung	 | Người chơi thu thập Ruby để tích lũy kinh nghiệm.                                                            |
 
 - Và một số skill thú vị khác, người chơi sẽ được trải nghiệm khi tham gia trò chơi.
-- Tất cả các skills được cài đặt đều bao gồm các hoạt ảnh, âm thanh sinh động.
+- Tỉ lệ rơi item khi tiêu diệt địch là 50%, các item sẽ random ngẫu nhiên. Tất cả các skills được cài đặt đều bao gồm các hoạt ảnh, âm thanh sinh động.
 - Sau khi xuất hiện, các icon skill sẽ vỡ tan (mất đi) nếu sau 1 khoảng thời gian đã set mặc định hoặc khi kẻ địch va chạm.
 
 # F. Supplement
