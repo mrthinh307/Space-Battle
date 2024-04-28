@@ -18,8 +18,6 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 - Video demo cách chơi & giải thích tổng quát source code: [Link demo game](Video deme game & giải thích tổng quát source code (16 phút): https://www.youtube.com/watch?v=98tJ5wg-Tzo)
 - (Bổ sung) Video chỉ trải nghiệm game: [Link bổ sung](https://www.youtube.com/watch?v=Ts4eY-ijtz0)
 
-- Thử nghiệm game: 
-
 - [A. Ways to download game](#a-ways-to-download-game)
     * [1. Method 1: No code included.](#a-cách-1-không-bao-gồm-code)
     * [2. Method 2: Include code and compilable.](#b-cách-2-bao-gồm-code-và-có-thể-biên-dịch)
@@ -111,7 +109,7 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
      : là đối tượng người chơi điều khiển 
 
 -    Mini Enemy ![image](./images/Readme/minienemy.png)
-     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 15s, không thêm trong thời gian boss tồn tại**.
+     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 15s, không thêm khi trong thời gian boss tồn tại**.
 
 -   ***Boss*** ![image](./images/Readme/boss.png): là đối tượng kẻ địch mạnh. Sẽ xuất hiện lại sau mỗi 60s.
 
