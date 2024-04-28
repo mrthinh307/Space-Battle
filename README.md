@@ -33,7 +33,7 @@ Space Battle thuộc vào thể loại game hành động (action game). Trong g
 
 ## 1. Method 1: No code included.
 
-Tải game (được nén thành .zip) tại link sau: https://drive.google.com/file/d/11EsklsY-lR6tmu-lY51UEbFQaIKGhLdF/view?usp=sharing
+Tải game (được nén thành .zip) tại repo này.
 
 Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
