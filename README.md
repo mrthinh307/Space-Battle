@@ -2,68 +2,64 @@
 
 ## **Introduction** 
 
-+ Họ và tên: Hoàng Duy Thịnh - K68J - UET
-
-+ Mã sinh viên: 23020708 
-
-+ Bài tập lớn: Space Battle (INT2215_52 - Lập trình nâng cao) 
++ Name: Hoàng Duy Thịnh - K68J - UET
++ Student ID: 23020708 
++ Major Project: Space Battle (INT2215_52 - Advanced Programming) 
 
 # Introducing the game
 
-Space Battle thuộc vào thể loại game hành động (action game). Trong game này, người chơi điều khiển một phi cơ và sử dụng vũ khí và các chiêu thức để bắn hạ các kẻ địch để đạt được thời gian sinh tồn cùng số lượng kẻ địch đã bị tiêu diệt nhiều nhất.
+Space Battle is an action game. In this game, players control a spaceship and use weapons and various tactics to shoot down enemies to achieve the longest survival time and the highest number of eliminated enemies.
 
-- Game có đầy đủ các chức năng hỗ trợ người chơi trong việc thoát game, bắt đầu lại trò chơi. mô tả cách chơi, ngoài sử dụng bàn phím và chuột đơn thuần còn có thể sử dụng Tay cầm để trải nghiệm trò chơi, sử dụng phím ESC để dừng game...
+- The game includes full support functions for players to exit the game, restart the game, game instructions. Besides using basic keyboard and mouse controls, players can also use controllers for the gaming experience, use ESC key to pause the game...
 
-- Có âm thanh sinh động mô tả các chức năng và hành động của trò chơi.
-- Video demo cách chơi & giải thích tổng quát source code: [Link demo game](https://www.youtube.com/watch?v=98tJ5wg-Tzo)
-- (Bổ sung) Video chỉ trải nghiệm game: [Link bổ sung](https://www.youtube.com/watch?v=ivZyJ3Bxwww)
+- Features dynamic sound effects that describe the game's functions and actions.
+- Video demo of gameplay & general source code explanation: [Game Demo Link](https://www.youtube.com/watch?v=98tJ5wg-Tzo)
+- (Additional) Video of pure gameplay experience: [Additional Link](https://www.youtube.com/watch?v=ivZyJ3Bxwww)
 
 - [A. Ways to download game](#a-ways-to-download-game)
-    * [1. Method 1: No code included.](#a-cách-1-không-bao-gồm-code)
-    * [2. Method 2: Include code and compilable.](#b-cách-2-bao-gồm-code-và-có-thể-biên-dịch)
-- [B. Instrucsion and Start Game](#b-instrucsion-and-start-game)
+    * [1. Method 1: No code included.](#1-method-1-no-code-included)
+    * [2. Method 2: Include code and compilable.](#2-method-2-include-code-and-compilable)
+- [B. Instructions and Start Game](#b-instructions-and-start-game)
 - [C. End Game](#c-end-game)
 - [D. Components In Game](#d-components-in-game)
 - [E. Skill Items In Game](#e-skill-items-in-game)
-- [F. Supplemt](#f-supplemt)
-- [Soure code & Reference source](#soure-code--reference-source)
+- [F. Supplement](#f-supplement)
+- [Source code & Reference source](#source-code--reference-source)
 - [Development & Conclusion](#development--conclusion)
 
 # A. Ways to download game
 
 ## 1. Method 1: No code included.
 
-Tải game (được nén thành .zip) tại repo này.
+Download the game (compressed as .zip) from this repository.
 
-Giải nén game vào một thư mục và bật run.exe lên và chơi.
+Extract the game to a folder and run run.exe to start playing.
 
 ## 2. Method 2: Include code and compilable.
 
-**Step 1:** Clone repo này về môi trường **Visual Studio Code**: [Link Repository](https://github.com/mrthinh307/TankGme)
-
+**Step 1:** Clone this repository to **Visual Studio Code** environment: [Repository Link](https://github.com/mrthinh307/TankGme)
 
 ![image](./images/Readme/repo.png)
 
-
-**Step 2:** Mở **Terminal** dẫn đến file của game (có thể sử dụng tổ hợp phím **Ctrl + ALt + N**) điền chữ **make** sau đó nhấn **Enter**, chờ khoảng 10s và trải nghiệm trò chơi.
+**Step 2:** Open **Terminal** and navigate to the game folder (you can use the **Ctrl + Alt + N** key combination), type **make** then press **Enter**, wait about 10 seconds and enjoy the game.
 
 ![image](./images/Readme/makefile.png)
 
-# B. Instrucsion and Start Game
+# B. Instructions and Start Game
 
-- Sau khi mở trò chơi thành công, sẽ xuất hiện màn hình chờ của game:
+- After successfully opening the game, the game's waiting screen will appear:
 ![image](./images/Backgrounds/menu.jpg)
 
 **1. PLAY**
 
-- Khi người chơi nhấn vào nút **PLAY** - có nghĩa rằng xác nhận tham gia trò chơi, màn hình sẽ dẫn người chơi đến phần chọn chức năng điều khiển.
+- When the player clicks the **PLAY** button - confirming participation in the game, the screen will guide the player to the control function selection section.
 
-- Trò chơi cung cấp cho người chơi 2 sự lựa chọn trong chức năng điều khiển cho phi cơ gồm:
-    + **Bàn phím và Chuột**.
-    + **Tay cầm (XBox, PS4, PS5...)** ( dưới đây là hướng dẫn nút điều khiển cho tay cầm thuộc họ **XBox**, các loại tay cầm khác điều khiển tương tự) . Đối với các tay cầm có hỗ trợ tính năng rung, mình cùng đã cài đặt để khi **va chạm** với kẻ địch hiệu ứng **rung tay cầm** trong 500ms. 
+- The game provides players with 2 choices for spaceship control functions:
+    + **Keyboard and Mouse**.
+    + **Controller (Xbox, PS4, PS5...)** (below is the control guide for **Xbox** family controllers, other controllers operate similarly). For controllers that support vibration features, I have also configured the **controller vibration** effect for 500ms when **colliding** with enemies.
     ![image](./images/Readme/rumble.png)
 
-### *Control + Shoot ( Điều khiển và Bắn đạn)* 
+### *Control + Shoot* 
 
 | Control | Keyboard | Gamepads | 
 |---------|----------|----------|
@@ -74,173 +70,161 @@ Giải nén game vào một thư mục và bật run.exe lên và chơi.
 
 |  Shoot  | Mouse    | Gamepads | 
 |---------|----------|----------|
-| Normal  |LeftMouse |    (A)   |
-| Ulti    |RightMouse|    (B)   |
+| Normal  |Left Mouse|    (A)   |
+| Ultimate|Right Mouse|   (B)   |
 
-- Người chơi chọn chức năng điều khiển nào thì nhấn chuột vào **thanh mô tả** của chức năng đó:
+- Players choose their preferred control function by clicking on the **description bar** of that function:
 
-- VÀO GAME
+- ENTER GAME
 
-- Người chơi sẽ điều khiển nhân vật được xuất hiện ở giữa màn hình:
+- Players will control the character that appears in the center of the screen:
 
 ![image](./images/Readme/tank.png)
 
-</div>
-
 **2. EXIT**
 
-- Khi người chơi nhấn vào nút **EXIT** - cửa sổ trò chơi được đóng lại và trò chơi kết thúc.
+- When the player clicks the **EXIT** button - the game window closes and the game ends.
 
-**3. ACHIEVEMENT** - Chức năng sao lưu
-- Chức năng này lưu lại kỉ lục về số kẻ địch mà người chơi hạ gục được trong một lần chơi.
-- Chức năng **LEVEL** biểu tượng cho kinh nghiệm trò chơi mà người chơi tích lũy được. Sẽ tăng cấp khi số Vàng người chơi tích lũy qua các lần chơi đạt đến 500.
-- Chức năng update **nâng cấp hoàn toàn ngoại hình** Phi cơ khi nâng cấp Level. Tất cả các phi cơ đều có các **hoạt ảnh** ánh sáng óng ánh sinh động
+**3. ACHIEVEMENT** - Save function
+- This function saves records of the number of enemies the player has defeated in one game session.
+- The **LEVEL** function represents the game experience that the player has accumulated. Will level up when the Gold that the player accumulates through gaming sessions reaches 500.
+- The update function **completely upgrades the appearance** of the Spaceship when leveling up. All spaceships have vivid **animated** sparkling light effects.
 ![image](./images/Readme/achieve.png)
+
 # C. End Game
-- Ghi lại thành tựu sau một ván chơi mà người chơi đạt được: 
-+ Số kẻ địch mà người chơi hạ gục.
-+ Số lượng vàng thu thập được.
-+ Thời gian sinh tồn.
+- Records achievements after a game session that the player achieved: 
++ Number of enemies the player defeated.
++ Amount of gold collected.
++ Survival time.
 ![image](./images/Readme/endgame.png)
 
 # D. Components In Game
 
--    Tank Object ![image](./images/Readme/tank.png)
-     : là đối tượng người chơi điều khiển 
+- Spaceship Object ![image](./images/Readme/tank.png): The object that the player controls 
 
--    Mini Enemy ![image](./images/Readme/minienemy.png)
-     : là đối tượng kẻ địch con, **sẽ tăng thêm 1 đối tượng sau 15s, không thêm khi trong thời gian boss tồn tại**.
+- Mini Enemy ![image](./images/Readme/minienemy.png): Small enemy objects, **will add 1 object every 15s, no addition during boss existence time**.
 
--   ***Boss*** ![image](./images/Readme/boss.png): là đối tượng kẻ địch mạnh. Sẽ xuất hiện lại sau mỗi 60s.
+- ***Boss*** ![image](./images/Readme/boss.png): Strong enemy object. Will reappear every 60s.
 
-    - ***Blood bar of boss***![image](./images/Readme/0.png) : là thanh máu của Boss, giảm 1 đơn vị máu khi boss trúng đạn **Normal** và 2 đơn vị máu khi là **Ulti**.
+    - ***Boss Health Bar***![image](./images/Readme/0.png): Boss's health bar, decreases by 1 health unit when boss is hit by **Normal** bullets and 2 health units when hit by **Ultimate**.
     
-- ***Timer*** (Bộ đếm thời gian) ![image](./images/Readme/timer.png): Ghi lại thời gian sinh tồn của người chơi.
+- ***Timer*** ![image](./images/Readme/timer.png): Records the player's survival time.
 
-- ***Killed enemy icon*** (Số lượng kẻ địch bị tiêu diệt) ![image](./images/Readme/killenemy.png): Ghi lại số lượng kẻ địch đã bị người chơi tiêu diệt
+- ***Killed Enemy Icon*** ![image](./images/Readme/killenemy.png): Records the number of enemies defeated by the player.
 
-- ***Ulti***(Rocket) ![image](./images/Backgrounds/rocket.png): số lượng Rocket người chơi có( tăng thêm 1 sau mỗi 5 kẻ địch bị tiêu diệt). Khác với đạn thường Rocket có khả năng xuyên thấu kẻ địch, ngoại trừ **Boss** nhưng cũng có sát thương lên Boss cao hơn.
+- ***Ultimate***(Rocket) ![image](./images/Backgrounds/rocket.png): Number of rockets the player has (increases by 1 after every 5 enemies defeated). Unlike normal bullets, rockets can penetrate enemies, except **Boss** but also deal higher damage to Boss.
 
-- ***Heart***(Mạng): ![image](./images//Backgrounds/heart.png): số lượng mạng của phi cơ ( -1 <=> va chạm với kẻ địch / trúng đạn kẻ địch).
-- ***Controller Method***(Phương thức điều khiển): Cho người chơi nhận biết đang sử dụng cách thức điều khiển nào! Biểu tượng hình Bàn phím ![image](images/Readme/keyboard.png) <=> Phương thức: **Chuột và bàn phím**, biểu tượng hình tay cầm ![image](images/Readme/gamepad.png) <=> Phương thức: **Tay cầm**.
+- ***Heart***(Lives): ![image](./images//Backgrounds/heart.png): Number of spaceship lives (-1 when colliding with enemies / hit by enemy bullets).
 
-- ***Pause Button*** (Nút dừng game): Nếu muốn tạm dừng trò chơi hoặc chơi lại khi đang trong trò chơi, người chơi có thể ấn nút **ESC**, cửa sổ game sẽ hiện lên trang Setting:
+- ***Controller Method***: Lets players know which control method they are using! Keyboard icon ![image](images/Readme/keyboard.png) means **Mouse and Keyboard** method, controller icon ![image](images/Readme/gamepad.png) means **Controller** method.
+
+- ***Pause Button***: If you want to pause the game or restart while in the game, players can press **ESC**, the game window will show the Settings page:
 
 ![image](./images/Backgrounds/setting0.png)
-- Ấn chuột vào mục **HOME** sẽ đưa người chơi về cửa sổ MENU ban đầu. Người chơi có thể nhấn PLAY để chôi lại.
-- Ấn chuột vào mục **RESUME** để tiếp tục trò chơi đang tạm dừng,
+- Click on **HOME** to return to the initial MENU window. Players can click PLAY to restart.
+- Click on **RESUME** to continue the paused game.
 
-- Cùng một số thành phần khác...
+- And some other components...
 
-- Bố cục game cơ bản:
-
-<div style="text-align: center;">
+- Basic game layout:
 
 ![image](./images/Readme/coban.png)
-</div>
 
-- Nếu như bạn đang thắc mắc những biểu tượng màu sắc xuất hiện ở giữa màn hinhg game ở trên là gì? Thì đó chính là tính năng giúp người chơi trải nghiệm thoải mái với bộ hơn 20 skills (có phát triển thêm trong tương lai) cho nhân vật chính, tất cả các skills đều kèm theo hiệu ứng hình ảnh cùng âm thanh phù hợp.
+- If you're wondering what those colorful icons appearing in the middle of the game screen above are? Those are features that help players enjoy a comfortable experience with over 20 skills (with future development potential) for the main character. All skills come with appropriate visual effects and sound.
 
 ![image](./images/Readme/expng.png)
-- example : Skill làm trói làm choáng kẻ địch
-
-</div>
-
+- Example: Skill that binds and stuns enemies
 
 # E. Skill Items In Game
 
-Tấn công kẻ địch bằng đạn hoặc sử dụng các skill, không cho kẻ địch hay đạn của kẻ địch chạm vào phi cơ. Nếu chạm vào số mạng sống sẽ giảm đi 1 (góc trái bên dưới cửa sổ trò chơi). Mặc định ban đầu khi bắt đầu trò chơi người chơi sở hữu 3 mạng. <br/>
+Attack enemies with bullets or use skills, don't let enemies or enemy bullets touch the spaceship. If touched, the number of lives will decrease by 1 (bottom left corner of the game window). By default, when starting the game, players have 3 lives.
 
-Trò chơi kết thúc khi số mạng của người chơi còn **0**.
+The game ends when the player's lives reach **0**.
 
-## 1. Some Skills(Một số loại Skills)
+## 1. Some Skills
 
-Icon của skill xuất hiện random với tỉ lệ ngẫu nhiên sau khi tiêu diệt kẻ địch ( có thể có có thể không). Người chơi di chuyển phi chạm vào icon tự động kích hoạt Skill:
+Skill icons appear randomly with random probability after defeating enemies (may or may not appear). Players move the spaceship to touch the icon to automatically activate the skill:
 
-|                                                                             | Tên cây	     | Chức năng                                                                                                                    |
+|                                                                             | Name	     | Function                                                                                                                    |
 |-----------------------------------------------------------------------------|--------------|------------------------------------------------------------------------------------------------------------------------------|
-| <img src="images/Utils/gift/4dan.png" width=50>  | Straight Beam	  | Đường đạn thay đổi thành một chùm đạn gồm 4 cột đạn thẳng hàng (30S).                                                                                             |
-| <img src="images/Utils/gift/booster.png" width=50>    | Booster	   | Tăng gấp đôi tốc độ cho phi cơ (10s).                                                                                              |
-| <img src="images/Utils/gift/dan4phia.png" width=50>          | Wall-nut	    | Đạn bắn ra từ 4 phía của phi cơ mỗi viên lệch nhau 90 độ (30s).                                                    |
-| <img src="images/Utils/gift/danloang.png" width=50>        | Đạn Loang 	    | Đạn bắn ra theo 3 đường xiên hướng từ đầu của phi cơ đi ra(30s). |
-| <img src="images/Utils/gift/default.png" width=50> | Default Mode  | Đưa phi cơ về chế độ mặc định, xóa mọi skills hiện có, vô hiệu hóa khả năng kích hoạt các skill mới trong (10s).                                                               |
-| <img src="images/Utils/gift/hp.png" width=50>  | HP	 | Ngay lập tức cộng một mạng sống cho phi cơ.      
-| <img src="images/Utils/gift/new1.png" width=50>  | Green Diamond Bullet	 | Đạn của phi cơ được nâng cấp về các chỉ số / chuyển đổi sang dạng mới.      
-| <img src="images/Utils/gift/new2.png" width=50>  | Đạn hình xuyến	 | Đạn của phi cơ được nâng cấp các chỉ số / chuyển đổi sang dạng mới.  
-| <img src="images/Utils/gift/phitieu.png" width=50>  | Phi tiêu | Đạn của phi cơ được nâng cấp về các chỉ số / chuyển đổi sang dạng mới.  
-| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Số Rocket (Utils) được cộng thêm random 1 số <10.  
-| <img src="images/Utils/gift/preventenemy.png" width=50>  | Magnet	 | Thỏi nam châm trong không gian sẽ  hút tất các các skill tồn tại trên màn hình trò chơi về đối tượng Phi Cơ người chơi(30s).  
-| <img src="images/Utils/gift/rocket2.png" width=50>  | Upgrade Rocket	 | Chiêu thức Rocket(Ulti) của phi cơ được nâng cấp lên dạng mới nhanh hơn, sát thương diện rộng hơn.                                                            |
-| <img src="images/Utils/gift/shield.png" width=50>  | Shield	 | Kích hoạt thần hộ mệnh, vô hiệu hóa va chạm với kẻ địch(10s).                                                            |
-| <img src="images/Utils/gift/stunned.png" width=50>  | Stun 	 | Trói buộc kẻ địch, gây choáng và không thể di chuyển(5s)                                                         |
-| <img src="images/Utils/gift/superbullet.png" width=50>  | Super Bullet | Đúng như cái tên của nó, đường đạn bắn ra vô cùng ảo ma Canada =)).                                                            |
-| <img src="images/Utils/gift/teleport.png" width=50>  | Teleport	 | Dúng như cái tên của nó, 1 vị trí bất kì trong cửa số trò chơi được lựa chọn và phi cơ sẽ teleport đến vị trí đó.                                                            |
-| <img src="images/Utils/gift/ziczac.png" width=50>  | Trap Bullet	 | Đạn được bắn ra sẽ xoay tròn tại vị trí đó, tạo lên bẫy khiến kẻ địch chạm phải.                                                            |
-| <img src="images/Utils/gift/treasure.png" width=50>  | Icon Ruby Nói Chung	 | Người chơi thu thập Ruby để tích lũy kinh nghiệm.                                                            |
+| <img src="images/Utils/gift/4dan.png" width=50>  | Straight Beam	  | Bullet path changes to a beam of 4 straight bullet columns (30s).                                                                                             |
+| <img src="images/Utils/gift/booster.png" width=50>    | Booster	   | Doubles the spaceship's speed (10s).                                                                                              |
+| <img src="images/Utils/gift/dan4phia.png" width=50>          | Four-Way Shot	    | Bullets shoot from 4 sides of the spaceship, each 90 degrees apart (30s).                                                    |
+| <img src="images/Utils/gift/danloang.png" width=50>        | Spread Shot 	    | Bullets shoot in 3 diagonal directions from the front of the spaceship (30s). |
+| <img src="images/Utils/gift/default.png" width=50> | Default Mode  | Returns spaceship to default mode, removes all current skills, disables ability to activate new skills (10s).                                                               |
+| <img src="images/Utils/gift/hp.png" width=50>  | HP	 | Immediately adds one life to the spaceship.      
+| <img src="images/Utils/gift/new1.png" width=50>  | Green Diamond Bullet	 | Spaceship bullets are upgraded in stats / converted to new form.      
+| <img src="images/Utils/gift/new2.png" width=50>  | Ring Bullet	 | Spaceship bullets are upgraded in stats / converted to new form.  
+| <img src="images/Utils/gift/phitieu.png" width=50>  | Dart | Spaceship bullets are upgraded in stats / converted to new form.  
+| <img src="images/Utils/gift/plusrocket.png" width=50>  | Add Rocket	 | Number of Rockets (Ultimate) is increased by a random number <10.  
+| <img src="images/Utils/gift/preventenemy.png" width=50>  | Magnet	 | The magnet in space will attract all existing skills on the game screen to the player's spaceship object (30s).  
+| <img src="images/Utils/gift/rocket2.png" width=50>  | Upgrade Rocket	 | The spaceship's Rocket (Ultimate) ability is upgraded to a new form - faster and with wider area damage.                                                            |
+| <img src="images/Utils/gift/shield.png" width=50>  | Shield	 | Activates divine protection, disables collision with enemies (10s).                                                            |
+| <img src="images/Utils/gift/stunned.png" width=50>  | Stun 	 | Binds enemies, causes stun and inability to move (5s).                                                         |
+| <img src="images/Utils/gift/superbullet.png" width=50>  | Super Bullet | As the name suggests, the bullet path is incredibly magical =)).                                                            |
+| <img src="images/Utils/gift/teleport.png" width=50>  | Teleport	 | As the name suggests, a random position in the game window is selected and the spaceship will teleport to that position.                                                            |
+| <img src="images/Utils/gift/ziczac.png" width=50>  | Trap Bullet	 | Bullets shot will rotate in place, creating traps that enemies run into.                                                            |
+| <img src="images/Utils/gift/treasure.png" width=50>  | Ruby Icon	 | Players collect rubies to accumulate experience.                                                            |
 
-- Và một số skill thú vị khác, người chơi sẽ được trải nghiệm khi tham gia trò chơi.
-- Tỉ lệ rơi item khi tiêu diệt địch là 50%, các item sẽ random ngẫu nhiên. Tất cả các skills được cài đặt đều bao gồm các hoạt ảnh, âm thanh sinh động.
-- Sau khi xuất hiện, các icon skill sẽ vỡ tan (mất đi) nếu sau 1 khoảng thời gian đã set mặc định hoặc khi kẻ địch va chạm.
+- And some other interesting skills that players will experience when participating in the game.
+- The item drop rate when defeating enemies is 50%, items will be randomly selected. All configured skills include animations and dynamic sound effects.
+- After appearing, skill icons will shatter (disappear) if after a set default time period or when enemies collide with them.
 
 # F. Supplement
 
 ## See Also
 
-### *Các kỹ thuật sử dụng*
-- Thư viện SDL2.0.
+### *Technologies Used*
+- SDL2.0 library.
 
-- Sử dụng nhiều class, vector, tách file, kế thừa....
+- Uses many classes, vectors, file separation, inheritance...
 
-- Tối ưu việc tạo nhiều đối tượng bằng cách reset random vị trí của kẻ địch di chuyển từ sau 4 phía màn hình sau khi bị hạ, đạn của kẻ địch cũng xử lý tương tự.
+- Optimizes the creation of multiple objects by resetting random positions of enemies moving from the 4 sides of the screen after being defeated, enemy bullets are handled similarly.
 
-- Vận dụng kiến thức toán học để tính toán được góc xoay, sự di chuyển của các kẻ địch hướng về phía người chơi nhưng không di chuyển chồng lên nhau. Set cho đường đạn của kẻ địch hướng một cách tương đối về hướng phi cơ, vừa tạo ra độ khó, độ bất ngờ nhưng cũng giữ được mức độ cân bằng cho trò chơi. Tính toán sự di chuyển và xuất hiện cho đạn của phi cơ góp phần tạo nên các skill bắn đạn độc đáo.
+- Applies mathematical knowledge to calculate rotation angles and enemy movement toward the player without overlapping each other. Sets enemy bullet paths to aim relatively toward the spaceship, creating difficulty and surprise while maintaining game balance. Calculates movement and appearance for spaceship bullets, contributing to unique shooting skills.
 
-- Xử lý thời gian, thao tác chuột và bàn phím, tay cầm, âm thanh, hình ảnh chuyển động, chữ. Quản lý địa chỉ và bộ nhớ khi thao tác với các biến như con trỏ... tránh gây thất thoát, rò rỉ bộ nhớ. 
+- Handles time, mouse and keyboard operations, controllers, sound, animated images, text. Manages addresses and memory when working with variables like pointers... avoiding memory loss and leaks.
 
-- Tạo menu, các tính năng pause game, chơi lại game, ghi lại kỉ lục, sao lưu các thống số cần thiết để tạo ra tính năng Level và nhận Phi cơ mới, xử lý các nút ấn di chuyển giữa các menu. 
+- Creates menus, pause game features, game restart, record keeping, saves necessary statistics to create Level features and unlock new spaceships, handles button presses for navigation between menus.
 
-- Xử lý sự kiện chuột, bàn phím, tay cầm, chức năng rung của tay cầm ( nếu có ).
+- Handles mouse, keyboard, controller events, controller vibration function (if available).
 
-### Soure code & Reference source
+### Source code & Reference source
 
-#### 1. Source code :
-- Trình bày thông qua clip demo game.
-#### 2. Nguồn tham khảo:
-- Cách sử dụng, cài đặt SDL2.0 trên môi trường VSCODE và CodeBlock.
+#### 1. Source code:
+- Presented through game demo video.
+#### 2. Reference sources:
+- How to use and install SDL2.0 on VSCODE and CodeBlock environments.
 
-- Cách sử dụng thư viện SDL2.0, quản lý chương trình: Tham khảo trên lazyfoo và các video của cô Trần Thị Minh Châu, Stack Overflow, kênh youtube: Phát triển phần mềm AZ123, codegopher, Let's Make Games,...
+- How to use SDL2.0 library, program management: Referenced from lazyfoo and videos by Ms. Tran Thi Minh Chau, Stack Overflow, YouTube channels: Software Development AZ123, codegopher, Let's Make Games,...
 
-- Hình ảnh: Tìm kiếm trên Google kết hợp tự design.
-- Âm thanh: Tra trên Google
+- Images: Google search combined with self-design.
+- Sound: Google search.
 
 # Development & Conclusion
 
-## Hướng phát triển:
+## Development Direction:
 
-- Điều chỉnh độ khó cho game: Người chơi có thể lựa chọn số kẻ địch ban đầu xuất hiện. Không chỉ người chơi mà kẻ địch cũng có thể ăn những skill rơi ra, phù hợp với đối tượng kẻ địch mà update tính năng skill đó lên kẻ địch làm trò chơi trở nên thú vị hơn.
+- Adjust game difficulty: Players can choose the initial number of enemies that appear. Not only can players eat the dropped skills, but enemies can also consume those skills, appropriate to the enemy object and update that skill feature to the enemy, making the game more interesting.
 
-- Cập nhật tính năng bảng xếp hạng, sau mỗi lần chơi người chơi sẽ được nhập tên để lưu lại kết quả chơi của mình.
+- Update leaderboard feature, after each game session players will be asked to enter their name to save their game results.
 
-- Phát triển tính năng Multiplayer:
-    + 2 PLAYERS VERSUS ENEMY( Đua nhau về số kẻ địch hạ gục or Thời gian sinh tồn (Có xử lý va chạm giữa 2 players)/ Cùng phe(không xử lý va chạm))
-    + PLAYER 1 VS PLAYER 2(Thiết lập thanh blood_bar như boss, xử lý va chạm như, ăn skill và chiến đấu lẫn nhau.)
+- Develop Multiplayer feature:
+    + 2 PLAYERS VERSUS ENEMY (Compete for number of enemies defeated or survival time (with collision handling between 2 players) / Same team (no collision handling))
+    + PLAYER 1 VS PLAYER 2 (Set up blood_bar like boss, handle collisions, eat skills and fight each other.)
 
-- Update thêm những skills mới.
+- Update more new skills.
 
-## Sau gần 2 tháng làm game cho bài tập lớn:
+## After nearly 2 months of making this game for the major project:
 
-- Em thấy mình đã cải thiện được rất nhiều kỹ năng trong việc tư duy thuật toán và viết code, khả năng lên ý tưởng, xây dựng kế hoạch và thực hiện từng bước một.
+- I feel I have improved many skills in algorithmic thinking and coding, ideation ability, planning and step-by-step execution.
 
-- Học được cách setup môi trường, sử dụng thư viện ngoài. Quản lý bộ nhớ với các biến địa chỉ, con trỏ, việc cấp phát động... 
+- Learned how to setup environment, use external libraries. Memory management with address variables, pointers, dynamic allocation...
 
+- Applied knowledge from various university subjects into the program.
 
-- Vận dụng các kiến thức các môn đại cượng vào chương trình.
+- Learned how to perform individual tasks, explore and learn from many sources of materials.
 
-- Học cách thực hiện nhiệm vụ cá nhân, tìm tòi và học hỏi từ nhiều nguồn tài liệu.
-
-**The end! **
-
-<div style="text-align: center;">
+**The end!**
 
 ***THANKS FOR READING MY README.***
-
